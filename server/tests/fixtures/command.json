@@ -1,0 +1,72 @@
+{
+  "valid": [
+    {
+      "id": "1",
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "name": "test",
+      "args": {}
+    }
+  ],
+  "invalid": [
+    {
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "name": "test",
+      "args": {}
+    },
+    {
+      "id": "",
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "name": "test",
+      "args": {}
+    },
+    {
+      "id": "1",
+      "frame": "a",
+      "name": "test",
+      "args": {}
+    },
+    {
+      "id": "1",
+      "frame": "c",
+      "cwd": "/foo/bar",
+      "name": "test",
+      "args": {}
+    },
+    {
+      "id": "1",
+      "cwd": "/foo/bar",
+      "name": "test",
+      "args": {}
+    },
+    {
+      "id": "1",
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "args": {}
+    },
+    {
+      "id": "1",
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "name": "",
+      "args": {}
+    },
+    {
+      "id": "1",
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "name": "test"
+    },
+    {
+      "id": "1",
+      "frame": "a",
+      "cwd": "/foo/bar",
+      "name": "test",
+      "args": {},
+      "foo": "bar"
+    }
+  ]
+}

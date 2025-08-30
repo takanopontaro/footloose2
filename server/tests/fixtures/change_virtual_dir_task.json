@@ -1,0 +1,60 @@
+{
+  "valid": [
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "path": "test1",
+      "filter": "^(__MACOSX/|\\._.+)"
+    },
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "path": "test1"
+    },
+    {
+      "kind": "tar",
+      "archive": "test.tar",
+      "path": "👟/test1"
+    },
+    {
+      "kind": "tgz",
+      "archive": "👟/test.tgz",
+      "path": "test1"
+    }
+  ],
+  "invalid": [
+    {
+      "archive": "👟/test.zip",
+      "path": "test1"
+    },
+    {
+      "kind": "tar",
+      "path": "👟/test1"
+    },
+    {
+      "kind": "tgz",
+      "archive": "👟/test.tgz"
+    },
+    {
+      "kind": "foo",
+      "archive": "test.zip",
+      "path": "👟/test1"
+    },
+    {
+      "kind": "zip",
+      "archive": "",
+      "path": "test1"
+    },
+    {
+      "kind": "zip",
+      "archive": "test.zip",
+      "path": ""
+    },
+    {
+      "kind": "zip",
+      "archive": "test.zip",
+      "path": "👟/test1",
+      "filter": ""
+    }
+  ]
+}

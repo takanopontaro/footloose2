@@ -1,0 +1,68 @@
+{
+  "valid": [
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "sources": ["test1"],
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "tar",
+      "archive": "test.tar",
+      "sources": ["test1"],
+      "destination": "test2"
+    },
+    {
+      "kind": "tgz",
+      "archive": "👟/test.tgz",
+      "sources": ["test1"],
+      "destination": "👟/test2"
+    }
+  ],
+  "invalid": [
+    {
+      "archive": "👟/test.zip",
+      "sources": ["test1"],
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "zip",
+      "sources": ["test1"],
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "sources": ["test1"]
+    },
+    {
+      "kind": "foo",
+      "archive": "👟/test.zip",
+      "sources": ["test1"],
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "sources": [],
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "sources": "test1",
+      "destination": "👟/test2"
+    },
+    {
+      "kind": "zip",
+      "archive": "👟/test.zip",
+      "sources": ["test1"],
+      "destination": ""
+    }
+  ]
+}

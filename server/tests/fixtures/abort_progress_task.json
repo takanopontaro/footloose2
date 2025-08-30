@@ -1,0 +1,19 @@
+{
+  "valid": [
+    {
+      "pid": "test"
+    }
+  ],
+  "invalid": [
+    {
+      "pid": ""
+    },
+    {
+      "pid": "test",
+      "foo": "bar"
+    },
+    {
+      "foo": "bar"
+    }
+  ]
+}

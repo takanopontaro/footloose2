@@ -1,0 +1,75 @@
+{
+  "valid": [
+    {
+      "sources": ["/test1", "/test2"],
+      "destination": "👟/test3",
+      "config": {
+        "cmd": "command",
+        "total": "xxxx"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "destination": "👟/test2",
+      "config": {
+        "cmd": "command",
+        "total": "xxxx"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "config": {
+        "cmd": "command",
+        "total": "xxxx"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "destination": "👟/test3",
+      "config": {
+        "cmd": "command",
+        "total": "xxxx"
+      }
+    },
+    {
+      "sources": "/test1",
+      "destination": "👟/test3",
+      "config": {
+        "cmd": "command",
+        "total": "xxxx"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "destination": "👟/test3",
+      "config": {
+        "total": "xxxx"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "config": {
+        "cmd": "command"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "config": {
+        "cmd": "",
+        "total": "xxxx"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "config": {
+        "cmd": "command",
+        "total": ""
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "destination": "👟/test3"
+    }
+  ]
+}

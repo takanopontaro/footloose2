@@ -1,0 +1,19 @@
+{
+  "valid": [
+    {
+      "path": "👟/test1"
+    }
+  ],
+  "invalid": [
+    {
+      "path": ""
+    },
+    {
+      "foo": "foo"
+    },
+    {
+      "path": "👟/test1",
+      "foo": "foo"
+    }
+  ]
+}

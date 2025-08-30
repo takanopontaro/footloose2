@@ -1,0 +1,55 @@
+{
+  "valid": [
+    {
+      "sources": ["/test1", "/test2"],
+      "destination": "👟/test3",
+      "config": {
+        "cmd": "command"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "destination": "👟/test2",
+      "config": {
+        "cmd": "command"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "config": {
+        "cmd": "command"
+      }
+    },
+    {
+      "destination": "👟/test2",
+      "config": {
+        "cmd": "command"
+      }
+    },
+    {
+      "config": {
+        "cmd": "command"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "sources": "/test1",
+      "destination": "👟/test3",
+      "config": {
+        "cmd": "command"
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "destination": "👟/test3",
+      "config": {
+        "cmd": ""
+      }
+    },
+    {
+      "sources": ["/test1"],
+      "destination": "👟/test3"
+    }
+  ]
+}

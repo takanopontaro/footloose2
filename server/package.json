@@ -1,0 +1,12 @@
+{
+  "version": "0.0.3",
+  "bin": {
+    "footloose2-server": "./footloose2-server"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/takanopontaro/footloose2.git",
+    "directory": "server"
+  }
+}

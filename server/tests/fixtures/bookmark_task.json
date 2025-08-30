@@ -1,0 +1,50 @@
+{
+  "valid": [
+    {
+      "action": "get"
+    },
+    {
+      "action": "add",
+      "name": "test",
+      "path": "👟/test1"
+    },
+    {
+      "action": "rename",
+      "name": "new_test",
+      "path": "👟/test1"
+    },
+    {
+      "action": "delete",
+      "path": "👟/test1"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "test",
+      "path": "👟/test1"
+    },
+    {
+      "action": "foo",
+      "name": "test",
+      "path": "👟/test1"
+    },
+    {
+      "action": "get",
+      "name": "test",
+      "path": "👟/test1"
+    },
+    {
+      "action": "add",
+      "path": "👟/test1"
+    },
+    {
+      "action": "rename",
+      "name": "new_test"
+    },
+    {
+      "action": "delete",
+      "name": "test",
+      "path": "👟/test1"
+    }
+  ]
+}

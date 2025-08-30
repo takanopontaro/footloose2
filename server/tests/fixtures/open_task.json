@@ -1,0 +1,28 @@
+{
+  "valid": [
+    {
+      "path": "👟/test1"
+    },
+    {
+      "path": "👟/test1",
+      "app": "firefox"
+    }
+  ],
+  "invalid": [
+    {
+      "path": ""
+    },
+    {
+      "path": "👟/test1",
+      "app": ""
+    },
+    {
+      "app": "firefox"
+    },
+    {
+      "path": "👟/test1",
+      "app": "firefox",
+      "extra": "extra"
+    }
+  ]
+}
