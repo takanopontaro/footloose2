@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "@libs/*": ["types/libs/*"],
+      "@modules/*": ["types/modules/*"]
+    },
+    "moduleResolution": "node"
+  },
+  "include": ["./config.ts"]
+}

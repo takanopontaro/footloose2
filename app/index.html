@@ -1,0 +1,35 @@
+<!doctype html>
+<html class="html">
+  <head class="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>👟 Footloose2</title>
+<!--
+<style>
+%css%
+</style>
+
+<script type="module">
+import { init } from '.%src%';
+function base64ToUint8Array(base64) {
+  const binaryStr = atob(base64);
+  const len = binaryStr.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryStr.charCodeAt(i);
+  }
+  return bytes;
+}
+const jsBytes = base64ToUint8Array('%js%');
+const blob = new Blob([jsBytes], { type: 'application/javascript' });
+const url = URL.createObjectURL(blob);
+const { config } = await import(url);
+init(config);
+</script>
+-->
+  </head>
+  <body class="body">
+    <div id="root" class="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
