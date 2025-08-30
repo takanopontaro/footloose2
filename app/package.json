@@ -59,7 +59,7 @@
   },
   "scripts": {
     "build": "vite build && tsc -p tsconfig.app.dts.json && cp src/config.ts dist/config.ts",
-    "dev": "SERVER_PORT=3000 concurrently -k -n server,vite \"footloose2-server -p 3000 -b ./tmp/bookmark.json -r ./dist\" \"vite\""
+    "dev": "pnpm build && SERVER_PORT=3000 concurrently -k -n server,vite \"footloose2-server -p 3000 -b ./tmp/bookmark.json -s ./public/app.css -c ./src/config.ts -r ./dist\" \"vite\""
   },
   "type": "module"
 }
