@@ -1,0 +1,14 @@
+.DS_Store
+
+# server
+debug
+target
+**/*.rs.bk
+*.pdb
+
+# client
+pnpm-debug.log*
+node_modules
+tmp
+dist
+*.tsbuildinfo
