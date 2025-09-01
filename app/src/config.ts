@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
+  AssociationsConfig,
   CommandsConfig,
   Config,
   MessagesConfig,
@@ -1483,6 +1484,22 @@ const settings: SettingsConfig = {
   virtualDirExcludePattern: '^(?:__MACOSX/|\\._.+)',
 };
 
-const config: Config = { commands, shortcuts, messages, settings };
+const associations: AssociationsConfig = [
+  // { kind: 'mime', pattern: /^text\//, app: 'Visual Studio Code' },
+  // { kind: 'path', pattern: /\.json$/, app: 'Visual Studio Code' },
+  // (mime, path) => {
+  //   if (mime === 'application/toml') {
+  //     return 'Visual Studio Code';
+  //   }
+  // },
+];
+
+const config: Config = {
+  commands,
+  shortcuts,
+  messages,
+  settings,
+  associations,
+};
 
 export { config };

@@ -10,6 +10,7 @@ import {
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 import { RESET } from 'jotai/utils';
+import mime from 'mime';
 import type { WsSuccessResponse } from '@modules/App/types';
 
 function enterGalleryMode(frame = get($activeFrame)): void {
@@ -24,6 +25,27 @@ function clearEntryFilter(frame = get($activeFrame)): void {
   set($filterQuery(frame), RESET);
 }
 
+function getApp(path: string): string | undefined {
+  const type = mime.getType(path);
+  const associations = get($config).associations;
+  for (const assoc of associations) {
+    if (typeof assoc === 'function') {
+      const app = assoc(type, path);
+      if (app !== undefined) {
+        return app;
+      }
+      continue;
+    }
+    const { app, kind, pattern } = assoc;
+    if (
+      (kind === 'mime' && type !== null && pattern.test(type)) ||
+      (kind === 'path' && pattern.test(path))
+    ) {
+      return app;
+    }
+  }
+}
+
 function openWith(
   path?: string,
   app?: string,
@@ -35,6 +57,7 @@ function openWith(
     writeLog(messages[0], 'info');
     return;
   }
+  app = app ?? getApp(path);
   wsSend<WsSuccessResponse>(
     'open',
     { path, app },

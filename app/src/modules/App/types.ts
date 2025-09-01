@@ -176,7 +176,14 @@ export type ShortcutsConfig = Partial<
   Record<Scope, Record<string, ShortcutCommand[]>>
 >;
 
+type Association =
+  | ((mime: null | string, path: string) => string | undefined)
+  | { app: string; kind: 'mime' | 'path'; pattern: RegExp };
+
+export type AssociationsConfig = Association[];
+
 export type Config = {
+  associations: AssociationsConfig;
   commands: CommandsConfig;
   messages: MessagesConfig;
   settings: SettingsConfig;
