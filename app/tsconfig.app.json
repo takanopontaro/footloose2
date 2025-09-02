@@ -9,6 +9,7 @@
     /* Path alias */
     "baseUrl": "src",
     "paths": {
+      "@config/*": ["config/*"],
       "@libs/*": ["libs/*"],
       "@modules/*": ["modules/*"]
     },

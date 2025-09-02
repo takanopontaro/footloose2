@@ -4,10 +4,11 @@
     "module": "ESNext",
     "baseUrl": ".",
     "paths": {
+      "@config/*": ["config/*"],
       "@libs/*": ["types/libs/*"],
       "@modules/*": ["types/modules/*"]
     },
     "moduleResolution": "node"
   },
-  "include": ["./config.ts"]
+  "include": ["config.ts", "config/*.ts"]
 }

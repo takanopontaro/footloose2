@@ -97,6 +97,7 @@ function devConfig(): UserConfig {
     },
     resolve: {
       alias: {
+        '@config': resolve(__dirname, 'src/config'),
         '@libs': resolve(__dirname, 'src/libs'),
         '@modules': resolve(__dirname, 'src/modules'),
       },
@@ -121,6 +122,7 @@ function prdConfig(): UserConfig {
     },
     resolve: {
       alias: {
+        '@config': resolve(__dirname, 'src/config'),
         '@libs': resolve(__dirname, 'src/libs'),
         '@modules': resolve(__dirname, 'src/modules'),
       },
