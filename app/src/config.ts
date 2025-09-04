@@ -1,4 +1,3 @@
- 
 import { associations } from '@config/associations';
 import { commands } from '@config/commands';
 import { messages } from '@config/messages';
