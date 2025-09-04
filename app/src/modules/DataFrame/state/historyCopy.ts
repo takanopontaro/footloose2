@@ -1,8 +1,9 @@
-import { $modes } from '@modules/App/state';
 import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
-import type { Frame } from '@modules/App/types';
+import { $modes } from '@modules/App/state';
+
 import type { SetStateAction } from 'jotai';
+import type { Frame } from '@modules/App/types';
 
 const historyCopyAtom = atomFamily((_frame: Frame) =>
   atomWithReset<string[] | null>(null),

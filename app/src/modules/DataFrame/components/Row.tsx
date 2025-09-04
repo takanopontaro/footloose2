@@ -1,8 +1,9 @@
-import { useThumbnail } from '@modules/DataFrame/hooks';
 import { memo } from 'react';
+import { useThumbnail } from '@modules/DataFrame/hooks';
+
+import type { FC } from 'react';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
-import type { FC } from 'react';
 
 type Props = {
   current: boolean;

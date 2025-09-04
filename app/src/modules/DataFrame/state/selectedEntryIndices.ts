@@ -1,12 +1,13 @@
+import { atom } from 'jotai';
+import { RESET, atomFamily } from 'jotai/utils';
 import { shallowEqualArray } from '@libs/utils';
 import {
   $filteredEntries,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
-import { atom } from 'jotai';
-import { RESET, atomFamily } from 'jotai/utils';
-import type { Frame } from '@modules/App/types';
+
 import type { SetStateAction } from 'jotai';
+import type { Frame } from '@modules/App/types';
 
 export const $selectedEntryIndices = atomFamily((frame: Frame) =>
   atom(

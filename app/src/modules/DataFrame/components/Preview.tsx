@@ -1,13 +1,14 @@
+import { useAtomValue, useSetAtom } from 'jotai';
+import { memo, useEffect } from 'react';
 import { usePreview } from '@modules/DataFrame/hooks';
 import {
   $activeEntryIndex,
   $filteredEntries,
   $previewRef,
 } from '@modules/DataFrame/state';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { memo, useEffect } from 'react';
-import type { Frame } from '@modules/App/types';
+
 import type { FC } from 'react';
+import type { Frame } from '@modules/App/types';
 
 type Props = {
   frame: Frame;

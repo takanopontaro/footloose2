@@ -1,6 +1,8 @@
-import { $activeFrame, $api, $config, $modes, $tags } from '@modules/App/state';
 import { atom } from 'jotai';
 import Mousetrap from 'mousetrap';
+import { $activeFrame, $api, $config, $modes, $tags } from '@modules/App/state';
+
+import type { SetStateAction } from 'jotai';
 import type {
   CommandAction,
   Mode,
@@ -8,7 +10,6 @@ import type {
   ShortcutCommand,
   Tag,
 } from '@modules/App/types';
-import type { SetStateAction } from 'jotai';
 
 type ShortcutAction = Omit<ShortcutCommand, 'cmd'> & {
   action: CommandAction;

@@ -1,7 +1,8 @@
+import { RESET } from 'jotai/utils';
 import { get, set } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
 import { $sort } from '@modules/DataFrame/state';
-import { RESET } from 'jotai/utils';
+
 import type { SortCriterion } from '@modules/DataFrame/types';
 
 function sortEntries(

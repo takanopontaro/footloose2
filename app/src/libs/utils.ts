@@ -1,4 +1,5 @@
 import { getDefaultStore } from 'jotai';
+
 import type { Direction } from '@modules/App/types';
 
 const { get, set } = getDefaultStore();

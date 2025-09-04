@@ -1,10 +1,11 @@
-import { shallowEqualObject } from '@libs/utils';
-import { $modes } from '@modules/App/state';
 import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { shallowEqualObject } from '@libs/utils';
+import { $modes } from '@modules/App/state';
+
+import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { VirtualDirKind } from '@modules/DataFrame/types';
-import type { SetStateAction } from 'jotai';
 
 type VdConfig = { archive: string; kind: VirtualDirKind };
 

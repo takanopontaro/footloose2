@@ -1,8 +1,9 @@
-import { shallowEqualArray } from '@libs/utils';
 import { atom } from 'jotai';
 import { RESET, atomWithReset } from 'jotai/utils';
-import type { Tag } from '@modules/App/types';
+import { shallowEqualArray } from '@libs/utils';
+
 import type { SetStateAction } from 'jotai';
+import type { Tag } from '@modules/App/types';
 
 const tagsAtom = atomWithReset<Tag[]>([]);
 

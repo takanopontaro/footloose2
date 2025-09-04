@@ -1,3 +1,4 @@
+import { RESET } from 'jotai/utils';
 import { get, set } from '@libs/utils';
 import { $activeFrame, $config, $modal } from '@modules/App/state';
 import { changeVirtualDir, getTargetName } from '@modules/DataFrame/api';
@@ -20,7 +21,7 @@ import {
 import { writeLog } from '@modules/LogFrame/api';
 import { PromptModal } from '@modules/Modal/components';
 import { $promptModalAction, $promptModalData } from '@modules/Modal/state';
-import { RESET } from 'jotai/utils';
+
 import type { WsCdResponse } from '@modules/App/types';
 import type { PromptModalAction } from '@modules/Modal/types';
 

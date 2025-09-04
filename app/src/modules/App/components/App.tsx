@@ -1,12 +1,13 @@
+import { useAtomValue, useSetAtom } from 'jotai';
+import { memo } from 'react';
+import { createPortal } from 'react-dom';
 import { useInitialDir, useWebSocket } from '@modules/App/hooks';
 import { $config, $modal } from '@modules/App/state';
 import { DataFrame } from '@modules/DataFrame/components';
 import { LogFrame } from '@modules/LogFrame/components';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { memo } from 'react';
-import { createPortal } from 'react-dom';
-import type { Config } from '@modules/App/types';
+
 import type { FC } from 'react';
+import type { Config } from '@modules/App/types';
 
 type Props = {
   config: Config;

@@ -1,5 +1,5 @@
-import type { ProgressTaskLog } from '@modules/LogFrame/components';
 import type { ComponentProps, ReactElement, ReactNode } from 'react';
+import type { ProgressTaskLog } from '@modules/LogFrame/components';
 
 export type LogLevel = 'error' | 'info' | 'none' | 'progress' | 'warn';
 

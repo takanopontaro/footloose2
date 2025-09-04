@@ -1,3 +1,4 @@
+import { RESET } from 'jotai/utils';
 import { get, set } from '@libs/utils';
 import { $activeFrame, $config, $modal } from '@modules/App/state';
 import { changeDir } from '@modules/DataFrame/api';
@@ -15,7 +16,7 @@ import {
   $listModalActiveEntryName,
   $listModalDataset,
 } from '@modules/Modal/state';
-import { RESET } from 'jotai/utils';
+
 import type { Frame, WsBookmarkResponse } from '@modules/App/types';
 import type { ListModalAction } from '@modules/Modal/types';
 

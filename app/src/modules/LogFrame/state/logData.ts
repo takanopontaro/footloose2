@@ -1,6 +1,7 @@
-import { $config } from '@modules/App/state';
 import { atom } from 'jotai';
 import { RESET, atomWithReset } from 'jotai/utils';
+import { $config } from '@modules/App/state';
+
 import type { LogData } from '@modules/LogFrame/types';
 
 const logDataAtom = atomWithReset<LogData[]>([]);

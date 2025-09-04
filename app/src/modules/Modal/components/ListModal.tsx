@@ -1,3 +1,6 @@
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { RESET } from 'jotai/utils';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { $modal, $scope, $tags } from '@modules/App/state';
 import {
   $listModalActiveEntryName,
@@ -5,11 +8,9 @@ import {
   $listModalFilterQuery,
   $modalRef,
 } from '@modules/Modal/state';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { RESET } from 'jotai/utils';
-import { memo, useCallback, useEffect, useRef } from 'react';
-import type { Tag } from '@modules/App/types';
+
 import type { FC, FocusEvent, FormEvent } from 'react';
+import type { Tag } from '@modules/App/types';
 
 type Props = {
   tag: Tag;

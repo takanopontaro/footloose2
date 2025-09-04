@@ -1,9 +1,10 @@
-import { $activeFrame, $scope } from '@modules/App/state';
-import { $filterQuery } from '@modules/DataFrame/state';
 import { useAtom } from 'jotai';
 import { memo, useCallback, useEffect, useRef } from 'react';
-import type { Frame } from '@modules/App/types';
+import { $activeFrame, $scope } from '@modules/App/state';
+import { $filterQuery } from '@modules/DataFrame/state';
+
 import type { FC, FocusEvent, FormEvent } from 'react';
+import type { Frame } from '@modules/App/types';
 
 type Props = {
   frame: Frame;

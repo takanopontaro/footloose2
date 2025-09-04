@@ -1,19 +1,20 @@
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { $scope, $ws } from '@modules/App/state';
 import {
   $logData,
   $logFrameRef,
   $progressTaskInfo,
 } from '@modules/LogFrame/state';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import { memo, useCallback, useEffect, useRef } from 'react';
+
+import type { FC, FocusEvent } from 'react';
 import type {
   WsProgressAbortResponse,
   WsProgressEndResponse,
   WsProgressErrorResponse,
   WsProgressResponse,
 } from '@modules/App/types';
-import type { FC, FocusEvent } from 'react';
 
 const LogFrameComponent: FC = () => {
   const [scope, setScope] = useAtom($scope);

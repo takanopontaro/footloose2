@@ -1,9 +1,9 @@
+import type { Bookmark, DirData } from '@modules/DataFrame/types';
+import type { LISTENER_STATUS } from 'libs/ws';
 import type * as appApi from '@modules/App/api';
 import type * as dataFrameApi from '@modules/DataFrame/api';
-import type { Bookmark, DirData } from '@modules/DataFrame/types';
 import type * as logApi from '@modules/LogFrame/api';
 import type * as modalApi from '@modules/Modal/api';
-import type { LISTENER_STATUS } from 'libs/ws';
 
 export type Direction = -1 | 1;
 

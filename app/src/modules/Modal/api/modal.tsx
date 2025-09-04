@@ -1,3 +1,4 @@
+import { RESET } from 'jotai/utils';
 import { cycleIndex, get, getFocusableEl, set } from '@libs/utils';
 import { focusDataFrame } from '@modules/App/api';
 import { $modal } from '@modules/App/state';
@@ -12,7 +13,7 @@ import {
   $promptModalAction,
   $promptModalData,
 } from '@modules/Modal/state';
-import { RESET } from 'jotai/utils';
+
 import type { Direction } from '@modules/App/types';
 
 function moveCursorListModal(step: number): void {

@@ -1,7 +1,8 @@
-import { $currentDir } from '@modules/DataFrame/state';
 import { useAtomValue } from 'jotai';
 import mime from 'mime';
 import { useMemo, useRef } from 'react';
+import { $currentDir } from '@modules/DataFrame/state';
+
 import type { Frame } from '@modules/App/types';
 import type { Entry, PreviewInfo } from '@modules/DataFrame/types';
 

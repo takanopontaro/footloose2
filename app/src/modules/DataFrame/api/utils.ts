@@ -5,6 +5,7 @@ import {
   $filteredEntries,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
+
 import type { SymlinkInfo } from '@modules/DataFrame/types';
 
 // 現在行 (name) を取得する。

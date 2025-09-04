@@ -1,6 +1,7 @@
-import { $modes } from '@modules/App/state';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { $modes } from '@modules/App/state';
+
 import type { Frame } from '@modules/App/types';
 
 export const $isGalleryMode = atomFamily((frame: Frame) =>

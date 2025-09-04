@@ -1,3 +1,5 @@
+import { RESET } from 'jotai/utils';
+import mime from 'mime';
 import { get, set } from '@libs/utils';
 import { $activeFrame, $config, $modes } from '@modules/App/state';
 import { getTargetName, getTargetNames } from '@modules/DataFrame/api';
@@ -9,8 +11,7 @@ import {
   $filteredEntries,
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
-import { RESET } from 'jotai/utils';
-import mime from 'mime';
+
 import type { WsSuccessResponse } from '@modules/App/types';
 
 function enterGalleryMode(frame = get($activeFrame)): void {

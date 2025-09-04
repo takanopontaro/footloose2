@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import react from '@vitejs/plugin-react-swc';
 import { transform } from 'esbuild';
 import { defineConfig } from 'vite';
+
 import type { PluginOption, UserConfig } from 'vite';
 
 function resolvePath(path: string): string {
@@ -140,7 +141,6 @@ function prdConfig(): UserConfig {
   };
 }
 
-// eslint-disable-next-line import/no-default-export
 export default defineConfig(({ mode }) =>
   mode === 'development' ? devConfig() : prdConfig(),
 );

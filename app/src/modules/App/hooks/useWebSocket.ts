@@ -1,7 +1,8 @@
-import { Ws } from '@libs/ws';
 import { atom } from 'jotai';
 import { loadable } from 'jotai/utils';
 import { useMemo } from 'react';
+import { Ws } from '@libs/ws';
+
 import type { Atom } from 'jotai';
 import type { Loadable } from 'jotai/vanilla/utils/loadable';
 

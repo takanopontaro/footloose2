@@ -1,8 +1,9 @@
-import { $listModalFilterQuery } from '@modules/Modal/state';
 import { atom } from 'jotai';
 import { RESET, atomWithReset } from 'jotai/utils';
-import type { ListModalData } from '@modules/Modal/types';
+import { $listModalFilterQuery } from '@modules/Modal/state';
+
 import type { SetStateAction } from 'jotai';
+import type { ListModalData } from '@modules/Modal/types';
 
 const listModalDatasetAtom = atomWithReset<ListModalData[]>([]);
 

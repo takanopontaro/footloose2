@@ -1,3 +1,5 @@
+import { atom, getDefaultStore } from 'jotai';
+import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
 import { $modes } from '@modules/App/state';
 import {
   $activeEntryName,
@@ -7,11 +9,10 @@ import {
   $renderedEntryStartIndex,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
-import { atom, getDefaultStore } from 'jotai';
-import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+
+import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
-import type { SetStateAction } from 'jotai';
 
 const filterQueryAtom = atomFamily((_frame: Frame) => atomWithReset(''));
 

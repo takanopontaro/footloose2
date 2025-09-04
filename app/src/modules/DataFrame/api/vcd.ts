@@ -1,3 +1,4 @@
+import { RESET } from 'jotai/utils';
 import { get, set } from '@libs/utils';
 import { $activeFrame, $config, $inactiveFrame } from '@modules/App/state';
 import {
@@ -19,7 +20,7 @@ import {
   $virtualDirInfo,
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
-import { RESET } from 'jotai/utils';
+
 import type {
   WsCdResponse,
   WsResponse,

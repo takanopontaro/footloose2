@@ -1,6 +1,6 @@
-import { $prevSessionDir } from '@modules/App/state';
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
+import { $prevSessionDir } from '@modules/App/state';
 
 export const useInitialDir = (): [string, string] => {
   const dirPathA = useAtomValue($prevSessionDir('a'));

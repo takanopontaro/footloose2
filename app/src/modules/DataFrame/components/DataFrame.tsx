@@ -1,3 +1,13 @@
+import { useAtom, useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { $activeFrame, $api, $modes, $scope, $ws } from '@modules/App/state';
 import {
   DirInfo,
@@ -20,22 +30,13 @@ import {
   $selectedEntryNames,
   $sort,
 } from '@modules/DataFrame/state';
-import { useAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+
+import type { FC, FocusEvent } from 'react';
 import type {
   Frame,
   WsDirUpdateResponse,
   WsWatchErrorResponse,
 } from '@modules/App/types';
-import type { FC, FocusEvent } from 'react';
 
 type Props = {
   dirPath: string;

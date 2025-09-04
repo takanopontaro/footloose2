@@ -1,9 +1,10 @@
-import { $config, $modes, $prevSessionDir } from '@modules/App/state';
-import { $history } from '@modules/DataFrame/state';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
-import type { Frame } from '@modules/App/types';
+import { $config, $modes, $prevSessionDir } from '@modules/App/state';
+import { $history } from '@modules/DataFrame/state';
+
 import type { SetStateAction } from 'jotai';
+import type { Frame } from '@modules/App/types';
 
 const currentDirAtom = atomFamily((_frame: Frame) => atom(''));
 

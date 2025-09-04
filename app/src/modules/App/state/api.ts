@@ -1,8 +1,9 @@
+import { atom } from 'jotai';
 import * as appApi from '@modules/App/api';
 import * as dataFrameApi from '@modules/DataFrame/api';
 import * as logApi from '@modules/LogFrame/api';
 import * as modalApi from '@modules/Modal/api';
-import { atom } from 'jotai';
+
 import type { CommandAction } from '@modules/App/types';
 
 const apiMap = {

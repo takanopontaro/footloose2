@@ -1,9 +1,10 @@
-import { $rawEntries } from '@modules/DataFrame/state';
 import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { $rawEntries } from '@modules/DataFrame/state';
+
+import type { Getter, SetStateAction, Setter } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { Entry, SortCriterion } from '@modules/DataFrame/types';
-import type { Getter, SetStateAction, Setter } from 'jotai';
 
 // Map of size units to byte counts.
 const sizeUnits = new Map([

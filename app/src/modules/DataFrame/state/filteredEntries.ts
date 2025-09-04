@@ -1,9 +1,10 @@
-import { $filterQuery, $rawEntries, $sort } from '@modules/DataFrame/state';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { $filterQuery, $rawEntries, $sort } from '@modules/DataFrame/state';
+
+import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
-import type { SetStateAction } from 'jotai';
 
 export const $filteredEntries = atomFamily((frame: Frame) =>
   atom(

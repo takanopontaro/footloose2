@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai';
+import { memo, useEffect, useState } from 'react';
 import { $modes } from '@modules/App/state';
 import {
   $filteredEntries,
@@ -5,10 +7,9 @@ import {
   $selectedEntryNames,
   $sort,
 } from '@modules/DataFrame/state';
-import { useAtomValue } from 'jotai';
-import { memo, useEffect, useState } from 'react';
-import type { Frame } from '@modules/App/types';
+
 import type { FC } from 'react';
+import type { Frame } from '@modules/App/types';
 
 type Props = {
   frame: Frame;

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { messages } from './messages';
+
 import type { CommandsConfig } from '@modules/App/types';
 
 const commands: CommandsConfig = [

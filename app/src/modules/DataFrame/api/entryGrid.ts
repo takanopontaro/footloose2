@@ -1,3 +1,4 @@
+import { RESET } from 'jotai/utils';
 import { get, set } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
 import { getTargetName } from '@modules/DataFrame/api';
@@ -15,7 +16,7 @@ import {
   $selectedEntryIndices,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
-import { RESET } from 'jotai/utils';
+
 import type { Direction } from '@modules/App/types';
 import type { CursorDirection } from '@modules/DataFrame/types';
 

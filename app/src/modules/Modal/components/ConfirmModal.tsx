@@ -1,10 +1,11 @@
-import { $modal, $scope, $tags } from '@modules/App/state';
-import { $modalRef } from '@modules/Modal/state';
 import { useAtom, useSetAtom } from 'jotai';
 import { RESET } from 'jotai/utils';
 import { memo, useCallback, useEffect, useRef } from 'react';
-import type { Tag } from '@modules/App/types';
+import { $modal, $scope, $tags } from '@modules/App/state';
+import { $modalRef } from '@modules/Modal/state';
+
 import type { FC, FocusEvent } from 'react';
+import type { Tag } from '@modules/App/types';
 
 type Props = {
   message: string;

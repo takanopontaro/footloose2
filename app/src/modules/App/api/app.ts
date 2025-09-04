@@ -5,6 +5,7 @@ import {
   $listModalActiveEntryName,
   $listModalDataset,
 } from '@modules/Modal/state';
+
 import type { Frame } from '@modules/App/types';
 
 function setDataFrameInScope(frame: Frame): void {

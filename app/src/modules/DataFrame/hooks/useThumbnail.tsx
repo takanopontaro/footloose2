@@ -1,10 +1,11 @@
-import { $currentDir } from '@modules/DataFrame/state';
 import { useAtomValue } from 'jotai';
 import mime from 'mime';
 import { useMemo } from 'react';
+import { $currentDir } from '@modules/DataFrame/state';
+
+import type { ReactNode } from 'react';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
-import type { ReactNode } from 'react';
 
 export const useThumbnail = (
   entry: Entry,

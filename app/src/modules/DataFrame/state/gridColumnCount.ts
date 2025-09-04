@@ -1,7 +1,8 @@
-import { getCssVariable } from '@libs/utils';
-import { $isGalleryMode } from '@modules/DataFrame/state';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { getCssVariable } from '@libs/utils';
+import { $isGalleryMode } from '@modules/DataFrame/state';
+
 import type { Frame } from '@modules/App/types';
 
 export const $gridColumnCount = atomFamily((frame: Frame) =>

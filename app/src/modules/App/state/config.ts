@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+
 import type { Config } from '@modules/App/types';
 
 const configAtom = atom<Config | null>(null);

@@ -1,10 +1,11 @@
+import { RESET } from 'jotai/utils';
 import { get, set } from '@libs/utils';
 import { $config } from '@modules/App/state';
 import { $logData, $logFrameRef } from '@modules/LogFrame/state';
-import { RESET } from 'jotai/utils';
+
+import type { ReactNode } from 'react';
 import type { Direction } from '@modules/App/types';
 import type { LogLevel } from '@modules/LogFrame/types';
-import type { ReactNode } from 'react';
 
 function writeLog(log: ReactNode, level: LogLevel = 'none'): void {
   set($logData, { level, log });

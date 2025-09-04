@@ -1,13 +1,14 @@
-import { $api, $config } from '@modules/App/state';
-import { $logData, $progressTaskInfo } from '@modules/LogFrame/state';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { $api, $config } from '@modules/App/state';
+import { $logData, $progressTaskInfo } from '@modules/LogFrame/state';
+
+import type { FC, MouseEvent, ReactNode } from 'react';
 import type {
   LogData,
   ProgressTaskLogData,
   ProgressTaskStatus,
 } from '@modules/LogFrame/types';
-import type { FC, MouseEvent, ReactNode } from 'react';
 
 function isProgressTaskLog(data: LogData): data is ProgressTaskLogData {
   return data.level === 'progress';
