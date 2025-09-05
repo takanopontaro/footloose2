@@ -1,4 +1,4 @@
-const { spawnSync } = require('node:child_process');
+const { execSync, spawnSync } = require('node:child_process');
 const { dirname } = require('node:path');
 
 const { arch, env, platform, release, version } = process;

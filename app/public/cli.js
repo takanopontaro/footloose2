@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 const { readFileSync } = require('node:fs');
 const { program } = require('commander');
-const { start } = require('./commands/start');
 const { eject } = require('./commands/eject');
+const { start } = require('./commands/start');
 
 const manifestStr = readFileSync(`${__dirname}/package.json`, 'utf-8');
 const manifest = JSON.parse(manifestStr);

@@ -11,7 +11,7 @@ function copy(dest, entries) {
         errorOnExist: true,
         force: false,
       });
-    } catch (e) {
+    } catch (_e) {
       throw new Error(`Already exists: ${to}`);
     }
   });
@@ -19,7 +19,7 @@ function copy(dest, entries) {
 
 function eject(dir = '.') {
   const cwd = process.cwd();
-  dest = path.resolve(cwd, dir);
+  const dest = path.resolve(cwd, dir);
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
   }
