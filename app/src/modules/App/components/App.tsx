@@ -16,18 +16,20 @@ type Props = {
 const AppComponent: FC<Props> = ({ config }) => {
   const wsAtom = useWebSocket(3000);
   const [dirPathA, dirPathB] = useInitialDir();
+
   const setConfig = useSetAtom($config);
   const loadable = useAtomValue(wsAtom);
   const Modal = useAtomValue($modal);
+
   setConfig(config);
+
   switch (loadable.state) {
-    case 'hasError': {
+    case 'hasError':
       throw new Error('WebSocket connection failed');
-    }
-    case 'loading': {
+    case 'loading':
       return null;
-    }
   }
+
   return (
     <div className="app">
       <DataFrame dirPath={dirPathA} frame="a" setFocus={true} />
