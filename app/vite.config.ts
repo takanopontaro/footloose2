@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import react from '@vitejs/plugin-react-swc';
-import { transform } from 'esbuild';
+import * as esbuild from 'esbuild';
 import { defineConfig } from 'vite';
 
 import type { PluginOption, UserConfig } from 'vite';
@@ -37,11 +37,20 @@ function assets(): PluginOption | undefined {
         const cssPath = resolvePath('public/app.css');
         const cssStr = readFileSync(cssPath, 'utf-8');
         const configPath = resolvePath('src/config.ts');
-        const configStr = readFileSync(configPath, 'utf-8');
-        const { code } = await transform(configStr, {
-          loader: 'ts',
+        const result = await esbuild.build({
+          entryPoints: [configPath],
+          bundle: true,
           format: 'esm',
+          platform: 'browser',
+          write: false,
+          absWorkingDir: process.cwd(),
+          alias: {
+            '@config': resolve(__dirname, 'src/config'),
+            '@libs': resolve(__dirname, 'src/libs'),
+            '@modules': resolve(__dirname, 'src/modules'),
+          },
         });
+        const code = result.outputFiles[0].text;
         const jsStrB64 = Buffer.from(code, 'utf-8').toString('base64');
         return html.replace('%css%', cssStr).replace('%js%', jsStrB64);
       },
