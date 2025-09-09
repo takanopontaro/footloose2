@@ -1,4 +1,4 @@
-import { get } from '@libs/utils';
+import { readState } from '@libs/utils';
 import { $activeFrame, $inactiveFrame } from '@modules/App/state';
 import { getTargetNames } from '@modules/DataFrame/api';
 import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
@@ -17,13 +17,13 @@ import type {
 } from '@modules/DataFrame/types';
 
 async function runProgressTask(callback: ProgressTaskCallback): Promise<void> {
-  const frame = get($activeFrame);
+  const frame = readState($activeFrame);
   const names = getTargetNames(frame);
   if (names.length === 0) {
     return;
   }
-  const srcDir = get($currentDir(frame));
-  const destDir = get($currentDir(get($inactiveFrame)));
+  const srcDir = readState($currentDir(frame));
+  const destDir = readState($currentDir(readState($inactiveFrame)));
   const config = await callback(names, srcDir, destDir);
   if (config === null) {
     return;
@@ -46,7 +46,7 @@ async function runProgressTask(callback: ProgressTaskCallback): Promise<void> {
   );
 }
 
-function abortProgressTask(pid: string, frame = get($activeFrame)): void {
+function abortProgressTask(pid: string, frame = readState($activeFrame)): void {
   wsSend<WsSuccessResponse>(
     'kill',
     { pid },
@@ -56,10 +56,10 @@ function abortProgressTask(pid: string, frame = get($activeFrame)): void {
 }
 
 async function runShTask(callback: ShTaskCallback): Promise<void> {
-  const frame = get($activeFrame);
+  const frame = readState($activeFrame);
   const names = getTargetNames(frame);
-  const srcDir = get($currentDir(frame));
-  const destDir = get($currentDir(get($inactiveFrame)));
+  const srcDir = readState($currentDir(frame));
+  const destDir = readState($currentDir(readState($inactiveFrame)));
   const config = await callback(names, srcDir, destDir);
   if (config === null) {
     return;

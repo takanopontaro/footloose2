@@ -1,4 +1,4 @@
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modes } from '@modules/App/state';
 import { $previewRef } from '@modules/DataFrame/state';
 
@@ -12,18 +12,21 @@ function isVideo(el: HTMLElement): el is HTMLVideoElement {
   return el instanceof HTMLVideoElement;
 }
 
-function showPreviewArea(frame = get($activeFrame)): void {
-  set($modes(frame), (prev) => [...prev, 'preview']);
+function showPreviewArea(frame = readState($activeFrame)): void {
+  writeState($modes(frame), (prev) => [...prev, 'preview']);
 }
 
-function hidePreviewArea(frame = get($activeFrame)): void {
-  set($modes(frame), (prev) => prev.filter((m) => m !== 'preview'));
+function hidePreviewArea(frame = readState($activeFrame)): void {
+  writeState($modes(frame), (prev) => prev.filter((m) => m !== 'preview'));
 }
 
-function scrollPreviewArea(step: number, frame = get($activeFrame)): void {
-  const ref = get($previewRef(frame));
+function scrollPreviewArea(
+  step: number,
+  frame = readState($activeFrame),
+): void {
+  const ref = readState($previewRef(frame));
   if (ref !== null && isIframe(ref)) {
-    const { settings } = get($config);
+    const { settings } = readState($config);
     const delta = step * settings.previewScrollAmount;
     ref.contentWindow?.scrollBy(0, delta);
   }
@@ -31,9 +34,9 @@ function scrollPreviewArea(step: number, frame = get($activeFrame)): void {
 
 function scrollByPagePreviewArea(
   direction: Direction,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const ref = get($previewRef(frame));
+  const ref = readState($previewRef(frame));
   if (ref !== null && isIframe(ref)) {
     const delta = ref.offsetHeight * direction;
     ref.contentWindow?.scrollBy(0, delta);
@@ -42,9 +45,9 @@ function scrollByPagePreviewArea(
 
 function scrollToEdgePreviewArea(
   direction: Direction,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const ref = get($previewRef(frame));
+  const ref = readState($previewRef(frame));
   if (ref !== null && isIframe(ref)) {
     const sh = ref.contentDocument?.documentElement.scrollHeight ?? 999999;
     const delta = direction === 1 ? sh : 0;
@@ -53,9 +56,9 @@ function scrollToEdgePreviewArea(
 }
 
 function getVideoElementPreviewArea(
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): HTMLVideoElement | null {
-  const ref = get($previewRef(frame));
+  const ref = readState($previewRef(frame));
   return ref !== null && isVideo(ref) ? ref : null;
 }
 

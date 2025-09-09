@@ -1,5 +1,6 @@
-import { atom, getDefaultStore } from 'jotai';
+import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { readState, writeState } from '@libs/utils';
 import { $modes } from '@modules/App/state';
 import {
   $activeEntryName,
@@ -17,20 +18,19 @@ import type { Entry } from '@modules/DataFrame/types';
 const filterQueryAtom = atomFamily((_frame: Frame) => atomWithReset(''));
 
 function updateStartRow(entries: Entry[], frame: Frame): void {
-  const { get, set } = getDefaultStore();
-  const curName = get($activeEntryName(frame));
+  const curName = readState($activeEntryName(frame));
   const curIndex = entries.findIndex((v) => v.name === curName);
-  const colCount = get($gridColumnCount(frame));
-  const maxRowCount = get($maxRenderedRowCount(frame));
+  const colCount = readState($gridColumnCount(frame));
+  const maxRowCount = readState($maxRenderedRowCount(frame));
   // スクロール無しで全 entry を表示できる場合
   if (curIndex === -1 || curIndex < maxRowCount * colCount) {
-    set($renderedEntryStartIndex(frame), 0);
+    writeState($renderedEntryStartIndex(frame), 0);
     return;
   }
   const diff = Math.ceil(maxRowCount / 2) * colCount;
   let newRow = curIndex - diff;
   newRow = newRow - (newRow % colCount);
-  set($renderedEntryStartIndex(frame), newRow);
+  writeState($renderedEntryStartIndex(frame), newRow);
 }
 
 export const $filterQuery = atomFamily((frame: Frame) =>

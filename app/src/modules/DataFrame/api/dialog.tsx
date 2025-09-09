@@ -1,5 +1,5 @@
 import { RESET } from 'jotai/utils';
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modal } from '@modules/App/state';
 import { changeDir } from '@modules/DataFrame/api';
 import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
@@ -20,7 +20,7 @@ import {
 import type { Frame, WsBookmarkResponse } from '@modules/App/types';
 import type { ListModalAction } from '@modules/Modal/types';
 
-function showAllBookmarks(frame = get($activeFrame)): void {
+function showAllBookmarks(frame = readState($activeFrame)): void {
   wsSend<WsBookmarkResponse>(
     'bookmark',
     { action: 'get' },
@@ -30,7 +30,7 @@ function showAllBookmarks(frame = get($activeFrame)): void {
       }
       const bookmarks = resp.data;
       if (bookmarks.length === 0) {
-        const { messages } = get($config);
+        const { messages } = readState($config);
         writeLog(messages[1], 'info');
         return;
       }
@@ -45,17 +45,17 @@ function showAllBookmarks(frame = get($activeFrame)): void {
         },
         secondary: (data) => data && deleteBookmark(data.value),
       };
-      set($listModalActiveEntryName, dataset[0].value);
-      set($listModalDataset, dataset);
-      set($listModalAction, action);
-      set($modal, <ListModal tag="ListModal:bookmark" />);
+      writeState($listModalActiveEntryName, dataset[0].value);
+      writeState($listModalDataset, dataset);
+      writeState($listModalAction, action);
+      writeState($modal, <ListModal tag="ListModal:bookmark" />);
     },
     frame,
   );
 }
 
-function bookmarkSrcDirPath(frame = get($activeFrame)): void {
-  const dirName = get($currentDir(frame));
+function bookmarkSrcDirPath(frame = readState($activeFrame)): void {
+  const dirName = readState($currentDir(frame));
   wsSend<WsBookmarkResponse>(
     'bookmark',
     { action: 'add', name: dirName, path: dirName },
@@ -63,7 +63,7 @@ function bookmarkSrcDirPath(frame = get($activeFrame)): void {
       if (handleWsSendError(resp, frame)) {
         return;
       }
-      const { messages } = get($config);
+      const { messages } = readState($config);
       writeLog(`${messages[2]}: ${dirName}`, 'info');
     },
     frame,
@@ -71,7 +71,7 @@ function bookmarkSrcDirPath(frame = get($activeFrame)): void {
 }
 
 function deleteBookmark(path: string): void {
-  const frame = get($activeFrame);
+  const frame = readState($activeFrame);
   wsSend<WsBookmarkResponse>(
     'bookmark',
     { action: 'delete', path },
@@ -79,7 +79,7 @@ function deleteBookmark(path: string): void {
       if (handleWsSendError(resp)) {
         return;
       }
-      const { messages } = get($config);
+      const { messages } = readState($config);
       writeLog(`${messages[3]}: ${path}`, 'info');
     },
     frame,
@@ -94,29 +94,32 @@ function navigate(
 ): void {
   changeDir(path, frame, historyMode, (msg: string) => {
     writeLog(msg, 'error');
-    let history = get($history(frame));
+    let history = readState($history(frame));
     history = history.filter((h) => h !== path);
-    set($history(frame), history);
+    writeState($history(frame), history);
     if (history.length <= 1) {
-      set($historyCopy(frame), RESET);
-      set($historyIndex(frame), RESET);
+      writeState($historyCopy(frame), RESET);
+      writeState($historyIndex(frame), RESET);
       return;
     }
-    let copy = get($historyCopy(frame));
+    let copy = readState($historyCopy(frame));
     if (copy === null) {
       return;
     }
     copy = copy.filter((h) => h !== path);
-    set($historyCopy(frame), copy);
-    const index = get($historyIndex(frame));
-    set($historyIndex(frame), prevIndex < index ? prevIndex : prevIndex - 1);
+    writeState($historyCopy(frame), copy);
+    const index = readState($historyIndex(frame));
+    writeState(
+      $historyIndex(frame),
+      prevIndex < index ? prevIndex : prevIndex - 1,
+    );
   });
 }
 
-function showFullHistory(frame = get($activeFrame)): void {
-  const data = get($history(frame));
+function showFullHistory(frame = readState($activeFrame)): void {
+  const data = readState($history(frame));
   if (data.length === 0) {
-    const { messages } = get($config);
+    const { messages } = readState($config);
     writeLog(messages[4], 'info');
     return;
   }
@@ -124,21 +127,21 @@ function showFullHistory(frame = get($activeFrame)): void {
   const action: ListModalAction = {
     primary: (data) => {
       if (data) {
-        const index = get($historyIndex(frame));
+        const index = readState($historyIndex(frame));
         navigate(index, data.value, frame, false);
       }
     },
   };
-  set($listModalActiveEntryName, dataset[0].value);
-  set($listModalDataset, dataset);
-  set($listModalAction, action);
-  set($modal, <ListModal tag="ListModal:history" />);
+  writeState($listModalActiveEntryName, dataset[0].value);
+  writeState($listModalDataset, dataset);
+  writeState($listModalAction, action);
+  writeState($modal, <ListModal tag="ListModal:history" />);
 }
 
-function historyGo(delta: number, frame = get($activeFrame)): void {
-  const history = get($history(frame));
-  const copy = get($historyCopy(frame));
-  const index = get($historyIndex(frame));
+function historyGo(delta: number, frame = readState($activeFrame)): void {
+  const history = readState($history(frame));
+  const copy = readState($historyCopy(frame));
+  const index = readState($historyIndex(frame));
   const next = index + delta * -1;
   if (copy !== null && next <= 0) {
     navigate(index, copy[0], frame, false);
@@ -146,15 +149,15 @@ function historyGo(delta: number, frame = get($activeFrame)): void {
   }
   if (copy !== null) {
     const i = next < copy.length ? next : copy.length - 1;
-    set($historyIndex(frame), i);
+    writeState($historyIndex(frame), i);
     navigate(index, copy[i], frame, true);
     return;
   }
   if (copy === null && next > 0 && history.length > 1) {
     const h = [...history];
     const i = next < h.length ? next : h.length - 1;
-    set($historyCopy(frame), h);
-    set($historyIndex(frame), i);
+    writeState($historyCopy(frame), h);
+    writeState($historyIndex(frame), i);
     navigate(index, h[i], frame, true);
   }
 }

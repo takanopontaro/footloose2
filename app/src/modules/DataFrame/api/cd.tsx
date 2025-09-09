@@ -1,5 +1,5 @@
 import { RESET } from 'jotai/utils';
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modal } from '@modules/App/state';
 import { changeVirtualDir, getTargetName } from '@modules/DataFrame/api';
 import {
@@ -27,13 +27,13 @@ import type { PromptModalAction } from '@modules/Modal/types';
 
 function changeDir(
   path?: string,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
   historyMode = false,
   errorHandler?: (msg: string) => void,
 ): void {
   path = path ?? getTargetName(frame, true);
   if (path === '') {
-    const { messages } = get($config);
+    const { messages } = readState($config);
     writeLog(`${frame}: ${messages[0]}`, 'info');
     return;
   }
@@ -51,85 +51,85 @@ function changeDir(
         errorHandler(resp.data.msg);
         return;
       }
-      set($virtualDirInfo(frame), RESET);
+      writeState($virtualDirInfo(frame), RESET);
       const { entries, path } = resp.data;
       const prevName = getPrevName(path, frame);
-      set($currentDir(frame), path);
-      set($filteredEntries(frame), entries);
-      set($activeEntryName(frame), prevName === null ? RESET : prevName);
-      set($selectedEntryNames(frame), RESET);
+      writeState($currentDir(frame), path);
+      writeState($filteredEntries(frame), entries);
+      writeState($activeEntryName(frame), prevName === null ? RESET : prevName);
+      writeState($selectedEntryNames(frame), RESET);
       if (!historyMode) {
-        set($historyCopy(frame), RESET);
-        set($historyIndex(frame), RESET);
+        writeState($historyCopy(frame), RESET);
+        writeState($historyIndex(frame), RESET);
       }
     },
     frame,
   );
 }
 
-function goToParentDir(frame = get($activeFrame)): void {
-  const dirName = get($currentDir(frame));
+function goToParentDir(frame = readState($activeFrame)): void {
+  const dirName = readState($currentDir(frame));
   changeDir(`${dirName}/..`, frame);
 }
 
-function goToDir(frame = get($activeFrame)): void {
+function goToDir(frame = readState($activeFrame)): void {
   const action: PromptModalAction = {
     primary(data) {
       data = data.trim();
       if (data === '') {
-        const { messages } = get($config);
+        const { messages } = readState($config);
         writeLog(messages[5], 'warn');
         return;
       }
       changeDir(data, frame);
     },
   };
-  set($promptModalData, RESET);
-  set($promptModalAction, action);
-  set($modal, <PromptModal />);
+  writeState($promptModalData, RESET);
+  writeState($promptModalAction, action);
+  writeState($modal, <PromptModal />);
 }
 
-function syncDestDirPathWithSrcDirPath(frame = get($activeFrame)): void {
+function syncDestDirPathWithSrcDirPath(frame = readState($activeFrame)): void {
   const otherFrame = getOtherFrame(frame);
-  const dirName = get($currentDir(frame));
-  const vd = get($virtualDirInfo(frame));
+  const dirName = readState($currentDir(frame));
+  const vd = readState($virtualDirInfo(frame));
   if (vd === null) {
     changeDir(dirName, otherFrame);
     return;
   }
-  set($virtualDirInfo(otherFrame), vd);
+  writeState($virtualDirInfo(otherFrame), vd);
   changeVirtualDir(dirName, vd.kind, otherFrame);
 }
 
-function syncSrcDirPathWithDestDirPath(frame = get($activeFrame)): void {
+function syncSrcDirPathWithDestDirPath(frame = readState($activeFrame)): void {
   const otherFrame = getOtherFrame(frame);
-  const dirName = get($currentDir(otherFrame));
-  const vd = get($virtualDirInfo(otherFrame));
+  const dirName = readState($currentDir(otherFrame));
+  const vd = readState($virtualDirInfo(otherFrame));
   if (vd === null) {
     changeDir(dirName, frame);
     return;
   }
-  set($virtualDirInfo(frame), vd);
+  writeState($virtualDirInfo(frame), vd);
   changeVirtualDir(dirName, vd.kind, frame);
 }
 
 function swapDirPaths(): void {
-  const frame = get($activeFrame);
+  const frame = readState($activeFrame);
   const otherFrame = getOtherFrame(frame);
-  const dirName = get($currentDir(frame));
-  const otherDirName = get($currentDir(otherFrame));
-  const vd = get($virtualDirInfo(frame));
-  const otherVd = get($virtualDirInfo(otherFrame));
+  const dirName = readState($currentDir(frame));
+  const otherDirName = readState($currentDir(otherFrame));
+  const vd = readState($virtualDirInfo(frame));
+  const otherVd = readState($virtualDirInfo(otherFrame));
   if (otherVd === null) {
     changeDir(otherDirName, frame);
   } else {
-    set($virtualDirInfo(frame), otherVd);
+    writeState($virtualDirInfo(frame), otherVd);
     changeVirtualDir(otherDirName, otherVd.kind, frame);
   }
   if (vd === null) {
     changeDir(dirName, otherFrame);
   } else {
-    set($virtualDirInfo(otherFrame), vd);
+    writeState($virtualDirInfo(otherFrame), vd);
     changeVirtualDir(dirName, vd.kind, otherFrame);
   }
 }

@@ -1,5 +1,5 @@
 import { RESET } from 'jotai/utils';
-import { cycleIndex, get, getFocusableEl, set } from '@libs/utils';
+import { cycleIndex, readState, getFocusableEl, writeState } from '@libs/utils';
 import { focusDataFrame } from '@modules/App/api';
 import { $modal } from '@modules/App/state';
 import { ConfirmModal, PromptModal } from '@modules/Modal/components';
@@ -17,79 +17,79 @@ import {
 import type { Direction } from '@modules/App/types';
 
 function moveCursorListModal(step: number): void {
-  const data = get($listModalDataset);
-  const name = get($listModalActiveEntryName);
+  const data = readState($listModalDataset);
+  const name = readState($listModalActiveEntryName);
   const index = data.findIndex((d) => d.value === name);
   const next = index !== -1 ? cycleIndex(index, step, data.length) : 0;
-  set($listModalActiveEntryName, data[next].value);
+  writeState($listModalActiveEntryName, data[next].value);
 }
 
 function confirmPrimaryActionListModal(): void {
-  const data = get($listModalDataset);
-  const name = get($listModalActiveEntryName);
+  const data = readState($listModalDataset);
+  const name = readState($listModalActiveEntryName);
   const item = data.find((d) => d.value === name);
-  const { primary } = get($listModalAction);
+  const { primary } = readState($listModalAction);
   primary(item);
-  set($modal, RESET);
-  set($listModalFilterQuery, RESET);
+  writeState($modal, RESET);
+  writeState($listModalFilterQuery, RESET);
   focusDataFrame();
 }
 
 function confirmSecondaryActionListModal(): void {
-  const data = get($listModalDataset);
-  const name = get($listModalActiveEntryName);
+  const data = readState($listModalDataset);
+  const name = readState($listModalActiveEntryName);
   const item = data.find((d) => d.value === name);
-  const { secondary } = get($listModalAction);
+  const { secondary } = readState($listModalAction);
   secondary?.(item);
-  set($modal, RESET);
-  set($listModalFilterQuery, RESET);
+  writeState($modal, RESET);
+  writeState($listModalFilterQuery, RESET);
   focusDataFrame();
 }
 
 function cancelActionListModal(): void {
-  const data = get($listModalDataset);
-  const name = get($listModalActiveEntryName);
+  const data = readState($listModalDataset);
+  const name = readState($listModalActiveEntryName);
   const item = data.find((d) => d.value === name);
-  const { cancel } = get($listModalAction);
+  const { cancel } = readState($listModalAction);
   cancel?.(item);
-  set($modal, RESET);
-  set($listModalFilterQuery, RESET);
+  writeState($modal, RESET);
+  writeState($listModalFilterQuery, RESET);
   focusDataFrame();
 }
 
 function clearListModalFilterQuery(): void {
-  set($listModalFilterQuery, RESET);
+  writeState($listModalFilterQuery, RESET);
 }
 
 function showPromptModal(defaultValue: string): Promise<string> {
   return new Promise((resolve) => {
-    set($promptModalData, defaultValue);
-    set($promptModalAction, {
+    writeState($promptModalData, defaultValue);
+    writeState($promptModalAction, {
       primary: (data) => resolve(data.trim()),
       cancel: () => resolve(''),
     });
-    set($modal, <PromptModal />);
+    writeState($modal, <PromptModal />);
   });
 }
 
 function confirmActionPromptModal(): void {
-  const data = get($promptModalData);
-  const { primary } = get($promptModalAction);
+  const data = readState($promptModalData);
+  const { primary } = readState($promptModalAction);
   primary(data);
-  set($modal, RESET);
+  writeState($modal, RESET);
   focusDataFrame();
 }
 
 function cancelActionPromptModal(): void {
-  const data = get($promptModalData);
-  const { cancel } = get($promptModalAction);
+  const data = readState($promptModalData);
+  const { cancel } = readState($promptModalAction);
   cancel?.(data);
-  set($modal, RESET);
+  writeState($modal, RESET);
   focusDataFrame();
 }
 
 function focusElementPromptModal(direction: Direction): void {
-  const ref = get($modalRef);
+  const ref = readState($modalRef);
   if (ref !== null) {
     getFocusableEl(ref, direction)?.focus();
   }
@@ -97,30 +97,30 @@ function focusElementPromptModal(direction: Direction): void {
 
 function showConfirmModal(message: string): Promise<string> {
   return new Promise((resolve) => {
-    set($confirmModalAction, {
+    writeState($confirmModalAction, {
       primary: () => resolve('ok'),
       cancel: () => resolve(''),
     });
-    set($modal, <ConfirmModal message={message} />);
+    writeState($modal, <ConfirmModal message={message} />);
   });
 }
 
 function confirmActionConfirmModal(): void {
-  const { primary } = get($confirmModalAction);
+  const { primary } = readState($confirmModalAction);
   primary();
-  set($modal, RESET);
+  writeState($modal, RESET);
   focusDataFrame();
 }
 
 function cancelActionConfirmModal(): void {
-  const { cancel } = get($confirmModalAction);
+  const { cancel } = readState($confirmModalAction);
   cancel?.();
-  set($modal, RESET);
+  writeState($modal, RESET);
   focusDataFrame();
 }
 
 function focusElementConfirmModal(direction: Direction): void {
-  const ref = get($modalRef);
+  const ref = readState($modalRef);
   if (ref !== null) {
     getFocusableEl(ref, direction)?.focus();
   }

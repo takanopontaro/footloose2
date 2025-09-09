@@ -1,8 +1,8 @@
-import { getDefaultStore } from 'jotai';
+import { store } from '@libs/store';
 
 import type { Direction } from '@modules/App/types';
 
-const { get, set } = getDefaultStore();
+const { get: readState, set: writeState } = store;
 
 function shallowEqualObject(
   a: Record<string, unknown>,
@@ -82,8 +82,8 @@ function cycleIndex(
 }
 
 export {
-  get,
-  set,
+  readState,
+  writeState,
   shallowEqualObject,
   shallowEqualArray,
   getEl,

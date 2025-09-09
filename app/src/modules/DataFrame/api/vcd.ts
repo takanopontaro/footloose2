@@ -1,5 +1,5 @@
 import { RESET } from 'jotai/utils';
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $inactiveFrame } from '@modules/App/state';
 import {
   changeDir,
@@ -48,17 +48,17 @@ function getVirtualDirKindFromExt(archive: string): VirtualDirKind | undefined {
 function changeVirtualDir(
   path?: string,
   kind?: VirtualDirKind,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const { messages, settings } = get($config);
+  const { messages, settings } = readState($config);
   path = path ?? getTargetName(frame, true);
   if (path === '') {
     writeLog(`${frame}: ${messages[0]}`, 'info');
     return;
   }
-  let vd = get($virtualDirInfo(frame));
+  let vd = readState($virtualDirInfo(frame));
   if (vd === null) {
-    const dirName = get($currentDir(frame));
+    const dirName = readState($currentDir(frame));
     const archive = path.startsWith('/') ? path : `${dirName}/${path}`;
     kind = kind ?? getVirtualDirKindFromExt(archive);
     if (!kind) {
@@ -66,7 +66,7 @@ function changeVirtualDir(
       return;
     }
     vd = { archive, kind };
-    set($virtualDirInfo(frame), vd);
+    writeState($virtualDirInfo(frame), vd);
   }
   wsSend<WsCdResponse>(
     'cvd',
@@ -88,46 +88,46 @@ function changeVirtualDir(
       }
       const { entries, path: p } = resp.data;
       const prevName = getPrevName(p, frame);
-      set($currentDir(frame), p);
-      set($filteredEntries(frame), entries);
-      set($activeEntryName(frame), prevName === null ? RESET : prevName);
-      set($selectedEntryNames(frame), RESET);
+      writeState($currentDir(frame), p);
+      writeState($filteredEntries(frame), entries);
+      writeState($activeEntryName(frame), prevName === null ? RESET : prevName);
+      writeState($selectedEntryNames(frame), RESET);
     },
     frame,
   );
 }
 
-function goToParentVirtualDir(frame = get($activeFrame)): void {
-  const vd = get($virtualDirInfo(frame));
+function goToParentVirtualDir(frame = readState($activeFrame)): void {
+  const vd = readState($virtualDirInfo(frame));
   if (vd === null) {
     return;
   }
-  const dirName = get($currentDir(frame));
+  const dirName = readState($currentDir(frame));
   changeVirtualDir(`${dirName}/..`, vd.kind, frame);
 }
 
 function extractSelectedEntries(
   paths?: string[],
   kind?: VirtualDirKind,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
   paths = paths ?? getTargetNames(frame);
   if (paths.length === 0) {
-    const { messages } = get($config);
+    const { messages } = readState($config);
     writeLog(`${frame}: ${messages[0]}`, 'info');
     return;
   }
-  const vd = get($virtualDirInfo(frame));
+  const vd = readState($virtualDirInfo(frame));
   if (vd === null) {
     return;
   }
-  const destination = get($currentDir(get($inactiveFrame)));
+  const destination = readState($currentDir(readState($inactiveFrame)));
   wsSend<WsCdResponse | WsVcpSkippedResponse>(
     'vcp',
     { kind: vd.kind, archive: vd.archive, sources: paths, destination },
     (resp) => {
       if (isCopySkipped(resp)) {
-        const { messages } = get($config);
+        const { messages } = readState($config);
         writeLog(`${frame}: ${messages[13]}: ${resp.data.join(', ')}`, 'warn');
         return;
       }

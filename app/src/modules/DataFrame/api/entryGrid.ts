@@ -1,5 +1,5 @@
 import { RESET } from 'jotai/utils';
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
 import { getTargetName } from '@modules/DataFrame/api';
 import {
@@ -41,15 +41,15 @@ function moveCursor(
   step: number,
   direction: CursorDirection,
   loop = true,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const curIndex = get($activeEntryIndex(frame));
+  const curIndex = readState($activeEntryIndex(frame));
   if (curIndex === -1) {
-    set($activeEntryIndex(frame), 0);
+    writeState($activeEntryIndex(frame), 0);
     return;
   }
-  const entries = get($filteredEntries(frame));
-  const gridColumnCount = get($gridColumnCount(frame));
+  const entries = readState($filteredEntries(frame));
+  const gridColumnCount = readState($gridColumnCount(frame));
   const delta = calcDelta(step, gridColumnCount, direction);
   const totalCells = calcTotalCells(entries.length, gridColumnCount);
   if (!loop) {
@@ -60,7 +60,7 @@ function moveCursor(
       entries.length,
       gridColumnCount,
     );
-    set($activeEntryIndex(frame), newIndex);
+    writeState($activeEntryIndex(frame), newIndex);
     return;
   }
   const newIndex = cycleGridIndex(
@@ -70,22 +70,22 @@ function moveCursor(
     entries.length,
     totalCells,
   );
-  set($activeEntryIndex(frame), newIndex);
+  writeState($activeEntryIndex(frame), newIndex);
 }
 
 function moveCursorByPage(
   direction: Direction,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const curIndex = get($activeEntryIndex(frame));
+  const curIndex = readState($activeEntryIndex(frame));
   if (curIndex === -1) {
-    set($activeEntryIndex(frame), 0);
+    writeState($activeEntryIndex(frame), 0);
     return;
   }
-  const gridColumnCount = get($gridColumnCount(frame));
-  const maxRowCount = get($maxRenderedRowCount(frame));
+  const gridColumnCount = readState($gridColumnCount(frame));
+  const maxRowCount = readState($maxRenderedRowCount(frame));
   const itemsPerPage = maxRowCount * gridColumnCount;
-  const entries = get($filteredEntries(frame));
+  const entries = readState($filteredEntries(frame));
   const delta = (itemsPerPage - gridColumnCount) * direction;
   const newIndex = calcGridIndex(
     curIndex,
@@ -94,24 +94,24 @@ function moveCursorByPage(
     entries.length,
     gridColumnCount,
   );
-  set($activeEntryIndex(frame), newIndex);
+  writeState($activeEntryIndex(frame), newIndex);
 }
 
 function moveCursorToEdge(
   direction: Direction,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const entries = get($filteredEntries(frame));
+  const entries = readState($filteredEntries(frame));
   const next = direction === 1 ? entries.length - 1 : 0;
-  set($activeEntryIndex(frame), next);
+  writeState($activeEntryIndex(frame), next);
 }
 
 function moveCursorByStartingLetter(
   key: string,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const entries = get($filteredEntries(frame));
-  const curIndex = get($activeEntryIndex(frame));
+  const entries = readState($filteredEntries(frame));
+  const curIndex = readState($activeEntryIndex(frame));
   const firstPart = entries.slice(0, curIndex + 1);
   const secondPart = entries.slice(curIndex + 1);
   const newEntries = secondPart.concat(firstPart);
@@ -120,20 +120,20 @@ function moveCursorByStartingLetter(
     return new RegExp(`^${key}`, 'i').test(e.name);
   });
   if (next) {
-    set($activeEntryName(frame), next.name);
+    writeState($activeEntryName(frame), next.name);
   }
 }
 
 function toggleRowSelectionByName(
   name: string,
   select?: boolean,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const selectedNames = get($selectedEntryNames(frame));
+  const selectedNames = readState($selectedEntryNames(frame));
   if (select === undefined) {
     select = !selectedNames.includes(name);
   }
-  set(
+  writeState(
     $selectedEntryNames(frame),
     select
       ? (prev) => [...prev, name]
@@ -144,33 +144,36 @@ function toggleRowSelectionByName(
 function toggleRowSelectionByIndex(
   index: number,
   select?: boolean,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
-  const entries = get($filteredEntries(frame));
+  const entries = readState($filteredEntries(frame));
   toggleRowSelectionByName(entries[index].name, select, frame);
 }
 
-function toggleRowSelection(select?: boolean, frame = get($activeFrame)): void {
+function toggleRowSelection(
+  select?: boolean,
+  frame = readState($activeFrame),
+): void {
   const name = getTargetName(frame);
   toggleRowSelectionByName(name, select, frame);
 }
 
-function selectAllRows(frame = get($activeFrame)): void {
-  const entries = get($filteredEntries(frame));
+function selectAllRows(frame = readState($activeFrame)): void {
+  const entries = readState($filteredEntries(frame));
   const allIndices = Array.from({ length: entries.length }, (_, i) => i);
-  set($selectedEntryIndices(frame), allIndices);
+  writeState($selectedEntryIndices(frame), allIndices);
 }
 
-function deselectAllRows(frame = get($activeFrame)): void {
-  set($selectedEntryNames(frame), RESET);
+function deselectAllRows(frame = readState($activeFrame)): void {
+  writeState($selectedEntryNames(frame), RESET);
 }
 
-function invertAllRowSelections(frame = get($activeFrame)): void {
-  const entries = get($filteredEntries(frame));
+function invertAllRowSelections(frame = readState($activeFrame)): void {
+  const entries = readState($filteredEntries(frame));
   const allIndices = Array.from({ length: entries.length }, (_v, i) => i);
-  const selectedIndices = get($selectedEntryIndices(frame));
+  const selectedIndices = readState($selectedEntryIndices(frame));
   const res = allIndices.filter((i) => !selectedIndices.includes(i));
-  set($selectedEntryIndices(frame), res);
+  writeState($selectedEntryIndices(frame), res);
 }
 
 export {

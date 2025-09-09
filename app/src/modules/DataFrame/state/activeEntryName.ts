@@ -1,5 +1,6 @@
-import { atom, getDefaultStore } from 'jotai';
+import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { readState, writeState } from '@libs/utils';
 import {
   $activeEntryIndex,
   $gridColumnCount,
@@ -14,19 +15,18 @@ import type { Frame } from '@modules/App/types';
 const activeEntryNameAtom = atomFamily((_frame: Frame) => atomWithReset('..'));
 
 function updateStartRowInGalleryMode(frame: Frame): void {
-  const { get, set } = getDefaultStore();
-  const curIndex = get($activeEntryIndex(frame));
-  const startRow = get($renderedEntryStartIndex(frame));
-  const endRow = get($renderedEntryEndIndex(frame));
-  const colCount = get($gridColumnCount(frame));
+  const curIndex = readState($activeEntryIndex(frame));
+  const startRow = readState($renderedEntryStartIndex(frame));
+  const endRow = readState($renderedEntryEndIndex(frame));
+  const colCount = readState($gridColumnCount(frame));
   if (curIndex < startRow) {
     const newRow = Math.floor(curIndex / colCount) * colCount;
-    set($renderedEntryStartIndex(frame), newRow);
+    writeState($renderedEntryStartIndex(frame), newRow);
     return;
   }
   if (curIndex > endRow) {
     const rowDelta = Math.ceil((curIndex - endRow) / colCount);
-    set($renderedEntryStartIndex(frame), startRow + rowDelta * colCount);
+    writeState($renderedEntryStartIndex(frame), startRow + rowDelta * colCount);
   }
 }
 

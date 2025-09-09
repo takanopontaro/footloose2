@@ -1,4 +1,4 @@
-import { cycleIndex, get } from '@libs/utils';
+import { cycleIndex, readState } from '@libs/utils';
 import { $ws } from '@modules/App/state';
 import { $currentDir } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
@@ -17,7 +17,7 @@ function getOtherFrame(frame: Frame): Frame {
 }
 
 function getPrevName(newDirName: string, frame: Frame): null | string {
-  const prevDirName = get($currentDir(frame));
+  const prevDirName = readState($currentDir(frame));
   if (prevDirName === newDirName || !prevDirName.startsWith(newDirName)) {
     return null;
   }
@@ -92,8 +92,8 @@ function wsSend<R extends WsResponse>(
   callback: WsSendCallback<R>,
   frame: Frame,
 ): void {
-  const ws = get($ws);
-  const dirName = get($currentDir(frame));
+  const ws = readState($ws);
+  const dirName = readState($currentDir(frame));
   ws.send<R>({ frame, cwd: dirName, name: command, args }, callback);
 }
 

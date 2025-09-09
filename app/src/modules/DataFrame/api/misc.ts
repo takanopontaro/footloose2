@@ -1,6 +1,6 @@
 import { RESET } from 'jotai/utils';
 import mime from 'mime';
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modes } from '@modules/App/state';
 import { getTargetName, getTargetNames } from '@modules/DataFrame/api';
 import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
@@ -14,21 +14,21 @@ import { writeLog } from '@modules/LogFrame/api';
 
 import type { WsSuccessResponse } from '@modules/App/types';
 
-function enterGalleryMode(frame = get($activeFrame)): void {
-  set($modes(frame), (prev) => [...prev, 'gallery']);
+function enterGalleryMode(frame = readState($activeFrame)): void {
+  writeState($modes(frame), (prev) => [...prev, 'gallery']);
 }
 
-function exitGalleryMode(frame = get($activeFrame)): void {
-  set($modes(frame), (prev) => prev.filter((m) => m !== 'gallery'));
+function exitGalleryMode(frame = readState($activeFrame)): void {
+  writeState($modes(frame), (prev) => prev.filter((m) => m !== 'gallery'));
 }
 
-function clearEntryFilter(frame = get($activeFrame)): void {
-  set($filterQuery(frame), RESET);
+function clearEntryFilter(frame = readState($activeFrame)): void {
+  writeState($filterQuery(frame), RESET);
 }
 
 function getApp(path: string): string | undefined {
   const type = mime.getType(path);
-  const associations = get($config).associations;
+  const associations = readState($config).associations;
   for (const assoc of associations) {
     if (typeof assoc === 'function') {
       const app = assoc(type, path);
@@ -50,11 +50,11 @@ function getApp(path: string): string | undefined {
 function openWith(
   path?: string,
   app?: string,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): void {
   path = path ?? getTargetName(frame);
   if (path === '') {
-    const { messages } = get($config);
+    const { messages } = readState($config);
     writeLog(messages[0], 'info');
     return;
   }
@@ -78,21 +78,21 @@ function copyTextToClipboard(
     .catch((e) => writeLog(`${errorMsg}: ${e}`, 'error'));
 }
 
-function copySrcPathsToClipboard(frame = get($activeFrame)): void {
-  const { messages } = get($config);
+function copySrcPathsToClipboard(frame = readState($activeFrame)): void {
+  const { messages } = readState($config);
   const names = getTargetNames(frame);
-  const curName = get($activeEntryName(frame));
+  const curName = readState($activeEntryName(frame));
   if (names.length === 0 && curName !== '..') {
     writeLog(messages[0], 'info');
     return;
   }
-  const dirName = get($currentDir(frame));
+  const dirName = readState($currentDir(frame));
   if (names.length === 0 && curName === '..') {
     const text = dirName.replace(/\/[^/]+\/?$/, '') || '/';
     copyTextToClipboard(text, messages[8], messages[9]);
     return;
   }
-  const entries = get($filteredEntries(frame));
+  const entries = readState($filteredEntries(frame));
   const text = names
     .sort((a, b) => {
       const indexA = entries.findIndex((e) => e.name === a);
@@ -104,9 +104,9 @@ function copySrcPathsToClipboard(frame = get($activeFrame)): void {
   copyTextToClipboard(text, messages[8], messages[9]);
 }
 
-function copySrcDirPathToClipboard(frame = get($activeFrame)): void {
-  const { messages } = get($config);
-  const dirName = get($currentDir(frame));
+function copySrcDirPathToClipboard(frame = readState($activeFrame)): void {
+  const { messages } = readState($config);
+  const dirName = readState($currentDir(frame));
   copyTextToClipboard(dirName, messages[10], messages[11]);
 }
 

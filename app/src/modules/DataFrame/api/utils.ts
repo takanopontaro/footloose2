@@ -1,4 +1,4 @@
-import { get } from '@libs/utils';
+import { readState } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
 import {
   $activeEntryName,
@@ -10,9 +10,12 @@ import type { SymlinkInfo } from '@modules/DataFrame/types';
 
 // 現在行 (name) を取得する。
 // EntryFilter により非表示になっている場合は空文字を返す。
-function getTargetName(frame = get($activeFrame), allowParent = false): string {
-  const curName = get($activeEntryName(frame));
-  const entries = get($filteredEntries(frame));
+function getTargetName(
+  frame = readState($activeFrame),
+  allowParent = false,
+): string {
+  const curName = readState($activeEntryName(frame));
+  const entries = readState($filteredEntries(frame));
   const names = new Set(entries.map((e) => e.name));
   if (curName === '' || !names.has(curName)) {
     return '';
@@ -26,8 +29,8 @@ function getTargetName(frame = get($activeFrame), allowParent = false): string {
 // 選択行の配列 (name) を取得する。
 // 空なら、現在行 (name) を取得する。
 // EntryFilter により非表示になっている場合は空文字を返す。
-function getTargetNames(frame = get($activeFrame)): string[] {
-  const selectedNames = get($selectedEntryNames(frame));
+function getTargetNames(frame = readState($activeFrame)): string[] {
+  const selectedNames = readState($selectedEntryNames(frame));
   if (selectedNames.length > 0) {
     return selectedNames;
   }
@@ -35,29 +38,33 @@ function getTargetNames(frame = get($activeFrame)): string[] {
   return name === '' ? [] : [name];
 }
 
-function is(name: string, type: string, frame = get($activeFrame)): boolean {
-  const entries = get($filteredEntries(frame));
+function is(
+  name: string,
+  type: string,
+  frame = readState($activeFrame),
+): boolean {
+  const entries = readState($filteredEntries(frame));
   const entry = entries.find((e) => e.name === name);
   return entry?.perm.startsWith(type) === true;
 }
 
-function isDir(name: string, frame = get($activeFrame)): boolean {
+function isDir(name: string, frame = readState($activeFrame)): boolean {
   return is(name, 'd', frame);
 }
 
-function isFile(name: string, frame = get($activeFrame)): boolean {
+function isFile(name: string, frame = readState($activeFrame)): boolean {
   return is(name, '-', frame);
 }
 
-function isSymlink(name: string, frame = get($activeFrame)): boolean {
+function isSymlink(name: string, frame = readState($activeFrame)): boolean {
   return is(name, 'l', frame);
 }
 
 function getSymlinkInfo(
   name: string,
-  frame = get($activeFrame),
+  frame = readState($activeFrame),
 ): SymlinkInfo | undefined {
-  const entries = get($filteredEntries(frame));
+  const entries = readState($filteredEntries(frame));
   const entry = entries.find((e) => e.name === name);
   if (!entry || !entry.perm.startsWith('l')) {
     return;

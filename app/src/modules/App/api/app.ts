@@ -1,4 +1,4 @@
-import { get, set } from '@libs/utils';
+import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $inactiveFrame, $scope } from '@modules/App/state';
 import { $activeEntryName, $filteredEntries } from '@modules/DataFrame/state';
 import {
@@ -9,70 +9,70 @@ import {
 import type { Frame } from '@modules/App/types';
 
 function setDataFrameInScope(frame: Frame): void {
-  const entries = get($filteredEntries(frame));
-  const name = get($activeEntryName(frame));
+  const entries = readState($filteredEntries(frame));
+  const name = readState($activeEntryName(frame));
   const exists = entries.some((e) => e.name === name);
   // ActiveEntry が filter されている場合
   if (!exists) {
-    set($activeEntryName(frame), entries[0].name);
+    writeState($activeEntryName(frame), entries[0].name);
   }
-  set($scope, 'DataFrame');
+  writeState($scope, 'DataFrame');
 }
 
 function focusDataFrame(): void {
-  const frame = get($activeFrame);
+  const frame = readState($activeFrame);
   setDataFrameInScope(frame);
 }
 
 function focusOtherDataFrame(): void {
-  const frame = get($inactiveFrame);
-  set($activeFrame, frame);
+  const frame = readState($inactiveFrame);
+  writeState($activeFrame, frame);
   setDataFrameInScope(frame);
 }
 
 function focusDataFrameA(): void {
-  set($activeFrame, 'a');
+  writeState($activeFrame, 'a');
   setDataFrameInScope('a');
 }
 
 function focusDataFrameB(): void {
-  set($activeFrame, 'b');
+  writeState($activeFrame, 'b');
   setDataFrameInScope('b');
 }
 
 function focusLogFrame(): void {
-  set($scope, 'LogFrame');
+  writeState($scope, 'LogFrame');
 }
 
 function focusEntryFilter(): void {
-  set($scope, 'EntryFilter');
+  writeState($scope, 'EntryFilter');
 }
 
 function focusListModal(): void {
-  const dataset = get($listModalDataset);
+  const dataset = readState($listModalDataset);
   // 全 Entry が filter されている場合
   if (dataset.length === 0) {
     return;
   }
-  const name = get($listModalActiveEntryName);
+  const name = readState($listModalActiveEntryName);
   const exists = dataset.some((d) => d.label === name);
   // ActiveEntry が filter されている場合
   if (!exists) {
-    set($listModalActiveEntryName, dataset[0].label);
+    writeState($listModalActiveEntryName, dataset[0].label);
   }
-  set($scope, 'ListModal');
+  writeState($scope, 'ListModal');
 }
 
 function focusListModalEntryFilter(): void {
-  set($scope, 'ListModalEntryFilter');
+  writeState($scope, 'ListModalEntryFilter');
 }
 
 function focusPromptModal(): void {
-  set($scope, 'PromptModal');
+  writeState($scope, 'PromptModal');
 }
 
 function focusConfirmModal(): void {
-  set($scope, 'ConfirmModal');
+  writeState($scope, 'ConfirmModal');
 }
 
 export {
