@@ -27,14 +27,7 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
   const info = useAtomValue($progressTaskInfo(pid));
   const timerRef = useRef(0);
 
-  const abort = useCallback(
-    (e: MouseEvent) => {
-      (e.target as HTMLButtonElement).disabled = true;
-      api.abortProgressTask(pid);
-    },
-    [api, pid],
-  );
-
+  // 自身を最新の位置に移動する。
   const moveLogToEnd = useCallback(() => {
     setLogData((prev) => {
       const index = prev.findIndex(
@@ -50,6 +43,33 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
     });
   }, [pid, setLogData]);
 
+  // 一定時間後に moveLogToEnd を実行する。
+  // その際、自身が unmount される。
+  // 開発時は useEffect が二度実行されるため、念のため cleanup しておく。
+  useEffect(() => {
+    if (info.status !== 'progress') {
+      return;
+    }
+    timerRef.current = window.setTimeout(
+      moveLogToEnd,
+      settings.progressTaskLogInterval,
+    );
+    return () => {
+      clearTimeout(timerRef.current);
+      $progressTaskInfo.remove(pid);
+    };
+  }, [settings.progressTaskLogInterval, info.status, moveLogToEnd, pid]);
+
+  // progress task をキャンセルする。
+  const abort = useCallback(
+    (e: MouseEvent) => {
+      (e.target as HTMLButtonElement).disabled = true;
+      api.abortProgressTask(pid);
+    },
+    [api, pid],
+  );
+
+  // 最終ログを出力し、既存のログは消す。
   const finishLog = useCallback(
     (status: ProgressTaskStatus) => {
       setLogData((prev) =>
@@ -58,11 +78,14 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
       const isFailure = status === 'error' || status === 'abort';
       const level = isFailure ? 'error' : 'info';
       const text = isFailure ? status : 'done';
+      // プレーンなログ。ProgressTaskLog ではない。
       setLogData({ level, log: `${label} ... ${text}` });
     },
     [label, pid, setLogData],
   );
 
+  // status が progress の時は中止ボタンを表示し、
+  // それ以外になったら finishLog を実行する。
   useEffect(() => {
     if (info.status === 'progress') {
       setStatusEl(
@@ -77,21 +100,7 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
       clearTimeout(timerRef.current);
       finishLog(info.status);
     }
-  }, [abort, finishLog, info.status]);
-
-  useEffect(() => {
-    if (info.status !== 'progress') {
-      return;
-    }
-    timerRef.current = window.setTimeout(
-      moveLogToEnd,
-      settings.progressTaskLogInterval,
-    );
-    return () => {
-      clearTimeout(timerRef.current);
-      $progressTaskInfo.remove(pid);
-    };
-  }, [settings.progressTaskLogInterval, info.status, moveLogToEnd, pid]);
+  }, [abort, finishLog, info.status, pid]);
 
   if (info === null) {
     return null;
