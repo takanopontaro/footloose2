@@ -31,8 +31,7 @@ export const $logData = atom(
       return;
     }
     const { settings } = get($config);
-    const maxLog = settings.maxLogCount;
     const log = { ...newVal, uid: crypto.randomUUID() };
-    set(logDataAtom, (prev) => [...prev, log].slice(-maxLog));
+    set(logDataAtom, (prev) => [...prev, log].slice(-settings.maxLogCount));
   },
 );
