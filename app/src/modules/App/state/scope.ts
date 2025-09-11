@@ -81,7 +81,8 @@ export const $scope = atom(
     Mousetrap.reset();
 
     const api = get($api);
-    const bindings = get($config).shortcuts[newVal] ?? {};
+    const { shortcuts } = get($config);
+    const bindings = shortcuts[newVal] ?? {};
 
     for (const [key, shortcutCommandList] of Object.entries(bindings)) {
       const getAvailableActions = makeGetAvailableActions(shortcutCommandList);
