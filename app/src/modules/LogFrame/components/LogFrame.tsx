@@ -24,14 +24,7 @@ const LogFrameComponent: FC = () => {
   const elRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
 
-  const handleFocus = useCallback(
-    (e: FocusEvent) => {
-      e.stopPropagation();
-      setScope('LogFrame');
-    },
-    [setScope],
-  );
-
+  // progress をセットする。
   const handleProgress = useAtomCallback<void, [WsProgressResponse]>(
     useCallback((_get, set, resp) => {
       const { pid, progress } = resp.data;
@@ -39,6 +32,7 @@ const LogFrameComponent: FC = () => {
     }, []),
   );
 
+  // progress task の終了処理をする。
   const handleProgressEnd = useAtomCallback<void, [WsProgressEndResponse]>(
     useCallback((_get, set, resp) => {
       const { pid } = resp.data;
@@ -50,6 +44,7 @@ const LogFrameComponent: FC = () => {
     }, []),
   );
 
+  // progress error の処理をする。
   const handleProgressError = useAtomCallback<void, [WsProgressErrorResponse]>(
     useCallback(
       (_get, set, resp) => {
@@ -61,6 +56,7 @@ const LogFrameComponent: FC = () => {
     ),
   );
 
+  // progress task の中止処理をする。
   const handleProgressAbort = useAtomCallback<void, [WsProgressAbortResponse]>(
     useCallback((_get, set, resp) => {
       const { pid } = resp.data;
@@ -94,6 +90,11 @@ const LogFrameComponent: FC = () => {
   }, [scope]);
 
   useEffect(() => {
+    setLogFrameRef(innerRef.current);
+  }, [setLogFrameRef]);
+
+  // 常に最新のログが見えるよう一番下までスクロールする。
+  useEffect(() => {
     const el = innerRef.current;
     if (el !== null) {
       el.scrollTop = el.scrollHeight;
@@ -101,9 +102,13 @@ const LogFrameComponent: FC = () => {
     // logData が更新される度に実行させたいため、依存に入れる。
   }, [logData]);
 
-  useEffect(() => {
-    setLogFrameRef(innerRef.current);
-  }, [setLogFrameRef]);
+  const handleFocus = useCallback(
+    (e: FocusEvent) => {
+      e.stopPropagation();
+      setScope('LogFrame');
+    },
+    [setScope],
+  );
 
   return (
     <div ref={elRef} className="logFrame" tabIndex={-1} onFocus={handleFocus}>
