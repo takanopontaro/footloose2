@@ -56,7 +56,6 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
     );
     return () => {
       clearTimeout(timerRef.current);
-      $progressTaskInfo.remove(pid);
     };
   }, [settings.progressTaskLogInterval, info.status, moveLogToEnd, pid]);
 
@@ -99,6 +98,7 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
     } else {
       clearTimeout(timerRef.current);
       finishLog(info.status);
+      $progressTaskInfo.remove(pid);
     }
   }, [abort, finishLog, info.status, pid]);
 
