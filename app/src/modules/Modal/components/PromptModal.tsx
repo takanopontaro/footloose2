@@ -13,8 +13,22 @@ const PromptModalComponent: FC = () => {
   const setTags = useSetAtom($tags);
   const setModal = useSetAtom($modal);
   const setModalRef = useSetAtom($modalRef);
-  const elRef = useRef<HTMLDialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (scope === 'PromptModal') {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [scope]);
+
+  useEffect(() => {
+    // アクセシビリティのため HTMLDialogElement.showModal() を使う。
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
+    dialogRef.current?.showModal();
+    setModalRef(dialogRef.current);
+  }, [setModalRef]);
 
   const handleClose = useCallback(() => {
     setModal(RESET);
@@ -37,26 +51,9 @@ const PromptModalComponent: FC = () => {
     [setTags],
   );
 
-  useEffect(() => {
-    if (scope === 'PromptModal') {
-      inputRef.current?.focus();
-      inputRef.current?.select();
-    }
-  }, [scope]);
-
-  useEffect(() => {
-    setModalRef(elRef.current);
-  }, [setModalRef]);
-
-  useEffect(() => {
-    // アクセシビリティのため HTMLDialogElement.showModal() を使う。
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
-    elRef.current?.showModal();
-  }, []);
-
   return (
     <dialog
-      ref={elRef}
+      ref={dialogRef}
       className="dialog"
       data-type="prompt"
       tabIndex={-1}
