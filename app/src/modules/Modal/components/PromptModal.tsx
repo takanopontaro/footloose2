@@ -33,6 +33,9 @@ const PromptModalComponent: FC = () => {
     };
   }, [setModalRef, setTags]);
 
+  // モーダルは API を使って閉じる想定だが、
+  // ESC に何もバインドしていない場合、デフォルト挙動としてモーダルが閉じる。
+  // その時にこのハンドラが呼ばれる。
   const handleClose = useCallback(() => {
     setModal(RESET);
   }, [setModal]);
