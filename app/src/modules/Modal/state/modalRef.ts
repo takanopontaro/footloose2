@@ -1,3 +1,3 @@
-import { atom } from 'jotai';
+import { atomWithReset } from 'jotai/utils';
 
-export const $modalRef = atom<HTMLElement | null>(null);
+export const $modalRef = atomWithReset<HTMLElement | null>(null);

@@ -25,6 +25,7 @@ const ConfirmModalComponent: FC<Props> = ({ message }) => {
     setModalRef(dialogRef.current);
     return () => {
       setTags((prev) => prev.filter((t) => !t.startsWith('ConfirmModal:')));
+      setModalRef(RESET);
     };
   }, [setModalRef, setTags]);
 
