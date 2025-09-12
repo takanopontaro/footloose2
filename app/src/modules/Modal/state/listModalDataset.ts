@@ -33,7 +33,6 @@ export const $listModalDataset = atom(
       return;
     }
     // ここで newVal と curVal の同一性チェックを入れようと考えたが、
-    // 同じデータで setter が呼ばれる可能性が低いのと、
     // 比較のコストが馬鹿にならないため、やらないことにした。
     set(listModalDatasetAtom, newVal);
   },
