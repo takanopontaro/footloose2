@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { RESET } from 'jotai/utils';
 import { memo, useCallback, useEffect, useRef } from 'react';
 import { $modal, $scope, $tags } from '@modules/App/state';
@@ -12,18 +12,11 @@ type Props = {
 };
 
 const ConfirmModalComponent: FC<Props> = ({ message }) => {
-  const [scope, setScope] = useAtom($scope);
+  const setScope = useSetAtom($scope);
   const setTags = useSetAtom($tags);
   const setModal = useSetAtom($modal);
   const setModalRef = useSetAtom($modalRef);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const btnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (scope === 'ConfirmModal') {
-      btnRef.current?.focus();
-    }
-  }, [scope]);
 
   useEffect(() => {
     // アクセシビリティのため HTMLDialogElement.showModal() を使う。
@@ -72,7 +65,6 @@ const ConfirmModalComponent: FC<Props> = ({ message }) => {
         <div className="dialog_confirmMessage">{message}</div>
         <div className="dialog_confirmFooter">
           <button
-            ref={btnRef}
             className="dialog_confirmBtn dialog_confirmBtn-cancel"
             tabIndex={-1}
             type="button"
