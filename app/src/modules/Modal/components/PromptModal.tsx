@@ -28,7 +28,10 @@ const PromptModalComponent: FC = () => {
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
     dialogRef.current?.showModal();
     setModalRef(dialogRef.current);
-  }, [setModalRef]);
+    return () => {
+      setTags((prev) => prev.filter((t) => !t.startsWith('PromptModal:')));
+    };
+  }, [setModalRef, setTags]);
 
   const handleClose = useCallback(() => {
     setModal(RESET);
