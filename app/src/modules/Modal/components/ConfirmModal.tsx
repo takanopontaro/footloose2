@@ -30,6 +30,9 @@ const ConfirmModalComponent: FC<Props> = ({ message }) => {
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
     dialogRef.current?.showModal();
     setModalRef(dialogRef.current);
+    return () => {
+      setTags((prev) => prev.filter((t) => !t.startsWith('ConfirmModal:')));
+    };
   }, [setModalRef, setTags]);
 
   const handleClose = useCallback(() => {
