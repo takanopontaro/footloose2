@@ -27,20 +27,32 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleInput = useCallback(
-    (e: FormEvent<HTMLInputElement>) => setFilter(e.currentTarget.value),
-    [setFilter],
-  );
+  useEffect(() => {
+    switch (scope) {
+      case 'ListModal':
+        dialogRef.current?.focus();
+        break;
+      case 'ListModalEntryFilter':
+        inputRef.current?.focus();
+        break;
+    }
+  }, [scope]);
 
-  const handleInputFocus = useCallback(
-    (e: FocusEvent) => {
-      e.stopPropagation();
-      setScope('ListModalEntryFilter');
-    },
-    [setScope],
-  );
+  useEffect(() => {
+    setTags((prev) => [...prev, tag]);
+    return () => {
+      setTags((prev) => prev.filter((t) => t !== tag));
+    };
+  }, [setTags, tag]);
 
-  // モーダルは API を使って閉じる前提だが、
+  useEffect(() => {
+    // アクセシビリティのため HTMLDialogElement.showModal() を使う。
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
+    dialogRef.current?.showModal();
+    setModalRef(dialogRef.current);
+  }, [setModalRef]);
+
+  // モーダルは API を使って閉じる想定だが、
   // ESC に何もバインドしていない場合、デフォルト挙動としてモーダルが閉じる。
   // その時にこのハンドラが呼ばれる。
   const handleClose = useCallback(() => {
@@ -56,26 +68,18 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
     [setScope],
   );
 
-  useEffect(() => {
-    if (scope === 'ListModal') {
-      dialogRef.current?.focus();
-    }
-    if (scope === 'ListModalEntryFilter') {
-      inputRef.current?.focus();
-    }
-  }, [scope]);
+  const handleInputFocus = useCallback(
+    (e: FocusEvent) => {
+      e.stopPropagation();
+      setScope('ListModalEntryFilter');
+    },
+    [setScope],
+  );
 
-  useEffect(() => {
-    setTags((prev) => [...prev, tag]);
-    return () => {
-      setTags((prev) => prev.filter((t) => t !== tag));
-    };
-  }, [setTags, tag]);
-
-  useEffect(() => {
-    setModalRef(dialogRef.current);
-    dialogRef.current?.showModal();
-  }, [setModalRef]);
+  const handleInput = useCallback(
+    (e: FormEvent<HTMLInputElement>) => setFilter(e.currentTarget.value),
+    [setFilter],
+  );
 
   return (
     <dialog
