@@ -31,7 +31,6 @@ function confirmPrimaryActionListModal(): void {
   const { primary } = readState($listModalAction);
   primary(item);
   writeState($modal, RESET);
-  writeState($listModalFilterQuery, RESET);
   focusDataFrame();
 }
 
@@ -42,7 +41,6 @@ function confirmSecondaryActionListModal(): void {
   const { secondary } = readState($listModalAction);
   secondary?.(item);
   writeState($modal, RESET);
-  writeState($listModalFilterQuery, RESET);
   focusDataFrame();
 }
 
@@ -53,7 +51,6 @@ function cancelActionListModal(): void {
   const { cancel } = readState($listModalAction);
   cancel?.(item);
   writeState($modal, RESET);
-  writeState($listModalFilterQuery, RESET);
   focusDataFrame();
 }
 

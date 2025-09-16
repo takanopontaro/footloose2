@@ -48,7 +48,7 @@ function showAllBookmarks(frame = readState($activeFrame)): void {
       writeState($listModalActiveEntryName, dataset[0].value);
       writeState($listModalDataset, dataset);
       writeState($listModalAction, action);
-      writeState($modal, <ListModal tag="ListModal:bookmark" />);
+      writeState($modal, <ListModal tag="bookmark" />);
     },
     frame,
   );
@@ -135,7 +135,7 @@ function showFullHistory(frame = readState($activeFrame)): void {
   writeState($listModalActiveEntryName, dataset[0].value);
   writeState($listModalDataset, dataset);
   writeState($listModalAction, action);
-  writeState($modal, <ListModal tag="ListModal:history" />);
+  writeState($modal, <ListModal tag="history" />);
 }
 
 function historyGo(delta: number, frame = readState($activeFrame)): void {
