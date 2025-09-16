@@ -1,56 +1,19 @@
-import { useSetAtom } from 'jotai';
-import { RESET } from 'jotai/utils';
-import { memo, useCallback, useEffect, useRef } from 'react';
-import { $modal, $scope, $tags } from '@modules/App/state';
-import { $modalRef } from '@modules/Modal/state';
+import { memo, useRef } from 'react';
+import { useModal } from '@modules/Modal/hooks';
 
-import type { FC, FocusEvent } from 'react';
-import type { Tag } from '@modules/App/types';
+import type { FC } from 'react';
 
 type Props = {
   message: string;
 };
 
 const ConfirmModalComponent: FC<Props> = ({ message }) => {
-  const setScope = useSetAtom($scope);
-  const setTags = useSetAtom($tags);
-  const setModal = useSetAtom($modal);
-  const setModalRef = useSetAtom($modalRef);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    // アクセシビリティのため HTMLDialogElement.showModal() を使う。
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
-    dialogRef.current?.showModal();
-    setModalRef(dialogRef.current);
-    return () => {
-      setTags((prev) => prev.filter((t) => !t.startsWith('ConfirmModal:')));
-      setModalRef(RESET);
-    };
-  }, [setModalRef, setTags]);
-
-  // モーダルは API を使って閉じる想定だが、
-  // ESC に何もバインドしていない場合、デフォルト挙動としてモーダルが閉じる。
-  // その時にこのハンドラが呼ばれる。
-  const handleClose = useCallback(() => {
-    setModal(RESET);
-  }, [setModal]);
-
-  const handleFocus = useCallback(
-    (e: FocusEvent) => {
-      e.stopPropagation();
-      setScope('ConfirmModal');
-    },
-    [setScope],
-  );
-
-  const addTag = useCallback(
-    (tag: Tag) =>
-      setTags((prev) => {
-        prev = prev.filter((t) => !t.startsWith('ConfirmModal:'));
-        return [...prev, tag];
-      }),
-    [setTags],
+  const { addTag, handleClose, handleFocus } = useModal(
+    dialogRef,
+    'ConfirmModal',
+    'ConfirmModal:cancel',
   );
 
   return (

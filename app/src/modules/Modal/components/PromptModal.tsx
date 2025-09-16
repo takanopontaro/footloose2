@@ -1,61 +1,25 @@
-import { useAtom, useSetAtom } from 'jotai';
-import { RESET } from 'jotai/utils';
-import { memo, useCallback, useEffect, useRef } from 'react';
-import { $modal, $scope, $tags } from '@modules/App/state';
-import { $modalRef, $promptModalData } from '@modules/Modal/state';
+import { useAtom } from 'jotai';
+import { memo, useEffect, useRef } from 'react';
+import { useModal } from '@modules/Modal/hooks';
+import { $promptModalData } from '@modules/Modal/state';
 
-import type { FC, FocusEvent } from 'react';
-import type { Tag } from '@modules/App/types';
+import type { FC } from 'react';
 
 const PromptModalComponent: FC = () => {
-  const [scope, setScope] = useAtom($scope);
   const [data, setData] = useAtom($promptModalData);
-  const setTags = useSetAtom($tags);
-  const setModal = useSetAtom($modal);
-  const setModalRef = useSetAtom($modalRef);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (scope === 'PromptModal') {
-      inputRef.current?.focus();
-      inputRef.current?.select();
-    }
-  }, [scope]);
-
-  useEffect(() => {
-    // アクセシビリティのため HTMLDialogElement.showModal() を使う。
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
-    dialogRef.current?.showModal();
-    setModalRef(dialogRef.current);
-    return () => {
-      setTags((prev) => prev.filter((t) => !t.startsWith('PromptModal:')));
-    };
-  }, [setModalRef, setTags]);
-
-  // モーダルは API を使って閉じる想定だが、
-  // ESC に何もバインドしていない場合、デフォルト挙動としてモーダルが閉じる。
-  // その時にこのハンドラが呼ばれる。
-  const handleClose = useCallback(() => {
-    setModal(RESET);
-  }, [setModal]);
-
-  const handleFocus = useCallback(
-    (e: FocusEvent) => {
-      e.stopPropagation();
-      setScope('PromptModal');
-    },
-    [setScope],
+  const { addTag, handleClose, handleFocus } = useModal(
+    dialogRef,
+    'PromptModal',
+    'PromptModal:input',
   );
 
-  const addTag = useCallback(
-    (tag: Tag) =>
-      setTags((prev) => {
-        prev = prev.filter((t) => !t.startsWith('PromptModal:'));
-        return [...prev, tag];
-      }),
-    [setTags],
-  );
+  useEffect(() => {
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  }, []);
 
   return (
     <dialog
