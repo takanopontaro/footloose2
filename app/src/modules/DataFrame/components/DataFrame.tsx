@@ -34,14 +34,14 @@ import type { FC, FocusEvent } from 'react';
 import type { Frame } from '@modules/App/types';
 
 type Props = {
-  dirPath: string;
   frame: Frame;
+  initialDir: string;
   initialFocus?: boolean;
 };
 
 const DataFrameComponent: FC<Props> = ({
-  dirPath,
   frame,
+  initialDir,
   initialFocus = false,
 }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -122,9 +122,9 @@ const DataFrameComponent: FC<Props> = ({
   }, [curIndex, gridColumnCount, maxRowCount, startRow]);
 
   useEffect(() => {
-    setDirName(dirPath);
-    api.changeDir(dirPath, frame);
-  }, [api, dirPath, frame, setDirName]);
+    setDirName(initialDir);
+    api.changeDir(initialDir, frame);
+  }, [api, frame, initialDir, setDirName]);
 
   useEffect(() => {
     if (activeFrame === frame && scope === 'DataFrame') {

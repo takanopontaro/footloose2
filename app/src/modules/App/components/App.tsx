@@ -24,8 +24,8 @@ const AppComponent: FC = () => {
 
   return (
     <div className="app">
-      <DataFrame dirPath={dirPathA} frame="a" initialFocus={true} />
-      <DataFrame dirPath={dirPathB} frame="b" />
+      <DataFrame frame="a" initialDir={dirPathA} initialFocus={true} />
+      <DataFrame frame="b" initialDir={dirPathB} />
       <LogFrame />
       {Modal && createPortal(Modal, document.body)}
     </div>
