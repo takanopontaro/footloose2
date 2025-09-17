@@ -8,17 +8,20 @@ import {
   useRef,
   useState,
 } from 'react';
-import { $activeFrame, $api, $modes, $scope } from '@modules/App/state';
+import { $activeFrame, $modes, $scope } from '@modules/App/state';
 import {
   DirInfo,
   EntryFilter,
   Preview,
   Row,
 } from '@modules/DataFrame/components';
-import { useDirUpdate, useWatchError } from '@modules/DataFrame/hooks';
+import {
+  useCurrentDir,
+  useDirUpdate,
+  useWatchError,
+} from '@modules/DataFrame/hooks';
 import {
   $activeEntryIndex,
-  $currentDir,
   $filteredEntries,
   $gridColumnCount,
   $isGalleryMode,
@@ -49,10 +52,8 @@ const DataFrameComponent: FC<Props> = ({
   const [isVisibleLastRow, setIsVisibleLastRow] = useState(false);
   const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const [scope, setScope] = useAtom($scope);
-  const [dirName, setDirName] = useAtom($currentDir(frame));
   const [maxRowCount, setMaxRowCount] = useAtom($maxRenderedRowCount(frame));
   const [startRow, setStartRow] = useAtom($renderedEntryStartIndex(frame));
-  const api = useAtomValue($api);
   const entries = useAtomValue($filteredEntries(frame));
   const curIndex = useAtomValue($activeEntryIndex(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
@@ -65,6 +66,7 @@ const DataFrameComponent: FC<Props> = ({
   const frameRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const curIndexRef = useRef(curIndex);
+  const curDir = useCurrentDir(frame, initialDir);
 
   useDirUpdate(frame);
   useWatchError(frame);
@@ -122,11 +124,6 @@ const DataFrameComponent: FC<Props> = ({
   }, [curIndex, gridColumnCount, maxRowCount, startRow]);
 
   useEffect(() => {
-    setDirName(initialDir);
-    api.changeDir(initialDir, frame);
-  }, [api, frame, initialDir, setDirName]);
-
-  useEffect(() => {
     if (activeFrame === frame && scope === 'DataFrame') {
       frameRef.current?.focus();
     }
@@ -150,7 +147,7 @@ const DataFrameComponent: FC<Props> = ({
       tabIndex={-1}
       onFocus={handleFocus}
     >
-      <div className="dirName">{dirName}</div>
+      <div className="dirName">{curDir}</div>
       <div
         ref={gridRef}
         className={clsx('entryGrid', {
@@ -163,7 +160,7 @@ const DataFrameComponent: FC<Props> = ({
           <tbody className="entryGrid_tbody">
             {entries.slice(startRow, endRow + 1).map((entry, i) => (
               <Row
-                key={`${dirName}/${entry.name}`}
+                key={`${curDir}/${entry.name}`}
                 current={curIndex === startRow + i}
                 entry={entry}
                 frame={frame}
