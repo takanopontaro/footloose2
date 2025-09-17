@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useAtom, useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import {
@@ -210,7 +211,9 @@ const DataFrameComponent: FC<Props> = ({
   return (
     <div
       ref={frameRef}
-      className={`dataFrame ${activeFrame === frame ? 'dataFrame-active' : ''}`}
+      className={clsx('dataFrame', {
+        'dataFrame-active': activeFrame === frame,
+      })}
       data-frame={frame}
       data-mode={modes.join(' ')}
       data-sort={`${sort.field}:${sort.order}`}
@@ -220,7 +223,11 @@ const DataFrameComponent: FC<Props> = ({
       <div className="dirName">{dirName}</div>
       <div
         ref={gridRef}
-        className={`entryGrid ${isOverflowing ? 'entryGrid-overflowing' : ''} ${isVisibleFirstRow ? 'entryGrid-visibleFirst' : ''} ${isVisibleLastRow ? 'entryGrid-visibleLast' : ''}`}
+        className={clsx('entryGrid', {
+          'entryGrid-overflowing': isOverflowing,
+          'entryGrid-visibleFirst': isVisibleFirstRow,
+          'entryGrid-visibleLast': isVisibleLastRow,
+        })}
       >
         <table className="entryGrid_table">
           <tbody className="entryGrid_tbody">
