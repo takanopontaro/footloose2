@@ -7,7 +7,7 @@ import { $modalRef } from '@modules/Modal/state';
 import type { FocusEvent, RefObject } from 'react';
 import type { Scope, Tag } from '@modules/App/types';
 
-type ReturnValues = {
+type ReturnValue = {
   addTag: (tag: Tag) => void;
   clearAllRelatedTags: () => void;
   handleClose: () => void;
@@ -18,7 +18,7 @@ export const useModal = (
   dialogRef: RefObject<HTMLDialogElement | null>,
   scope: Scope,
   initTag: Tag,
-): ReturnValues => {
+): ReturnValue => {
   const setModal = useSetAtom($modal);
   const setModalRef = useSetAtom($modalRef);
   const setScope = useSetAtom($scope);
