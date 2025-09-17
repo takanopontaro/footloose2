@@ -36,13 +36,13 @@ import type { Frame } from '@modules/App/types';
 type Props = {
   dirPath: string;
   frame: Frame;
-  setFocus?: boolean;
+  initialFocus?: boolean;
 };
 
 const DataFrameComponent: FC<Props> = ({
   dirPath,
   frame,
-  setFocus = false,
+  initialFocus = false,
 }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isVisibleFirstRow, setIsVisibleFirstRow] = useState(false);
@@ -133,10 +133,10 @@ const DataFrameComponent: FC<Props> = ({
   }, [activeFrame, frame, scope]);
 
   useEffect(() => {
-    if (setFocus) {
+    if (initialFocus) {
       frameRef.current?.focus();
     }
-  }, [setFocus]);
+  }, [initialFocus]);
 
   return (
     <div
