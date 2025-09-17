@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { useAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
 import {
   memo,
   useCallback,
@@ -9,14 +8,14 @@ import {
   useRef,
   useState,
 } from 'react';
-import { $activeFrame, $api, $modes, $scope, $ws } from '@modules/App/state';
+import { $activeFrame, $api, $modes, $scope } from '@modules/App/state';
 import {
   DirInfo,
   EntryFilter,
   Preview,
   Row,
 } from '@modules/DataFrame/components';
-import { useDirUpdate } from '@modules/DataFrame/hooks';
+import { useDirUpdate, useWatchError } from '@modules/DataFrame/hooks';
 import {
   $activeEntryIndex,
   $currentDir,
@@ -32,7 +31,7 @@ import {
 } from '@modules/DataFrame/state';
 
 import type { FC, FocusEvent } from 'react';
-import type { Frame, WsWatchErrorResponse } from '@modules/App/types';
+import type { Frame } from '@modules/App/types';
 
 type Props = {
   dirPath: string;
@@ -53,7 +52,6 @@ const DataFrameComponent: FC<Props> = ({
   const [dirName, setDirName] = useAtom($currentDir(frame));
   const [maxRowCount, setMaxRowCount] = useAtom($maxRenderedRowCount(frame));
   const [startRow, setStartRow] = useAtom($renderedEntryStartIndex(frame));
-  const ws = useAtomValue($ws);
   const api = useAtomValue($api);
   const entries = useAtomValue($filteredEntries(frame));
   const curIndex = useAtomValue($activeEntryIndex(frame));
@@ -69,6 +67,7 @@ const DataFrameComponent: FC<Props> = ({
   const curIndexRef = useRef(curIndex);
 
   useDirUpdate(frame);
+  useWatchError(frame);
 
   curIndexRef.current = curIndex;
 
@@ -79,20 +78,6 @@ const DataFrameComponent: FC<Props> = ({
       setScope('DataFrame');
     },
     [frame, setActiveFrame, setScope],
-  );
-
-  const handleWatchError = useAtomCallback<void, [WsWatchErrorResponse]>(
-    useCallback(
-      (get, _set, resp) => {
-        const dirName = get($currentDir(frame));
-        const { msg, path } = resp.data;
-        if (path === dirName) {
-          api.writeLog(msg, 'error');
-          api.changeDir('~', frame);
-        }
-      },
-      [api, frame],
-    ),
   );
 
   useLayoutEffect(() => {
@@ -140,13 +125,6 @@ const DataFrameComponent: FC<Props> = ({
     setDirName(dirPath);
     api.changeDir(dirPath, frame);
   }, [api, dirPath, frame, setDirName]);
-
-  useEffect(() => {
-    ws.registerListener('WATCH_ERROR', handleWatchError);
-    return () => {
-      ws.removeListener('WATCH_ERROR', handleWatchError);
-    };
-  }, [handleWatchError, ws]);
 
   useEffect(() => {
     if (activeFrame === frame && scope === 'DataFrame') {
