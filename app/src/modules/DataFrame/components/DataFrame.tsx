@@ -60,7 +60,7 @@ const DataFrameComponent: FC<Props> = ({
   const gridRef = useRef<HTMLDivElement>(null);
   const curIndexRef = useRef(curIndex);
   const curDir = useCurrentDir(frame, initialDir);
-  const { frameRef, isFocused } = useFocusFrame(frame, initialFocus);
+  const { frameRef, isFrameFocused } = useFocusFrame(frame, initialFocus);
 
   useDirUpdate(frame);
   useWatchError(frame);
@@ -120,7 +120,7 @@ const DataFrameComponent: FC<Props> = ({
   return (
     <div
       ref={frameRef}
-      className={clsx('dataFrame', { 'dataFrame-active': isFocused })}
+      className={clsx('dataFrame', { 'dataFrame-active': isFrameFocused })}
       data-frame={frame}
       data-mode={modes.join(' ')}
       data-sort={`${sort.field}:${sort.order}`}

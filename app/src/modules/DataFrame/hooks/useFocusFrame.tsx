@@ -7,7 +7,7 @@ import type { Frame } from '@modules/App/types';
 
 type ReturnValue = {
   frameRef: RefObject<HTMLDivElement | null>;
-  isFocused: boolean;
+  isFrameFocused: boolean;
 };
 
 export const useFocusFrame = (
@@ -30,5 +30,5 @@ export const useFocusFrame = (
     }
   }, [activeFrame, frame, scope]);
 
-  return { frameRef, isFocused: activeFrame === frame };
+  return { frameRef, isFrameFocused: activeFrame === frame };
 };
