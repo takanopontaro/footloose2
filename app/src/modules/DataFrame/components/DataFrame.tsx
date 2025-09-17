@@ -16,15 +16,14 @@ import {
   Preview,
   Row,
 } from '@modules/DataFrame/components';
+import { useDirUpdate } from '@modules/DataFrame/hooks';
 import {
   $activeEntryIndex,
-  $activeEntryName,
   $currentDir,
   $filteredEntries,
   $gridColumnCount,
   $isGalleryMode,
   $maxRenderedRowCount,
-  $rawEntries,
   $renderedEntryEndIndex,
   $renderedEntryStartIndex,
   $renderedRowHeight,
@@ -33,11 +32,7 @@ import {
 } from '@modules/DataFrame/state';
 
 import type { FC, FocusEvent } from 'react';
-import type {
-  Frame,
-  WsDirUpdateResponse,
-  WsWatchErrorResponse,
-} from '@modules/App/types';
+import type { Frame, WsWatchErrorResponse } from '@modules/App/types';
 
 type Props = {
   dirPath: string;
@@ -73,6 +68,8 @@ const DataFrameComponent: FC<Props> = ({
   const gridRef = useRef<HTMLDivElement>(null);
   const curIndexRef = useRef(curIndex);
 
+  useDirUpdate(frame);
+
   curIndexRef.current = curIndex;
 
   const handleFocus = useCallback(
@@ -82,47 +79,6 @@ const DataFrameComponent: FC<Props> = ({
       setScope('DataFrame');
     },
     [frame, setActiveFrame, setScope],
-  );
-
-  const handleDirUpdate = useAtomCallback<void, [WsDirUpdateResponse]>(
-    useCallback(
-      (get, set, resp) => {
-        const dirName = get($currentDir(frame));
-        const { entries: newRawEntries, path } = resp.data;
-        if (path !== dirName) {
-          return;
-        }
-        const oldRawEntries = get($rawEntries(frame));
-        set($filteredEntries(frame), newRawEntries);
-        const newEntries = get($filteredEntries(frame));
-        const curName = get($activeEntryName(frame));
-        const deleted =
-          oldRawEntries.some((e) => e.name === curName) &&
-          !newRawEntries.some((e) => e.name === curName);
-        if (!deleted) {
-          return;
-        }
-        let done = false;
-        let index = oldRawEntries.findIndex((e) => e.name === curName);
-        while (index > 0) {
-          const prevEntry = oldRawEntries[--index];
-          const ent = newRawEntries.find((e) => e.name === prevEntry.name);
-          if (!ent) {
-            continue;
-          }
-          const found = newEntries.some((e) => e.name === prevEntry.name);
-          if (found) {
-            done = true;
-            set($activeEntryName(frame), ent.name);
-            break;
-          }
-        }
-        if (!done) {
-          set($activeEntryName(frame), '..');
-        }
-      },
-      [frame],
-    ),
   );
 
   const handleWatchError = useAtomCallback<void, [WsWatchErrorResponse]>(
@@ -181,13 +137,9 @@ const DataFrameComponent: FC<Props> = ({
   }, [curIndex, gridColumnCount, maxRowCount, startRow]);
 
   useEffect(() => {
-    ws.registerListener('DIR_UPDATE', handleDirUpdate);
     setDirName(dirPath);
     api.changeDir(dirPath, frame);
-    return () => {
-      ws.removeListener('DIR_UPDATE', handleDirUpdate);
-    };
-  }, [api, dirPath, frame, handleDirUpdate, setDirName, ws]);
+  }, [api, dirPath, frame, setDirName]);
 
   useEffect(() => {
     ws.registerListener('WATCH_ERROR', handleWatchError);
