@@ -1,13 +1,6 @@
 import clsx from 'clsx';
-import { useAtom, useAtomValue } from 'jotai';
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { $activeFrame, $modes, $scope } from '@modules/App/state';
 import {
   DirInfo,
@@ -18,6 +11,7 @@ import {
 import {
   useCurrentDir,
   useDirUpdate,
+  useFocusFrame,
   useWatchError,
 } from '@modules/DataFrame/hooks';
 import {
@@ -50,10 +44,10 @@ const DataFrameComponent: FC<Props> = ({
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isVisibleFirstRow, setIsVisibleFirstRow] = useState(false);
   const [isVisibleLastRow, setIsVisibleLastRow] = useState(false);
-  const [activeFrame, setActiveFrame] = useAtom($activeFrame);
-  const [scope, setScope] = useAtom($scope);
   const [maxRowCount, setMaxRowCount] = useAtom($maxRenderedRowCount(frame));
   const [startRow, setStartRow] = useAtom($renderedEntryStartIndex(frame));
+  const setActiveFrame = useSetAtom($activeFrame);
+  const setScope = useSetAtom($scope);
   const entries = useAtomValue($filteredEntries(frame));
   const curIndex = useAtomValue($activeEntryIndex(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
@@ -63,10 +57,10 @@ const DataFrameComponent: FC<Props> = ({
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
   const isGalleryMode = useAtomValue($isGalleryMode(frame));
-  const frameRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const curIndexRef = useRef(curIndex);
   const curDir = useCurrentDir(frame, initialDir);
+  const { frameRef, isFocused } = useFocusFrame(frame, initialFocus);
 
   useDirUpdate(frame);
   useWatchError(frame);
@@ -123,24 +117,10 @@ const DataFrameComponent: FC<Props> = ({
     }
   }, [curIndex, gridColumnCount, maxRowCount, startRow]);
 
-  useEffect(() => {
-    if (activeFrame === frame && scope === 'DataFrame') {
-      frameRef.current?.focus();
-    }
-  }, [activeFrame, frame, scope]);
-
-  useEffect(() => {
-    if (initialFocus) {
-      frameRef.current?.focus();
-    }
-  }, [initialFocus]);
-
   return (
     <div
       ref={frameRef}
-      className={clsx('dataFrame', {
-        'dataFrame-active': activeFrame === frame,
-      })}
+      className={clsx('dataFrame', { 'dataFrame-active': isFocused })}
       data-frame={frame}
       data-mode={modes.join(' ')}
       data-sort={`${sort.field}:${sort.order}`}
