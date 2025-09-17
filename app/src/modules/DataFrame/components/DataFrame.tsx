@@ -147,7 +147,7 @@ const DataFrameComponent: FC<Props> = ({
       tabIndex={-1}
       onFocus={handleFocus}
     >
-      <div className="dirName">{curDir}</div>
+      <div className="curDir">{curDir}</div>
       <div
         ref={gridRef}
         className={clsx('entryGrid', {

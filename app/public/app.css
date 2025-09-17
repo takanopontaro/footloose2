@@ -456,7 +456,7 @@
   }
 }
 
-.dirName {
+.curDir {
   overflow: hidden;
   height: 1em;
   box-sizing: content-box;
