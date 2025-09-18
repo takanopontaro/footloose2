@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { memo, useCallback, useLayoutEffect, useRef } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { memo, useCallback, useRef } from 'react';
 import { $activeFrame, $modes, $scope } from '@modules/App/state';
 import {
   DirInfo,
@@ -13,17 +13,14 @@ import {
   useDirUpdate,
   useFocusFrame,
   useGridState,
+  useGridViewport,
   useWatchError,
 } from '@modules/DataFrame/hooks';
 import {
   $activeEntryIndex,
   $filteredEntries,
-  $gridColumnCount,
-  $isGalleryMode,
-  $maxVisibleRowCount,
   $lastVisibleEntryIndex,
   $firstVisibleEntryIndex,
-  $renderedRowHeight,
   $selectedEntryNames,
   $sort,
 } from '@modules/DataFrame/state';
@@ -42,29 +39,23 @@ const DataFrameComponent: FC<Props> = ({
   initialDir,
   initialFocus = false,
 }) => {
-  const [maxRowCount, setMaxRowCount] = useAtom($maxVisibleRowCount(frame));
-  const [startRow, setStartRow] = useAtom($firstVisibleEntryIndex(frame));
   const setActiveFrame = useSetAtom($activeFrame);
   const setScope = useSetAtom($scope);
   const entries = useAtomValue($filteredEntries(frame));
   const curIndex = useAtomValue($activeEntryIndex(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
-  const endRow = useAtomValue($lastVisibleEntryIndex(frame));
-  const gridColumnCount = useAtomValue($gridColumnCount(frame));
-  const rowHeight = useAtomValue($renderedRowHeight);
+  const firstEntryIndex = useAtomValue($firstVisibleEntryIndex(frame));
+  const lastEntryIndex = useAtomValue($lastVisibleEntryIndex(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
-  const isGalleryMode = useAtomValue($isGalleryMode(frame));
   const gridRef = useRef<HTMLDivElement>(null);
-  const curIndexRef = useRef(curIndex);
   const curDir = useCurrentDir(frame, initialDir);
   const { frameRef, isFrameFocused } = useFocusFrame(frame, initialFocus);
   const gridState = useGridState(frame, gridRef);
 
+  useGridViewport(frame, gridRef);
   useDirUpdate(frame);
   useWatchError(frame);
-
-  curIndexRef.current = curIndex;
 
   const handleFocus = useCallback(
     (e: FocusEvent) => {
@@ -74,29 +65,6 @@ const DataFrameComponent: FC<Props> = ({
     },
     [frame, setActiveFrame, setScope],
   );
-
-  useLayoutEffect(() => {
-    const containerW = gridRef.current!.offsetWidth;
-    const containerH = gridRef.current!.offsetHeight;
-    const rowH = isGalleryMode ? containerW / gridColumnCount : rowHeight;
-    const maxRowCount = Math.ceil(containerH / rowH);
-    setMaxRowCount(maxRowCount);
-  }, [gridColumnCount, isGalleryMode, rowHeight, setMaxRowCount]);
-
-  useLayoutEffect(() => {
-    const index = curIndexRef.current;
-    if (index === -1) {
-      setStartRow(0);
-      return;
-    }
-    // スクロール無しで全 entry を表示できる場合
-    if (index < maxRowCount * gridColumnCount) {
-      setStartRow(0);
-      return;
-    }
-    const newIndex = index - (index % gridColumnCount);
-    setStartRow(newIndex);
-  }, [gridColumnCount, maxRowCount, setStartRow]);
 
   return (
     <div
@@ -119,15 +87,17 @@ const DataFrameComponent: FC<Props> = ({
       >
         <table className="entryGrid_table">
           <tbody className="entryGrid_tbody">
-            {entries.slice(startRow, endRow + 1).map((entry, i) => (
-              <Row
-                key={`${curDir}/${entry.name}`}
-                current={curIndex === startRow + i}
-                entry={entry}
-                frame={frame}
-                selected={selectedNames.includes(entry.name)}
-              />
-            ))}
+            {entries
+              .slice(firstEntryIndex, lastEntryIndex + 1)
+              .map((entry, i) => (
+                <Row
+                  key={`${curDir}/${entry.name}`}
+                  current={curIndex === firstEntryIndex + i}
+                  entry={entry}
+                  frame={frame}
+                  selected={selectedNames.includes(entry.name)}
+                />
+              ))}
           </tbody>
         </table>
       </div>
