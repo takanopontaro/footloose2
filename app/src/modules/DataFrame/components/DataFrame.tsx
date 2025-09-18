@@ -48,9 +48,10 @@ const DataFrameComponent: FC<Props> = ({
   const lastEntryIndex = useAtomValue($lastVisibleEntryIndex(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
+  const frameRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const curDir = useCurrentDir(frame, initialDir);
-  const { frameRef, isFrameFocused } = useFocusFrame(frame, initialFocus);
+  const { isFrameFocused } = useFocusFrame(frame, frameRef, initialFocus);
   const gridState = useGridState(frame, gridRef);
 
   useGridViewport(frame, gridRef);
