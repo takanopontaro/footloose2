@@ -42,7 +42,7 @@ const DataFrameComponent: FC<Props> = ({
   const setActiveFrame = useSetAtom($activeFrame);
   const setScope = useSetAtom($scope);
   const entries = useAtomValue($filteredEntries(frame));
-  const curIndex = useAtomValue($activeEntryIndex(frame));
+  const activeEntryIndex = useAtomValue($activeEntryIndex(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
   const firstEntryIndex = useAtomValue($firstVisibleEntryIndex(frame));
   const lastEntryIndex = useAtomValue($lastVisibleEntryIndex(frame));
@@ -92,7 +92,7 @@ const DataFrameComponent: FC<Props> = ({
               .map((entry, i) => (
                 <Row
                   key={`${curDir}/${entry.name}`}
-                  current={curIndex === firstEntryIndex + i}
+                  current={activeEntryIndex === firstEntryIndex + i}
                   entry={entry}
                   frame={frame}
                   selected={selectedNames.includes(entry.name)}
