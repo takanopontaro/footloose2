@@ -12,7 +12,7 @@ import {
   $activeEntryName,
   $filteredEntries,
   $gridColumnCount,
-  $maxRenderedRowCount,
+  $maxVisibleRowCount,
   $selectedEntryIndices,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
@@ -83,7 +83,7 @@ function moveCursorByPage(
     return;
   }
   const gridColumnCount = readState($gridColumnCount(frame));
-  const maxRowCount = readState($maxRenderedRowCount(frame));
+  const maxRowCount = readState($maxVisibleRowCount(frame));
   const itemsPerPage = maxRowCount * gridColumnCount;
   const entries = readState($filteredEntries(frame));
   const delta = (itemsPerPage - gridColumnCount) * direction;

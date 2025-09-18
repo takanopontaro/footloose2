@@ -5,8 +5,8 @@ import {
   $activeEntryIndex,
   $gridColumnCount,
   $isGalleryMode,
-  $renderedEntryEndIndex,
-  $renderedEntryStartIndex,
+  $lastVisibleEntryIndex,
+  $firstVisibleEntryIndex,
 } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';
@@ -16,17 +16,17 @@ const activeEntryNameAtom = atomFamily((_frame: Frame) => atomWithReset('..'));
 
 function updateStartRowInGalleryMode(frame: Frame): void {
   const curIndex = readState($activeEntryIndex(frame));
-  const startRow = readState($renderedEntryStartIndex(frame));
-  const endRow = readState($renderedEntryEndIndex(frame));
+  const startRow = readState($firstVisibleEntryIndex(frame));
+  const endRow = readState($lastVisibleEntryIndex(frame));
   const colCount = readState($gridColumnCount(frame));
   if (curIndex < startRow) {
     const newRow = Math.floor(curIndex / colCount) * colCount;
-    writeState($renderedEntryStartIndex(frame), newRow);
+    writeState($firstVisibleEntryIndex(frame), newRow);
     return;
   }
   if (curIndex > endRow) {
     const rowDelta = Math.ceil((curIndex - endRow) / colCount);
-    writeState($renderedEntryStartIndex(frame), startRow + rowDelta * colCount);
+    writeState($firstVisibleEntryIndex(frame), startRow + rowDelta * colCount);
   }
 }
 
@@ -61,12 +61,12 @@ export const $activeEntryName = atomFamily((frame: Frame) =>
       }
 
       const curIndex = get($activeEntryIndex(frame));
-      const startRow = get($renderedEntryStartIndex(frame));
-      const endRow = get($renderedEntryEndIndex(frame));
+      const startRow = get($firstVisibleEntryIndex(frame));
+      const endRow = get($lastVisibleEntryIndex(frame));
       if (curIndex < startRow) {
-        set($renderedEntryStartIndex(frame), curIndex);
+        set($firstVisibleEntryIndex(frame), curIndex);
       } else if (curIndex > endRow) {
-        set($renderedEntryStartIndex(frame), startRow + (curIndex - endRow));
+        set($firstVisibleEntryIndex(frame), startRow + (curIndex - endRow));
       }
     },
   ),

@@ -19,9 +19,9 @@ import {
   $filteredEntries,
   $gridColumnCount,
   $isGalleryMode,
-  $maxRenderedRowCount,
-  $renderedEntryEndIndex,
-  $renderedEntryStartIndex,
+  $maxVisibleRowCount,
+  $lastVisibleEntryIndex,
+  $firstVisibleEntryIndex,
   $renderedRowHeight,
   $selectedEntryNames,
   $sort,
@@ -44,14 +44,14 @@ const DataFrameComponent: FC<Props> = ({
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isVisibleFirstRow, setIsVisibleFirstRow] = useState(false);
   const [isVisibleLastRow, setIsVisibleLastRow] = useState(false);
-  const [maxRowCount, setMaxRowCount] = useAtom($maxRenderedRowCount(frame));
-  const [startRow, setStartRow] = useAtom($renderedEntryStartIndex(frame));
+  const [maxRowCount, setMaxRowCount] = useAtom($maxVisibleRowCount(frame));
+  const [startRow, setStartRow] = useAtom($firstVisibleEntryIndex(frame));
   const setActiveFrame = useSetAtom($activeFrame);
   const setScope = useSetAtom($scope);
   const entries = useAtomValue($filteredEntries(frame));
   const curIndex = useAtomValue($activeEntryIndex(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
-  const endRow = useAtomValue($renderedEntryEndIndex(frame));
+  const endRow = useAtomValue($lastVisibleEntryIndex(frame));
   const gridColumnCount = useAtomValue($gridColumnCount(frame));
   const rowHeight = useAtomValue($renderedRowHeight);
   const sort = useAtomValue($sort(frame));

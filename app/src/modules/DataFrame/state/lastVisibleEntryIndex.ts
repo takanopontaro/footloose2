@@ -2,16 +2,16 @@ import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import {
   $gridColumnCount,
-  $maxRenderedRowCount,
-  $renderedEntryStartIndex,
+  $maxVisibleRowCount,
+  $firstVisibleEntryIndex,
 } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
 
-export const $renderedEntryEndIndex = atomFamily((frame: Frame) =>
+export const $lastVisibleEntryIndex = atomFamily((frame: Frame) =>
   atom((get) => {
-    const startRow = get($renderedEntryStartIndex(frame));
-    const maxRowCount = get($maxRenderedRowCount(frame));
+    const startRow = get($firstVisibleEntryIndex(frame));
+    const maxRowCount = get($maxVisibleRowCount(frame));
     const gridColumnCount = get($gridColumnCount(frame));
     return startRow + gridColumnCount * maxRowCount - 1;
   }),

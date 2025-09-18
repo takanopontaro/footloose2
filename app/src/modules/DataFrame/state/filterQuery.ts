@@ -6,8 +6,8 @@ import {
   $activeEntryName,
   $filteredEntries,
   $gridColumnCount,
-  $maxRenderedRowCount,
-  $renderedEntryStartIndex,
+  $maxVisibleRowCount,
+  $firstVisibleEntryIndex,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
 
@@ -21,16 +21,16 @@ function updateStartRow(entries: Entry[], frame: Frame): void {
   const curName = readState($activeEntryName(frame));
   const curIndex = entries.findIndex((v) => v.name === curName);
   const colCount = readState($gridColumnCount(frame));
-  const maxRowCount = readState($maxRenderedRowCount(frame));
+  const maxRowCount = readState($maxVisibleRowCount(frame));
   // スクロール無しで全 entry を表示できる場合
   if (curIndex === -1 || curIndex < maxRowCount * colCount) {
-    writeState($renderedEntryStartIndex(frame), 0);
+    writeState($firstVisibleEntryIndex(frame), 0);
     return;
   }
   const diff = Math.ceil(maxRowCount / 2) * colCount;
   let newRow = curIndex - diff;
   newRow = newRow - (newRow % colCount);
-  writeState($renderedEntryStartIndex(frame), newRow);
+  writeState($firstVisibleEntryIndex(frame), newRow);
 }
 
 export const $filterQuery = atomFamily((frame: Frame) =>
