@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useCallback, useLayoutEffect, useRef } from 'react';
 import { $activeFrame, $modes, $scope } from '@modules/App/state';
 import {
   DirInfo,
@@ -12,6 +12,7 @@ import {
   useCurrentDir,
   useDirUpdate,
   useFocusFrame,
+  useGridState,
   useWatchError,
 } from '@modules/DataFrame/hooks';
 import {
@@ -41,9 +42,6 @@ const DataFrameComponent: FC<Props> = ({
   initialDir,
   initialFocus = false,
 }) => {
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const [isVisibleFirstRow, setIsVisibleFirstRow] = useState(false);
-  const [isVisibleLastRow, setIsVisibleLastRow] = useState(false);
   const [maxRowCount, setMaxRowCount] = useAtom($maxVisibleRowCount(frame));
   const [startRow, setStartRow] = useAtom($firstVisibleEntryIndex(frame));
   const setActiveFrame = useSetAtom($activeFrame);
@@ -61,6 +59,7 @@ const DataFrameComponent: FC<Props> = ({
   const curIndexRef = useRef(curIndex);
   const curDir = useCurrentDir(frame, initialDir);
   const { frameRef, isFrameFocused } = useFocusFrame(frame, initialFocus);
+  const gridState = useGridState(frame, gridRef);
 
   useDirUpdate(frame);
   useWatchError(frame);
@@ -80,13 +79,9 @@ const DataFrameComponent: FC<Props> = ({
     const containerW = gridRef.current!.offsetWidth;
     const containerH = gridRef.current!.offsetHeight;
     const rowH = isGalleryMode ? containerW / gridColumnCount : rowHeight;
-    // overflow ありの行数
     const maxRowCount = Math.ceil(containerH / rowH);
     setMaxRowCount(maxRowCount);
-    // overflow なしの行数
-    const rowCount = Math.floor(containerH / rowH);
-    setIsOverflowing(entries.length > gridColumnCount * rowCount);
-  }, [entries, gridColumnCount, isGalleryMode, rowHeight, setMaxRowCount]);
+  }, [gridColumnCount, isGalleryMode, rowHeight, setMaxRowCount]);
 
   useLayoutEffect(() => {
     const index = curIndexRef.current;
@@ -103,20 +98,6 @@ const DataFrameComponent: FC<Props> = ({
     setStartRow(newIndex);
   }, [gridColumnCount, maxRowCount, setStartRow]);
 
-  useLayoutEffect(() => {
-    const isVisibleFirst = curIndex < startRow + gridColumnCount;
-    if (isVisibleFirst) {
-      setIsVisibleFirstRow(true);
-      setIsVisibleLastRow(false);
-    }
-    const isVisibleLast =
-      curIndex >= startRow + gridColumnCount * maxRowCount - gridColumnCount;
-    if (isVisibleLast) {
-      setIsVisibleFirstRow(false);
-      setIsVisibleLastRow(true);
-    }
-  }, [curIndex, gridColumnCount, maxRowCount, startRow]);
-
   return (
     <div
       ref={frameRef}
@@ -131,9 +112,9 @@ const DataFrameComponent: FC<Props> = ({
       <div
         ref={gridRef}
         className={clsx('entryGrid', {
-          'entryGrid-overflowing': isOverflowing,
-          'entryGrid-visibleFirst': isVisibleFirstRow,
-          'entryGrid-visibleLast': isVisibleLastRow,
+          'entryGrid-overflowing': gridState.isOverflowing,
+          'entryGrid-visibleFirst': gridState.isFirstRowVisible,
+          'entryGrid-visibleLast': gridState.isLastRowVisible,
         })}
       >
         <table className="entryGrid_table">
