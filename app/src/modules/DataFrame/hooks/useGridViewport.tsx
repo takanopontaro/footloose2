@@ -21,10 +21,10 @@ export const useGridViewport = (
   const gridColumnCount = useAtomValue($gridColumnCount(frame));
   const rowHeight = useAtomValue($renderedRowHeight);
   const isGalleryMode = useAtomValue($isGalleryMode(frame));
-  const curIndex = useAtomValue($activeEntryIndex(frame));
-  const curIndexRef = useRef(curIndex);
+  const activeEntryIndex = useAtomValue($activeEntryIndex(frame));
+  const activeEntryIndexRef = useRef(activeEntryIndex);
 
-  curIndexRef.current = curIndex;
+  activeEntryIndexRef.current = activeEntryIndex;
 
   useLayoutEffect(() => {
     if (!gridRef.current) {
@@ -37,7 +37,7 @@ export const useGridViewport = (
   }, [gridColumnCount, gridRef, isGalleryMode, rowHeight, setMaxRowCount]);
 
   useLayoutEffect(() => {
-    const index = curIndexRef.current;
+    const index = activeEntryIndexRef.current;
     if (index === -1) {
       setFirstEntryIndex(0);
       return;
