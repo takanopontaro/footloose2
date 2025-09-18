@@ -30,7 +30,7 @@ export const useGridState = (
   const isGalleryMode = useAtomValue($isGalleryMode(frame));
   const maxRowCount = useAtomValue($maxVisibleRowCount(frame));
   const firstEntryIndex = useAtomValue($firstVisibleEntryIndex(frame));
-  const curIndex = useAtomValue($activeEntryIndex(frame));
+  const activeEntryIndex = useAtomValue($activeEntryIndex(frame));
   const gridColumnCount = useAtomValue($gridColumnCount(frame));
   const rowHeight = useAtomValue($renderedRowHeight);
 
@@ -46,19 +46,20 @@ export const useGridState = (
   }, [entries.length, gridColumnCount, gridRef, isGalleryMode, rowHeight]);
 
   useLayoutEffect(() => {
-    const firstRowVisible = curIndex < firstEntryIndex + gridColumnCount;
+    const firstRowVisible =
+      activeEntryIndex < firstEntryIndex + gridColumnCount;
     if (firstRowVisible) {
       setIsFirstRowVisible(true);
       setIsLastRowVisible(false);
     }
     const lastRowVisible =
-      curIndex >=
+      activeEntryIndex >=
       firstEntryIndex + gridColumnCount * maxRowCount - gridColumnCount;
     if (lastRowVisible) {
       setIsFirstRowVisible(false);
       setIsLastRowVisible(true);
     }
-  }, [curIndex, firstEntryIndex, gridColumnCount, maxRowCount]);
+  }, [activeEntryIndex, firstEntryIndex, gridColumnCount, maxRowCount]);
 
   return { isFirstRowVisible, isLastRowVisible, isOverflowing };
 };
