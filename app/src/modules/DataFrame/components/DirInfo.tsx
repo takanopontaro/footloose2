@@ -56,11 +56,11 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
   const filteredCount = rawEntries.length - entries.length;
 
   useEffect(() => {
-    const { dirs, files, links } = getDirStats(entries);
+    const { dirs, files, links } = getDirStats(rawEntries);
     setDirs(dirs);
     setFiles(files);
     setLinks(links);
-  }, [entries]);
+  }, [rawEntries]);
 
   return (
     <div className="dirInfo">
@@ -68,7 +68,7 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
       <div className="dirInfo_files">{files}</div>
       <div className="dirInfo_links">{links}</div>
       <div className="dirInfo_selected">
-        {selectedNames.length}/{entries.length - 1}
+        {selectedNames.length}/{rawEntries.length - 1}
       </div>
       <div className="dirInfo_filtered">
         {filteredCount > 0 && filteredCount}
