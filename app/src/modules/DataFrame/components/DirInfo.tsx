@@ -10,6 +10,34 @@ import {
 
 import type { FC } from 'react';
 import type { Frame } from '@modules/App/types';
+import type { Entry } from '@modules/DataFrame/types';
+
+type DirStats = {
+  dirs: number;
+  files: number;
+  links: number;
+};
+
+function getDirStats(entries: Entry[]): DirStats {
+  const stats: DirStats = { dirs: 0, files: 0, links: 0 };
+  for (const { name, perm } of entries) {
+    if (name === '..') {
+      continue;
+    }
+    switch (true) {
+      case perm.startsWith('d'):
+        stats.dirs++;
+        break;
+      case perm.startsWith('-'):
+        stats.files++;
+        break;
+      case perm.startsWith('l'):
+        stats.links++;
+        break;
+    }
+  }
+  return stats;
+}
 
 type Props = {
   frame: Frame;
@@ -28,24 +56,10 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
   const filteredCount = rawEntries.length - entries.length;
 
   useEffect(() => {
-    const res = entries.reduce(
-      (o, e) => {
-        if (e.name === '..') {
-          return o;
-        } else if (e.perm.startsWith('d')) {
-          o.dirs++;
-        } else if (e.perm.startsWith('-')) {
-          o.files++;
-        } else if (e.perm.startsWith('l')) {
-          o.links++;
-        }
-        return o;
-      },
-      { dirs: 0, files: 0, links: 0 },
-    );
-    setDirs(res.dirs);
-    setFiles(res.files);
-    setLinks(res.links);
+    const { dirs, files, links } = getDirStats(entries);
+    setDirs(dirs);
+    setFiles(files);
+    setLinks(links);
   }, [entries]);
 
   return (
