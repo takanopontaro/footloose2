@@ -25,7 +25,7 @@ export const $selectedEntryIndices = atomFamily((frame: Frame) =>
         set($selectedEntryNames(frame), RESET);
         return;
       }
-      // 先頭の .. は選択できないようにする。
+      // `..` は選択できないようにする。
       const indices = [...new Set(newVal)].sort().filter((i) => i !== 0);
       if (shallowEqualArray(indices, curVal)) {
         return;
