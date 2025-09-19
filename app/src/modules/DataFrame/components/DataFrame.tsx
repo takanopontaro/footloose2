@@ -17,12 +17,10 @@ import {
   useWatchError,
 } from '@modules/DataFrame/hooks';
 import {
-  $activeEntryIndex,
-  $filteredEntries,
-  $lastVisibleEntryIndex,
-  $firstVisibleEntryIndex,
   $selectedEntryNames,
   $sort,
+  $renderedEntries,
+  $activeEntryName,
 } from '@modules/DataFrame/state';
 
 import type { FC, FocusEvent } from 'react';
@@ -41,11 +39,9 @@ const DataFrameComponent: FC<Props> = ({
 }) => {
   const setActiveFrame = useSetAtom($activeFrame);
   const setScope = useSetAtom($scope);
-  const entries = useAtomValue($filteredEntries(frame));
-  const activeEntryIndex = useAtomValue($activeEntryIndex(frame));
+  const entries = useAtomValue($renderedEntries(frame));
+  const activeEntryName = useAtomValue($activeEntryName(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
-  const firstEntryIndex = useAtomValue($firstVisibleEntryIndex(frame));
-  const lastEntryIndex = useAtomValue($lastVisibleEntryIndex(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
   const frameRef = useRef<HTMLDivElement>(null);
@@ -88,17 +84,15 @@ const DataFrameComponent: FC<Props> = ({
       >
         <table className="entryGrid_table">
           <tbody className="entryGrid_tbody">
-            {entries
-              .slice(firstEntryIndex, lastEntryIndex + 1)
-              .map((entry, i) => (
-                <Row
-                  key={`${curDir}/${entry.name}`}
-                  current={activeEntryIndex === firstEntryIndex + i}
-                  entry={entry}
-                  frame={frame}
-                  selected={selectedNames.includes(entry.name)}
-                />
-              ))}
+            {entries.map((entry) => (
+              <Row
+                key={`${curDir}/${entry.name}`}
+                current={activeEntryName === entry.name}
+                entry={entry}
+                frame={frame}
+                selected={selectedNames.includes(entry.name)}
+              />
+            ))}
           </tbody>
         </table>
       </div>
