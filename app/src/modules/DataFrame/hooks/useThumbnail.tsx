@@ -20,7 +20,7 @@ export const useThumbnail = (
     const src = `/preview${dirName}/${entry.name}`;
     const type = mime.getType(src);
     if (type !== null && type.startsWith('image/')) {
-      return <img alt="" className={className} loading="lazy" src={src} />;
+      return <img alt="" className={className} src={src} />;
     }
     return null;
   }, [className, dirName, entry]);
