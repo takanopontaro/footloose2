@@ -155,7 +155,9 @@ function toggleRowSelection(
   frame = readState($activeFrame),
 ): void {
   const name = getTargetName(frame);
-  toggleRowSelectionByName(name, select, frame);
+  if (name) {
+    toggleRowSelectionByName(name, select, frame);
+  }
 }
 
 function selectAllRows(frame = readState($activeFrame)): void {
