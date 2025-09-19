@@ -21,8 +21,10 @@ export const $selectedEntryNames = atomFamily((frame: Frame) =>
         set(selectedEntryNamesAtom(frame), RESET);
         return;
       }
-      // 先頭の .. は選択できないようにする。
-      const names = [...new Set(newVal)].sort().filter((n) => n !== '..');
+      // `..` は選択できないようにする。空文字も弾く。
+      const names = [...new Set(newVal)]
+        .sort()
+        .filter((n) => n !== '' && n !== '..');
       if (shallowEqualArray(names, curVal)) {
         return;
       }
