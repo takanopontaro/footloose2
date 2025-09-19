@@ -31,6 +31,7 @@ const jsConfigBase = {
       },
     ],
 
+    'perfectionist/sort-exports': 'error',
     'perfectionist/sort-imports': [
       'error',
       {
@@ -97,6 +98,7 @@ export default tseslint.config(
 
       'jsx-a11y/media-has-caption': 'off',
 
+      'perfectionist/sort-exports': 'error',
       'perfectionist/sort-imports': [
         'error',
         {
