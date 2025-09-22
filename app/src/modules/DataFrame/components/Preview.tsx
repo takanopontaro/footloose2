@@ -16,20 +16,29 @@ type Props = {
 
 const PreviewComponent: FC<Props> = ({ frame }) => {
   const setPreviewRef = useSetAtom($previewRef(frame));
-  const curIndex = useAtomValue($activeEntryIndex(frame));
+  const activeEntryIndex = useAtomValue($activeEntryIndex(frame));
   const entries = useAtomValue($filteredEntries(frame));
-  const entry = entries[curIndex] ?? null;
+
+  // 初回読込時などで activeEntryIndex === -1 が起こり得る。
+  const entry = entries[activeEntryIndex] ?? null;
+
   const { node, ref } = usePreview(entry, frame, 'preview_media');
+
   useEffect(() => {
-    if (ref === null || ref.current === null) {
-      return;
+    if (ref?.current) {
+      setPreviewRef(ref.current);
     }
-    setPreviewRef(ref.current);
-  }, [node, ref, setPreviewRef]); // ref 自体は不変のため node を deps に入れる
+    // ref を deps に入れても useEffect は再実行されない。
+    // ref.current が変わったら setPreviewRef を再実行したいため、
+    // node を deps に入れて、トリガーとする。
+  }, [node, ref, setPreviewRef]);
+
   if (entry === null) {
     return null;
   }
+
   const { name, perm, size, time } = entry;
+
   return (
     <div className="preview" data-perm={perm}>
       <div className="preview_area">{node}</div>
