@@ -13,7 +13,7 @@ type Props = {
 };
 
 const RowComponent: FC<Props> = ({ current, entry, frame, selected }) => {
-  const image = useThumbnail(entry, frame, 'entryGrid_thumbnail');
+  const thumbnail = useThumbnail(entry, frame, 'entryGrid_thumbnail');
   const { link, name, perm, size, time } = entry;
 
   return (
@@ -25,7 +25,7 @@ const RowComponent: FC<Props> = ({ current, entry, frame, selected }) => {
       data-symlink={link ? link : undefined}
     >
       <td className="entryGrid_td" data-column="thumbnail">
-        <div className="entryGrid_tdInner">{image}</div>
+        <div className="entryGrid_tdInner">{thumbnail}</div>
       </td>
       <td className="entryGrid_td" data-column="perm">
         <div className="entryGrid_tdInner">{perm}</div>
