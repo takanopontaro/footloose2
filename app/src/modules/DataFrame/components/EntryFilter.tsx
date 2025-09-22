@@ -14,7 +14,13 @@ const EntryFilterComponent: FC<Props> = ({ frame }) => {
   const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const [scope, setScope] = useAtom($scope);
   const [filter, setFilter] = useAtom($filterQuery(frame));
-  const elRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (activeFrame === frame && scope === 'EntryFilter') {
+      inputRef.current?.focus();
+    }
+  }, [activeFrame, frame, scope]);
 
   const handleFocus = useCallback(
     (e: FocusEvent) => {
@@ -30,16 +36,10 @@ const EntryFilterComponent: FC<Props> = ({ frame }) => {
     [setFilter],
   );
 
-  useEffect(() => {
-    if (activeFrame === frame && scope === 'EntryFilter') {
-      elRef.current?.focus();
-    }
-  }, [activeFrame, frame, scope]);
-
   return (
     <div className="entryFilter">
       <input
-        ref={elRef}
+        ref={inputRef}
         className="mousetrap entryFilter_input"
         tabIndex={-1}
         type="text"
