@@ -11,34 +11,40 @@ export const usePreview = (
   frame: Frame,
   className?: string,
 ): PreviewInfo => {
-  const dirName = useAtomValue($currentDir(frame));
+  const curDir = useAtomValue($currentDir(frame));
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  return useMemo(() => {
+
+  const info = useMemo(() => {
     if (entry === null || !entry.perm.startsWith('-')) {
       return { node: null, ref: null };
     }
-    const src = `/preview${dirName}/${entry.name}`;
+
+    const src = `/preview${curDir}/${entry.name}`;
     const type = mime.getType(src);
+
     if (type === null) {
       const node = <div className="preview_unavailable" />;
       return { node, ref: null };
     }
+
     if (type.startsWith('image/')) {
       const node = <img alt="" className={className} src={src} />;
       return { node, ref: null };
     }
+
     if (type.startsWith('video/') || type.startsWith('audio/')) {
       const node = (
-        // key を付けないと更新されない
+        // key を付けないと描画が更新されない。
         <video key={src} ref={videoRef} className={className} controls>
           <source src={src} type={type} />
         </video>
       );
       return { node, ref: videoRef };
     }
+
     const node = (
-      // key を付けないと更新されない
+      // key を付けないと描画が更新されない。
       <iframe
         key={src}
         ref={iframeRef}
@@ -48,5 +54,7 @@ export const usePreview = (
       />
     );
     return { node, ref: iframeRef };
-  }, [className, dirName, entry]);
+  }, [className, curDir, entry]);
+
+  return info;
 };
