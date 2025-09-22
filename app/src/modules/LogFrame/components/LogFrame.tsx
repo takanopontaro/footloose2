@@ -21,7 +21,7 @@ const LogFrameComponent: FC = () => {
   const [logData, setLogData] = useAtom($logData);
   const setLogFrameRef = useSetAtom($logFrameRef);
   const ws = useAtomValue($ws);
-  const elRef = useRef<HTMLDivElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
 
   // progress をセットする。
@@ -85,7 +85,7 @@ const LogFrameComponent: FC = () => {
 
   useEffect(() => {
     if (scope === 'LogFrame') {
-      elRef.current?.focus();
+      divRef.current?.focus();
     }
   }, [scope]);
 
@@ -111,7 +111,7 @@ const LogFrameComponent: FC = () => {
   );
 
   return (
-    <div ref={elRef} className="logFrame" tabIndex={-1} onFocus={handleFocus}>
+    <div ref={divRef} className="logFrame" tabIndex={-1} onFocus={handleFocus}>
       <div ref={innerRef} className="logFrame_inner">
         {logData.map(({ level, log, uid }) => (
           <div key={uid} className="logFrame_log" data-level={level}>
