@@ -12,17 +12,19 @@ export const useThumbnail = (
   frame: Frame,
   className?: string,
 ): ReactNode => {
-  const dirName = useAtomValue($currentDir(frame));
-  const el = useMemo(() => {
+  const curDir = useAtomValue($currentDir(frame));
+
+  const node = useMemo(() => {
     if (!entry.perm.startsWith('-')) {
       return null;
     }
-    const src = `/preview${dirName}/${entry.name}`;
+    const src = `/preview${curDir}/${entry.name}`;
     const type = mime.getType(src);
     if (type !== null && type.startsWith('image/')) {
       return <img alt="" className={className} src={src} />;
     }
     return null;
-  }, [className, dirName, entry]);
-  return el;
+  }, [className, curDir, entry]);
+
+  return node;
 };
