@@ -7,6 +7,7 @@ import {
   $currentDir,
   $filteredEntries,
   $rawEntries,
+  $selectedEntryNames,
 } from '@modules/DataFrame/state';
 
 import type { Frame, WsDirUpdateResponse } from '@modules/App/types';
@@ -34,6 +35,17 @@ function getFallbackActiveEntryName(
     }
   }
   return '..';
+}
+
+// 選択行だったエントリーが削除された場合を考慮した、新しい選択行リストを返す。
+// filter-out されているエントリーは選択対象外のため、
+// 単純に filteredEntries に含まれないエントリーを除外するだけでよい。
+// 結果として、削除されたエントリーも省かれる。
+function getFallbackSelectedEntryNames(
+  filteredEntryNames: Set<string>,
+  selectedEntryNames: string[],
+): string[] {
+  return selectedEntryNames.filter((name) => filteredEntryNames.has(name));
 }
 
 export const useDirUpdate = (frame: Frame): void => {
@@ -69,6 +81,15 @@ export const useDirUpdate = (frame: Frame): void => {
         // filteredEntries には既に newRawEntries が反映されている。
         const filteredEntries = get($filteredEntries(frame));
         const filteredEntryNames = new Set(filteredEntries.map((e) => e.name));
+        const selectedEntryNames = get($selectedEntryNames(frame));
+
+        // 選択行だったエントリーが削除された場合を考慮した、新しい選択行リスト。
+        const entryNames = getFallbackSelectedEntryNames(
+          filteredEntryNames,
+          selectedEntryNames,
+        );
+
+        set($selectedEntryNames(frame), entryNames);
 
         // カレント行だったエントリーが削除された場合の、次のカレント行。
         const entryName = getFallbackActiveEntryName(
