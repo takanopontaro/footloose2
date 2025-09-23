@@ -15,7 +15,7 @@ import {
 import {
   $activeEntryName,
   $currentDir,
-  $filteredEntries,
+  $rawEntries,
   $selectedEntryNames,
   $virtualDirInfo,
 } from '@modules/DataFrame/state';
@@ -89,7 +89,7 @@ function changeVirtualDir(
       const { entries, path: p } = resp.data;
       const prevName = getPrevName(p, frame);
       writeState($currentDir(frame), p);
-      writeState($filteredEntries(frame), entries);
+      writeState($rawEntries(frame), entries);
       writeState($activeEntryName(frame), prevName === null ? RESET : prevName);
       writeState($selectedEntryNames(frame), RESET);
     },

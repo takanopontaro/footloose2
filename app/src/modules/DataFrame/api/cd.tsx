@@ -12,9 +12,9 @@ import {
 import {
   $activeEntryName,
   $currentDir,
-  $filteredEntries,
   $historyCopy,
   $historyIndex,
+  $rawEntries,
   $selectedEntryNames,
   $virtualDirInfo,
 } from '@modules/DataFrame/state';
@@ -55,7 +55,7 @@ function changeDir(
       const { entries, path } = resp.data;
       const prevName = getPrevName(path, frame);
       writeState($currentDir(frame), path);
-      writeState($filteredEntries(frame), entries);
+      writeState($rawEntries(frame), entries);
       writeState($activeEntryName(frame), prevName === null ? RESET : prevName);
       writeState($selectedEntryNames(frame), RESET);
       if (!historyMode) {

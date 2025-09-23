@@ -23,7 +23,7 @@ export const useDirUpdate = (frame: Frame): void => {
           return;
         }
         const oldRawEntries = get($rawEntries(frame));
-        set($filteredEntries(frame), newRawEntries);
+        set($rawEntries(frame), newRawEntries);
         const newEntries = get($filteredEntries(frame));
         const curName = get($activeEntryName(frame));
         const deleted =

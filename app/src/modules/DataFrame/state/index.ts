@@ -18,4 +18,5 @@ export * from './renderedRowHeight';
 export * from './selectedEntryIndices';
 export * from './selectedEntryNames';
 export * from './sort';
+export * from './sortedEntries';
 export * from './virtualDirInfo';
