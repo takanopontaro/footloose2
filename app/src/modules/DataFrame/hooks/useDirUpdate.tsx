@@ -19,17 +19,17 @@ import type { Entry } from '@modules/DataFrame/types';
 // カレント行にはできないため、次の候補を探す。
 function getFallbackActiveEntryName(
   oldRawEntries: Entry[],
-  newRawEntries: Entry[],
-  newFilteredEntries: Entry[],
+  newRawEntryNames: Set<string>,
+  filteredEntryNames: Set<string>,
   activeEntryName: string,
 ): string {
   let index = oldRawEntries.findIndex((e) => e.name === activeEntryName);
   while (index > 0) {
-    const name = oldRawEntries[--index].name;
-    if (!newRawEntries.some((e) => e.name === name)) {
+    const { name } = oldRawEntries[--index];
+    if (!newRawEntryNames.has(name)) {
       continue;
     }
-    if (newFilteredEntries.some((e) => e.name === name)) {
+    if (filteredEntryNames.has(name)) {
       return name;
     }
   }
@@ -52,25 +52,29 @@ export const useDirUpdate = (frame: Frame): void => {
 
         const activeEntryName = get($activeEntryName(frame));
         const oldRawEntries = get($rawEntries(frame));
+        const oldRawEntryNames = new Set(oldRawEntries.map((e) => e.name));
+        const newRawEntryNames = new Set(newRawEntries.map((e) => e.name));
+
         set($rawEntries(frame), newRawEntries);
 
-        // コールバック引数の set, get は即時反映なため、
-        // filteredEntries には既に newRawEntries が反映されている。
-        const newFilteredEntries = get($filteredEntries(frame));
-
         const hasDeletedEntries =
-          oldRawEntries.some((e) => e.name === activeEntryName) &&
-          !newRawEntries.some((e) => e.name === activeEntryName);
+          oldRawEntryNames.has(activeEntryName) &&
+          !newRawEntryNames.has(activeEntryName);
 
         if (!hasDeletedEntries) {
           return;
         }
 
+        // コールバック引数の set, get は即時反映なため、
+        // filteredEntries には既に newRawEntries が反映されている。
+        const filteredEntries = get($filteredEntries(frame));
+        const filteredEntryNames = new Set(filteredEntries.map((e) => e.name));
+
         // カレント行だったエントリーが削除された場合の、次のカレント行。
         const entryName = getFallbackActiveEntryName(
           oldRawEntries,
-          newRawEntries,
-          newFilteredEntries,
+          newRawEntryNames,
+          filteredEntryNames,
           activeEntryName,
         );
 
