@@ -91,7 +91,7 @@ export const useDirUpdate = (frame: Frame): void => {
 
         set($selectedEntryNames(frame), entryNames);
 
-        // カレント行だったエントリーが削除された場合の、次のカレント行。
+        // カレント行だったエントリーが削除された場合の、新しいカレント行。
         const entryName = getFallbackActiveEntryName(
           oldRawEntries,
           newRawEntryNames,
