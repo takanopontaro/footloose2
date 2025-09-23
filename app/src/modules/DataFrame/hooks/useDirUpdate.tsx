@@ -10,6 +10,31 @@ import {
 } from '@modules/DataFrame/state';
 
 import type { Frame, WsDirUpdateResponse } from '@modules/App/types';
+import type { Entry } from '@modules/DataFrame/types';
+
+// カレント行だったエントリーが削除された場合の、新しいカレント行を返す。
+// 新カレントは、可能な限りひとつ前のエントリーとする。
+// それも削除されていれば更にひとつ前…と繰り返し、無ければ `..` とする。
+// newRawEntries に対象エントリーがあっても、filter-out されている場合は
+// カレント行にはできないため、次の候補を探す。
+function getFallbackActiveEntryName(
+  oldRawEntries: Entry[],
+  newRawEntries: Entry[],
+  newFilteredEntries: Entry[],
+  activeEntryName: string,
+): string {
+  let index = oldRawEntries.findIndex((e) => e.name === activeEntryName);
+  while (index > 0) {
+    const name = oldRawEntries[--index].name;
+    if (!newRawEntries.some((e) => e.name === name)) {
+      continue;
+    }
+    if (newFilteredEntries.some((e) => e.name === name)) {
+      return name;
+    }
+  }
+  return '..';
+}
 
 export const useDirUpdate = (frame: Frame): void => {
   const ws = useAtomValue($ws);
@@ -17,39 +42,39 @@ export const useDirUpdate = (frame: Frame): void => {
   const handleDirUpdate = useAtomCallback<void, [WsDirUpdateResponse]>(
     useCallback(
       (get, set, resp) => {
-        const dirName = get($currentDir(frame));
+        const curDir = get($currentDir(frame));
         const { entries: newRawEntries, path } = resp.data;
-        if (path !== dirName) {
+
+        // 他フレームの更新イベントは無視する。
+        if (path !== curDir) {
           return;
         }
+
+        const activeEntryName = get($activeEntryName(frame));
         const oldRawEntries = get($rawEntries(frame));
         set($rawEntries(frame), newRawEntries);
-        const newEntries = get($filteredEntries(frame));
-        const curName = get($activeEntryName(frame));
-        const deleted =
-          oldRawEntries.some((e) => e.name === curName) &&
-          !newRawEntries.some((e) => e.name === curName);
-        if (!deleted) {
+
+        // コールバック引数の set, get は即時反映なため、
+        // filteredEntries には既に newRawEntries が反映されている。
+        const newFilteredEntries = get($filteredEntries(frame));
+
+        const hasDeletedEntries =
+          oldRawEntries.some((e) => e.name === activeEntryName) &&
+          !newRawEntries.some((e) => e.name === activeEntryName);
+
+        if (!hasDeletedEntries) {
           return;
         }
-        let done = false;
-        let index = oldRawEntries.findIndex((e) => e.name === curName);
-        while (index > 0) {
-          const prevEntry = oldRawEntries[--index];
-          const ent = newRawEntries.find((e) => e.name === prevEntry.name);
-          if (!ent) {
-            continue;
-          }
-          const found = newEntries.some((e) => e.name === prevEntry.name);
-          if (found) {
-            done = true;
-            set($activeEntryName(frame), ent.name);
-            break;
-          }
-        }
-        if (!done) {
-          set($activeEntryName(frame), '..');
-        }
+
+        // カレント行だったエントリーが削除された場合の、次のカレント行。
+        const entryName = getFallbackActiveEntryName(
+          oldRawEntries,
+          newRawEntries,
+          newFilteredEntries,
+          activeEntryName,
+        );
+
+        set($activeEntryName(frame), entryName);
       },
       [frame],
     ),
