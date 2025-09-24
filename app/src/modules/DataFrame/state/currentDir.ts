@@ -27,15 +27,16 @@ export const $currentDir = atomFamily((frame: Frame) =>
         return;
       }
 
-      let h = get($history(frame));
-      h = h.filter((v) => v !== newVal);
-      h.unshift(newVal);
-      const { settings } = get($config);
-      const maxHistory = settings.maxHistoryCount;
-      if (h.length > maxHistory) {
-        h.length = maxHistory;
+      const history = get($history(frame));
+      const newHistory = history.filter((h) => h !== newVal);
+      newHistory.unshift(newVal);
+
+      const { maxHistoryCount } = get($config).settings;
+      if (newHistory.length > maxHistoryCount) {
+        newHistory.length = maxHistoryCount;
       }
-      set($history(frame), h);
+
+      set($history(frame), newHistory);
     },
   ),
 );
