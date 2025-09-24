@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { memo, useCallback, useRef } from 'react';
 import { $activeFrame, $modes, $scope } from '@modules/App/state';
 import {
@@ -37,7 +37,7 @@ const DataFrameComponent: FC<Props> = ({
   initialDir,
   initialFocus = false,
 }) => {
-  const setActiveFrame = useSetAtom($activeFrame);
+  const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const setScope = useSetAtom($scope);
   const entries = useAtomValue($renderedEntries(frame));
   const activeEntryName = useAtomValue($activeEntryName(frame));
@@ -47,12 +47,12 @@ const DataFrameComponent: FC<Props> = ({
   const frameRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const curDir = useCurrentDir(frame, initialDir);
-  const { isFrameFocused } = useFocusFrame(frame, frameRef, initialFocus);
   const gridState = useGridState(frame, gridRef);
 
   useGridViewport(frame, gridRef);
   useDirUpdate(frame);
   useWatchError(frame);
+  useFocusFrame(frame, frameRef, initialFocus);
 
   const handleFocus = useCallback(
     (e: FocusEvent) => {
@@ -66,7 +66,9 @@ const DataFrameComponent: FC<Props> = ({
   return (
     <div
       ref={frameRef}
-      className={clsx('dataFrame', { 'dataFrame-active': isFrameFocused })}
+      className={clsx('dataFrame', {
+        'dataFrame-active': activeFrame === frame,
+      })}
       data-frame={frame}
       data-mode={modes.join(' ')}
       data-sort={`${sort.field}:${sort.order}`}

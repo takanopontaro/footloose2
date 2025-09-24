@@ -5,15 +5,11 @@ import { $activeFrame, $scope } from '@modules/App/state';
 import type { RefObject } from 'react';
 import type { Frame } from '@modules/App/types';
 
-type ReturnValue = {
-  isFrameFocused: boolean;
-};
-
 export const useFocusFrame = (
   frame: Frame,
   frameRef: RefObject<HTMLDivElement | null>,
   initialFocus: boolean,
-): ReturnValue => {
+): void => {
   const activeFrame = useAtomValue($activeFrame);
   const scope = useAtomValue($scope);
 
@@ -28,6 +24,4 @@ export const useFocusFrame = (
       frameRef.current?.focus();
     }
   }, [activeFrame, frame, frameRef, scope]);
-
-  return { isFrameFocused: activeFrame === frame };
 };
