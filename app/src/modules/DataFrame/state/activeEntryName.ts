@@ -12,23 +12,31 @@ import {
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
-const activeEntryNameAtom = atomFamily((_frame: Frame) => atomWithReset('..'));
+function updateFirstEntryIndexInGalleryMode(frame: Frame): void {
+  const activeEntryIndex = readState($activeEntryIndex(frame));
+  const firstEntryIndex = readState($firstVisibleEntryIndex(frame));
+  const lastEntryIndex = readState($lastVisibleEntryIndex(frame));
+  const gridColumnCount = readState($gridColumnCount(frame));
 
-function updateStartRowInGalleryMode(frame: Frame): void {
-  const curIndex = readState($activeEntryIndex(frame));
-  const startRow = readState($firstVisibleEntryIndex(frame));
-  const endRow = readState($lastVisibleEntryIndex(frame));
-  const colCount = readState($gridColumnCount(frame));
-  if (curIndex < startRow) {
-    const newRow = Math.floor(curIndex / colCount) * colCount;
-    writeState($firstVisibleEntryIndex(frame), newRow);
+  if (activeEntryIndex < firstEntryIndex) {
+    const newIndex =
+      Math.floor(activeEntryIndex / gridColumnCount) * gridColumnCount;
+    writeState($firstVisibleEntryIndex(frame), newIndex);
     return;
   }
-  if (curIndex > endRow) {
-    const rowDelta = Math.ceil((curIndex - endRow) / colCount);
-    writeState($firstVisibleEntryIndex(frame), startRow + rowDelta * colCount);
+
+  if (activeEntryIndex > lastEntryIndex) {
+    const rowDelta = Math.ceil(
+      (activeEntryIndex - lastEntryIndex) / gridColumnCount,
+    );
+    writeState(
+      $firstVisibleEntryIndex(frame),
+      firstEntryIndex + rowDelta * gridColumnCount,
+    );
   }
 }
+
+const activeEntryNameAtom = atomFamily((_frame: Frame) => atomWithReset('..'));
 
 export const $activeEntryName = atomFamily((frame: Frame) =>
   atom(
@@ -43,30 +51,32 @@ export const $activeEntryName = atomFamily((frame: Frame) =>
       }
       set(activeEntryNameAtom(frame), newVal);
 
-      // ここで得られる index は newVal に基づいた最新のもの。
+      // ここで得られるインデックスは newVal に基づいた最新のもの。
       // atom の setter に渡される get はトランザクションの最新状態を見るため。
       // これが hooks の場合は、レンダリングサイクルがあるため、
       // set の後に get しても、同一トランザクションなら古い値が返ってくる。
-      const index = get($activeEntryIndex(frame));
+      const activeEntryIndex = get($activeEntryIndex(frame));
 
-      // -1 ということは filter out されているということ
-      if (index === -1) {
+      // -1 ということは、newVal のエントリーが filter-out されているということ。
+      // 矛盾が生じるため、リセットする。
+      if (activeEntryIndex === -1) {
         set(activeEntryNameAtom(frame), RESET);
       }
 
       const isGalleryMode = get($isGalleryMode(frame));
       if (isGalleryMode) {
-        updateStartRowInGalleryMode(frame);
+        updateFirstEntryIndexInGalleryMode(frame);
         return;
       }
 
-      const curIndex = get($activeEntryIndex(frame));
-      const startRow = get($firstVisibleEntryIndex(frame));
-      const endRow = get($lastVisibleEntryIndex(frame));
-      if (curIndex < startRow) {
-        set($firstVisibleEntryIndex(frame), curIndex);
-      } else if (curIndex > endRow) {
-        set($firstVisibleEntryIndex(frame), startRow + (curIndex - endRow));
+      const activeEntryIdx = get($activeEntryIndex(frame));
+      const firstEntryIndex = get($firstVisibleEntryIndex(frame));
+      const lastEntryIndex = get($lastVisibleEntryIndex(frame));
+      if (activeEntryIdx < firstEntryIndex) {
+        set($firstVisibleEntryIndex(frame), activeEntryIdx);
+      } else if (activeEntryIdx > lastEntryIndex) {
+        const newIndex = firstEntryIndex + (activeEntryIdx - lastEntryIndex);
+        set($firstVisibleEntryIndex(frame), newIndex);
       }
     },
   ),
