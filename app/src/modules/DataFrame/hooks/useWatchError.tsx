@@ -13,9 +13,9 @@ export const useWatchError = (frame: Frame): void => {
   const handleWatchError = useAtomCallback<void, [WsWatchErrorResponse]>(
     useCallback(
       (get, _set, resp) => {
-        const dirName = get($currentDir(frame));
+        const curDir = get($currentDir(frame));
         const { msg, path } = resp.data;
-        if (path === dirName) {
+        if (path === curDir) {
           api.writeLog(msg, 'error');
           api.changeDir('~', frame);
         }
