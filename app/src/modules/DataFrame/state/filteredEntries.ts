@@ -30,7 +30,7 @@ export const $filteredEntries = atomFamily((frame: Frame) =>
     // try-catch でしっかりガードする。
     try {
       const re = new RegExp(filter, 'i');
-      copy = copy.filter((v) => re.test(v.name));
+      copy = copy.filter((e) => re.test(e.name));
     } catch (_e) {
       // 握りつぶす ✊💥
     }
