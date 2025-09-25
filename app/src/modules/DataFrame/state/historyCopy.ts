@@ -17,14 +17,16 @@ export const $historyCopy = atomFamily((frame: Frame) =>
         const curVal = get(historyCopyAtom(frame));
         newVal = newVal(curVal);
       }
-      // ここで newVal と curVal の同一性チェックを入れようと考えたが、
-      // 同じデータで setter が呼ばれる可能性が低いのと、
-      // 比較のコストが馬鹿にならないため、やらないことにした。
       if (newVal === RESET || newVal === null) {
         set(historyCopyAtom(frame), RESET);
         set($modes(frame), (prev) => prev.filter((m) => m !== 'history'));
         return;
       }
+
+      // ここで newVal と curVal の同一性チェックを入れようと考えたが、
+      // 同じデータで setter が呼ばれる可能性が低いのと、
+      // 比較のコストが馬鹿にならないため、やらないことにした。
+
       set(historyCopyAtom(frame), newVal);
       set($modes(frame), (prev) => [...prev, 'history']);
     },
