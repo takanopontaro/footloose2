@@ -2,6 +2,7 @@ import { store } from '@libs/store';
 
 import type { Direction } from '@modules/App/types';
 
+// この setter, getter は React のライフサイクルとは関係なく即反映される。
 const { get: readState, set: writeState } = store;
 
 function shallowEqualObject(
