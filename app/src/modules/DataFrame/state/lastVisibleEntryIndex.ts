@@ -10,9 +10,9 @@ import type { Frame } from '@modules/App/types';
 
 export const $lastVisibleEntryIndex = atomFamily((frame: Frame) =>
   atom((get) => {
-    const startRow = get($firstVisibleEntryIndex(frame));
+    const firstEntryIndex = get($firstVisibleEntryIndex(frame));
     const maxRowCount = get($maxVisibleRowCount(frame));
     const gridColumnCount = get($gridColumnCount(frame));
-    return startRow + gridColumnCount * maxRowCount - 1;
+    return firstEntryIndex + gridColumnCount * maxRowCount - 1;
   }),
 );
