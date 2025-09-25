@@ -15,23 +15,30 @@ import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
-const filterQueryAtom = atomFamily((_frame: Frame) => atomWithReset(''));
-
-function updateStartRow(entries: Entry[], frame: Frame): void {
-  const curName = readState($activeEntryName(frame));
-  const curIndex = entries.findIndex((v) => v.name === curName);
-  const colCount = readState($gridColumnCount(frame));
+// エントリーの filter-out に応じて、表示領域内の開始エントリーを更新する。
+function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
+  const activeEntryName = readState($activeEntryName(frame));
+  const gridColumnCount = readState($gridColumnCount(frame));
   const maxRowCount = readState($maxVisibleRowCount(frame));
-  // スクロール無しで全 entry を表示できる場合
-  if (curIndex === -1 || curIndex < maxRowCount * colCount) {
+
+  // $activeEntryIndex を使いたいところだが、この時点ではまだ使えない。
+  // 引数の entries には $filterQuery が反映されているが、
+  // $filteredEntries にはまだ未反映なためである。
+  const curIndex = entries.findIndex((e) => e.name === activeEntryName);
+
+  // スクロール無しで全エントリーを表示できる場合
+  if (curIndex === -1 || curIndex < maxRowCount * gridColumnCount) {
     writeState($firstVisibleEntryIndex(frame), 0);
     return;
   }
-  const diff = Math.ceil(maxRowCount / 2) * colCount;
-  let newRow = curIndex - diff;
-  newRow = newRow - (newRow % colCount);
-  writeState($firstVisibleEntryIndex(frame), newRow);
+
+  const diff = Math.ceil(maxRowCount / 2) * gridColumnCount;
+  let firstEntryIndex = curIndex - diff;
+  firstEntryIndex = firstEntryIndex - (firstEntryIndex % gridColumnCount);
+  writeState($firstVisibleEntryIndex(frame), firstEntryIndex);
 }
+
+const filterQueryAtom = atomFamily((_frame: Frame) => atomWithReset(''));
 
 export const $filterQuery = atomFamily((frame: Frame) =>
   atom(
@@ -48,29 +55,41 @@ export const $filterQuery = atomFamily((frame: Frame) =>
         set(filterQueryAtom(frame), RESET);
         set($modes(frame), (prev) => prev.filter((m) => m !== 'filter'));
         const entries = get($filteredEntries(frame));
-        updateStartRow(entries, frame);
+        updateFirstVisibleEntryIndex(entries, frame);
         return;
       }
-      if (newVal !== '') {
-        // パターン入力中の場合を考慮して、
-        // 無効な正規表現の場合は catch 句で握りつぶす
-        try {
-          // フィルターにマッチしない (非表示になる) entry を非選択にする
-          // フィルタリング自体は entries の getter で行う
-          const re = new RegExp(newVal, 'i');
-          let entries = get($filteredEntries(frame));
-          entries = entries.filter((v) => re.test(v.name));
-          updateStartRow(entries, frame);
-          const names = new Set(entries.map((e) => e.name));
-          set($selectedEntryNames(frame), (prev) =>
-            prev.filter((n) => names.has(n)),
-          );
-        } catch (_e) {
-          // 握りつぶす ✊💥
-        }
-      }
+
       set(filterQueryAtom(frame), newVal);
       set($modes(frame), (prev) => [...prev, 'filter']);
+
+      if (newVal.trim() === '') {
+        return;
+      }
+
+      // ------------------------------------
+      // エントリーが filter-out されるため、
+      // $firstVisibleEntryIndex や $selectedEntryNames を更新する。
+      // できれば $filteredEntries 内で行いたいところだが、
+      // read-only atom であり、setter が無いため、ここで行う。
+      // (getter 内で atom の更新はしたくない)
+
+      // パターン入力中は容易に不完全な正規表現になり得るため、
+      // try-catch でしっかりガードする。
+      try {
+        const re = new RegExp(newVal, 'i');
+        let entries = get($filteredEntries(frame));
+        entries = entries.filter((e) => re.test(e.name));
+        updateFirstVisibleEntryIndex(entries, frame);
+
+        // filter-out される (だろう) エントリーを非選択にする。
+        // (filter-out 自体は $filteredEntries で行われる)
+        const entryNames = new Set(entries.map((e) => e.name));
+        set($selectedEntryNames(frame), (prev) =>
+          prev.filter((n) => entryNames.has(n)),
+        );
+      } catch (_e) {
+        // 握りつぶす ✊💥
+      }
     },
   ),
 );
