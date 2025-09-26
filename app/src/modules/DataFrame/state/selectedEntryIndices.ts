@@ -25,16 +25,21 @@ export const $selectedEntryIndices = atomFamily((frame: Frame) =>
         set($selectedEntryNames(frame), RESET);
         return;
       }
+
       // `..` は選択できないようにする。
       const indices = [...new Set(newVal)].sort().filter((i) => i !== 0);
       if (shallowEqualArray(indices, curVal)) {
         return;
       }
+
       const entries = get($filteredEntries(frame));
-      const allExist = indices.every((i) => entries[i] !== undefined);
-      if (!allExist) {
+
+      // 無効なインデックスがあれば、更新せず return する。
+      const allValid = indices.every((i) => entries[i] !== undefined);
+      if (!allValid) {
         return;
       }
+
       const names = indices.map((i) => entries[i].name);
       set($selectedEntryNames(frame), names);
     },
