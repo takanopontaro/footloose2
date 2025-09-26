@@ -34,9 +34,9 @@ export const $selectedEntryIndices = atomFamily((frame: Frame) =>
 
       const entries = get($filteredEntries(frame));
 
-      // 無効なインデックスがあれば、更新せず return する。
-      const allValid = indices.every((i) => entries[i] !== undefined);
-      if (!allValid) {
+      // 無効な値があれば、更新せず return する。
+      const hasInvalid = indices.some((i) => entries[i] === undefined);
+      if (hasInvalid) {
         return;
       }
 
