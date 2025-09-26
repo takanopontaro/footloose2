@@ -10,11 +10,7 @@ import type {
   WsErrorResponse,
   WsResponse,
 } from '@modules/App/types';
-import type {
-  CursorDirection,
-  Entry,
-  SortCriterion,
-} from '@modules/DataFrame/types';
+import type { CursorDirection } from '@modules/DataFrame/types';
 
 function getOtherFrame(frame: Frame): Frame {
   return frame === 'a' ? 'b' : 'a';
@@ -121,68 +117,6 @@ function isCommandErrorResp(resp: WsResponse): resp is WsCommandErrorResponse {
   return resp.status === 'COMMAND_ERROR';
 }
 
-// Map of size units to byte counts.
-const sizeUnits = new Map([
-  ['B', 1],
-  ['K', 1024],
-  ['M', 1024 ** 2],
-  ['G', 1024 ** 3],
-  ['T', 1024 ** 4],
-]);
-
-// Convert a size string with units to a byte count.
-// '1.5M' -> 1572864
-function sizeToBytes(size: string): number {
-  if (size === '0') {
-    return 0;
-  }
-  const unit = size.slice(-1);
-  const value = parseFloat(size.slice(0, -1));
-  return value * (sizeUnits.get(unit) ?? 1);
-}
-
-// Perform a comparison appropriate for the field.
-function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
-  if (field === 'size') {
-    return sizeToBytes(a.size) - sizeToBytes(b.size);
-  }
-  if (field === 'time') {
-    return a.time.localeCompare(b.time);
-  }
-  if (field === 'name') {
-    return a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase() ? 1 : -1;
-  }
-  if (a[field] === b[field]) {
-    return 0;
-  }
-  return a[field] > b[field] ? 1 : -1;
-}
-
-// Sort an array of entries.
-function sortEntries(entries: Entry[], criterion: SortCriterion): void {
-  entries.sort((a, b) => {
-    const { field, order } = criterion;
-    let comparison = compareFields(a, b, field);
-    if (order === 'desc') {
-      comparison *= -1;
-    }
-    return comparison;
-  });
-}
-
-function sortDirPosition(entries: Entry[], pos: SortCriterion['dir']): void {
-  if (pos === 'none') {
-    return;
-  }
-  const sortDirection = pos === 'bottom' ? -1 : 1;
-  entries.sort((a, b) => {
-    const aIsDir = a.perm.startsWith('d');
-    const bIsDir = b.perm.startsWith('d');
-    const res = aIsDir === bIsDir ? 0 : aIsDir ? -1 : 1;
-    return res * sortDirection;
-  });
-}
-
 export {
   getPrevName,
   getOtherFrame,
@@ -193,6 +127,4 @@ export {
   handleWsSendError,
   isErrorResp,
   isCommandErrorResp,
-  sortEntries,
-  sortDirPosition,
 };
