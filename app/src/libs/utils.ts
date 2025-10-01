@@ -79,7 +79,7 @@ function cycleIndex(
   delta: number,
   totalItems: number,
 ): number {
-  return (curIndex + delta + totalItems) % totalItems;
+  return (((curIndex + delta) % totalItems) + totalItems) % totalItems;
 }
 
 export {
