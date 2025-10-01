@@ -7,7 +7,7 @@ import {
   getTargetNames,
 } from '@modules/DataFrame/api';
 import {
-  getPrevName,
+  getPrevDirName,
   isCommandErrorResp,
   isErrorResp,
   wsSend,
@@ -87,10 +87,13 @@ function changeVirtualDir(
         return;
       }
       const { entries, path: p } = resp.data;
-      const prevName = getPrevName(p, frame);
+      const prevDirName = getPrevDirName(p, frame);
       writeState($currentDir(frame), p);
       writeState($rawEntries(frame), entries);
-      writeState($activeEntryName(frame), prevName === null ? RESET : prevName);
+      writeState(
+        $activeEntryName(frame),
+        prevDirName === null ? RESET : prevDirName,
+      );
       writeState($selectedEntryNames(frame), RESET);
     },
     frame,

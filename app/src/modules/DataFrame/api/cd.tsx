@@ -4,7 +4,7 @@ import { $activeFrame, $config, $modal } from '@modules/App/state';
 import { changeVirtualDir, getTargetName } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
-  getPrevName,
+  getPrevDirName,
   isCommandErrorResp,
   isErrorResp,
   wsSend,
@@ -53,10 +53,13 @@ function changeDir(
       }
       writeState($virtualDirInfo(frame), RESET);
       const { entries, path } = resp.data;
-      const prevName = getPrevName(path, frame);
+      const prevDirName = getPrevDirName(path, frame);
       writeState($currentDir(frame), path);
       writeState($rawEntries(frame), entries);
-      writeState($activeEntryName(frame), prevName === null ? RESET : prevName);
+      writeState(
+        $activeEntryName(frame),
+        prevDirName === null ? RESET : prevDirName,
+      );
       writeState($selectedEntryNames(frame), RESET);
       if (!historyMode) {
         writeState($historyCopy(frame), RESET);
