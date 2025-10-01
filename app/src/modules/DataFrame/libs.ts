@@ -101,6 +101,19 @@ function calcGridIndex(
   return newIndex;
 }
 
+// カーソルの移動方向に基づいて、グリッド内の次のインデックスを計算する。
+// ループする。例えばカレントが 6 の時、移動量と移動先の関係は以下の通り。
+// 上に 1 → 2 / 2 → 9 (10 が無いため)
+// 右に 1 → 7 / 2 → 8 (下の段に行く)
+// 下に 1 → 9 (10 が無いため) / 2 → 2 (10 → 2 という動きをする)
+// 左に 1 → 5 / 2 → 4 / 3 → 3 (上の段に行く)
+// +----+----+----+----+
+// |  0 |  1 |  2 |  3 |
+// +----+----+----+----+
+// |  4 |  5 |  * |  7 |
+// +----+----+----+----+
+// |  8 |  9 |    |    |
+// +----+----+----+----+
 function cycleGridIndex(
   curIndex: number,
   delta: number,
@@ -108,10 +121,14 @@ function cycleGridIndex(
   totalItems: number,
   totalCells: number,
 ): number {
+  // グリッドなので totalItems ではなく totalCells を基準に循環させる。
   const newIndex = cycleIndex(curIndex, delta, totalCells);
   if (newIndex < totalItems) {
     return newIndex;
   }
+  // 移動先にエントリーが無い場合、ここに入る。
+  // (コメントのグリッドで言うと、10, 11 の時)
+  // カーソルの移動方向に基づいて、新しい移動先を決める。
   switch (direction) {
     case 'up':
     case 'left':
