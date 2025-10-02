@@ -5,6 +5,7 @@ import { $currentDir } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
 
+// カレントディレクトリを更新する。
 export const useCurrentDir = (frame: Frame, initialDir: string): string => {
   const [currentDir, setCurrentDir] = useAtom($currentDir(frame));
   const api = useAtomValue($api);

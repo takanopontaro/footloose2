@@ -39,7 +39,7 @@ function getFallbackActiveEntryName(
 
 // 選択行だったエントリーが削除された場合を考慮した、新しい選択行リストを返す。
 // filter-out されているエントリーは選択対象外のため、
-// 単純に filteredEntries に含まれないエントリーを除外するだけでよい。
+// 単純に $filteredEntries に含まれないエントリーを除外するだけでよい。
 // 結果として、削除されたエントリーも省かれる。
 function getFallbackSelectedEntryNames(
   filteredEntryNames: Set<string>,
@@ -48,6 +48,8 @@ function getFallbackSelectedEntryNames(
   return selectedEntryNames.filter((name) => filteredEntryNames.has(name));
 }
 
+// ディレクトリが更新された時の処理を行う。
+// サーバーからイベントが飛んでくるので、エントリーの更新などを行う。
 export const useDirUpdate = (frame: Frame): void => {
   const ws = useAtomValue($ws);
 
@@ -78,7 +80,7 @@ export const useDirUpdate = (frame: Frame): void => {
         }
 
         // コールバック引数の set, get は即時反映なため、
-        // filteredEntries には既に newRawEntries が反映されている。
+        // $filteredEntries には既に newRawEntries が反映されている。
         const filteredEntries = get($filteredEntries(frame));
         const filteredEntryNames = new Set(filteredEntries.map((e) => e.name));
         const selectedEntryNames = get($selectedEntryNames(frame));

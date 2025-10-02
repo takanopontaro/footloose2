@@ -6,6 +6,8 @@ import { $currentDir } from '@modules/DataFrame/state';
 import type { Frame } from '@modules/App/types';
 import type { Entry, PreviewInfo } from '@modules/DataFrame/types';
 
+// エントリーの種類に応じて、プレビュー用のタグを返す。
+// 画像 <img> / ビデオ・オーディオ <video> / その他 <iframe>
 export const usePreview = (
   entry: Entry | null,
   frame: Frame,
@@ -20,6 +22,9 @@ export const usePreview = (
       return { node: null, ref: null };
     }
 
+    // /preview/* はサーバーが提供する特別なルーティングで、
+    // ファイルシステム上のリソースをロードできる。
+    // 例えば /preview/foo/bar/baz.jpg だと /foo/bar/baz.jpg をロードする。
     const src = `/preview${curDir}/${entry.name}`;
     const type = mime.getType(src);
 

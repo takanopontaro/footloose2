@@ -14,6 +14,7 @@ type ReturnValue = {
   handleFocus: (e: FocusEvent) => void;
 };
 
+// モーダル操作系の共通処理を行う。
 export const useModal = (
   dialogRef: RefObject<HTMLDialogElement | null>,
   scope: Scope,

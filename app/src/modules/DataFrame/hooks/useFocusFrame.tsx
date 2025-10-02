@@ -5,6 +5,7 @@ import { $activeFrame, $scope } from '@modules/App/state';
 import type { RefObject } from 'react';
 import type { Frame } from '@modules/App/types';
 
+// 条件により、フレームにフォーカスを当てる。
 export const useFocusFrame = (
   frame: Frame,
   frameRef: RefObject<HTMLDivElement | null>,

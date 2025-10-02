@@ -6,6 +6,9 @@ import { $currentDir } from '@modules/DataFrame/state';
 
 import type { Frame, WsWatchErrorResponse } from '@modules/App/types';
 
+// ウォッチエラーを処理する。
+// 今いるディレクトリが削除されるなど、何か問題が起きた時に発生する。
+// フォールバックとしてホームディレクトリに移動する。
 export const useWatchError = (frame: Frame): void => {
   const ws = useAtomValue($ws);
   const api = useAtomValue($api);
@@ -17,6 +20,7 @@ export const useWatchError = (frame: Frame): void => {
         const { msg, path } = resp.data;
         if (path === curDir) {
           api.writeLog(msg, 'error');
+          // ホームディレクトリに移動する。
           api.changeDir('~', frame);
         }
       },

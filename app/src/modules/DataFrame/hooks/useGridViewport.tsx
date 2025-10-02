@@ -12,6 +12,8 @@ import {
 import type { RefObject } from 'react';
 import type { Frame } from '@modules/App/types';
 
+// グリッドのビューポートに関する処理を行う。
+// 表示可能行数や開始エントリーの更新など。
 export const useGridViewport = (
   frame: Frame,
   gridRef: RefObject<HTMLDivElement | null>,

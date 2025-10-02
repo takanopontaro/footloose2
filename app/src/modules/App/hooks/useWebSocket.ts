@@ -6,6 +6,7 @@ import { Ws } from '@libs/ws';
 import type { Atom } from 'jotai';
 import type { Loadable } from 'jotai/vanilla/utils/loadable';
 
+// WebSocket サーバーに接続し、Ws クラスのインスタンスを返す。
 export function useWebSocket(port: number): Atom<Loadable<Promise<typeof Ws>>> {
   return useMemo(() => {
     const atm = atom<Promise<typeof Ws>>(
