@@ -2,9 +2,11 @@ import { store } from '@libs/store';
 
 import type { Direction } from '@modules/App/types';
 
-// この setter, getter は React のライフサイクルとは関係なく即反映される。
+// jotai の setter と getter
+// フックとは違い、React のライフサイクルとは関係なく即反映される。
 const { get: readState, set: writeState } = store;
 
+// ふたつのオブジェクトが同じかどうか、浅い比較を行う。
 function shallowEqualObject(
   a: Record<string, unknown>,
   b: Record<string, unknown>,
@@ -25,6 +27,7 @@ function shallowEqualObject(
   return true;
 }
 
+// ふたつの配列が同じかどうか、浅い比較を行う。
 function shallowEqualArray(a: unknown[], b: unknown[]): boolean {
   if (a === b) {
     return true;
@@ -35,16 +38,14 @@ function shallowEqualArray(a: unknown[], b: unknown[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-function getEl<T extends HTMLElement = HTMLElement>(
-  selector: string,
-): T | null {
-  return document.querySelector<T>(selector) ?? null;
-}
-
+// 対象エリア内のフォーカス可能な要素を、移動方向に基づいて返す。
+// 最初の要素の逆方向は最後の要素、最後の要素の順方向は最初の要素、
+// というように循環して返す。
 function getFocusableEl(
   container: HTMLElement,
   direction: Direction,
 ): HTMLElement | null {
+  // フォーカス可能な要素のセレクター
   const selectors = [
     'a[href]',
     'button:not([disabled])',
@@ -52,28 +53,39 @@ function getFocusableEl(
     'select:not([disabled])',
     'textarea:not([disabled])',
   ];
+
   const elements = Array.from(
     container.querySelectorAll<HTMLElement>(selectors.join(',')),
   );
   if (elements.length === 0) {
     return null;
   }
+
   const activeEl = document.activeElement as HTMLElement | null;
   const index = activeEl ? elements.indexOf(activeEl) : -1;
-  if (index !== -1) {
-    const next = cycleIndex(index, direction, elements.length);
-    return elements[next];
+
+  // 以下の場合、移動方向に基づいたフォーカス可能要素を返す。
+  // (初期フォーカス用として使用される想定)
+  // - どの要素にもフォーカスが当たっていない
+  // - 当たってはいるがその要素が対象エリア内にない
+  if (index === -1) {
+    return direction === 1 ? elements[0] : elements[elements.length - 1];
   }
-  return direction === 1 ? elements[0] : elements[elements.length - 1];
+
+  // 移動方向 (1 | -1) を移動量として再利用する。
+  const delta = direction;
+  const next = cycleIndex(index, delta, elements.length);
+  return elements[next];
 }
 
+// CSS カスタムプロパティを取得する。
 function getCssVariable(name: string): string {
   const root = document.documentElement;
   return getComputedStyle(root).getPropertyValue(name).trim();
 }
 
-// インデックスを循環させる
-// 最小値を下回ると最大値に、最大値を上回ると最小値に戻る
+// インデックスを循環させる。
+// 最小値を下回ると最大値に、最大値を上回ると最小値に戻る。
 function cycleIndex(
   curIndex: number,
   delta: number,
@@ -87,7 +99,6 @@ export {
   writeState,
   shallowEqualObject,
   shallowEqualArray,
-  getEl,
   getFocusableEl,
   getCssVariable,
   cycleIndex,
