@@ -5,6 +5,7 @@ import { $rawEntries, $sort } from '@modules/DataFrame/state';
 import type { Frame } from '@modules/App/types';
 import type { Entry, SortCriterion } from '@modules/DataFrame/types';
 
+// 容量の単位とバイト数の定義
 const sizeUnits = new Map([
   ['B', 1],
   ['K', 1024],
@@ -13,6 +14,7 @@ const sizeUnits = new Map([
   ['T', 1024 ** 4],
 ]);
 
+// 容量表記からバイト数を算出する。
 // '1.5M' -> 1572864
 function sizeToBytes(size: string): number {
   if (size === '0') {
@@ -23,6 +25,7 @@ function sizeToBytes(size: string): number {
   return value * (sizeUnits.get(unit) ?? 1);
 }
 
+// エントリーの指定したフィールドを比較する。
 function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
   if (field === 'size') {
     return sizeToBytes(a.size) - sizeToBytes(b.size);
@@ -39,6 +42,7 @@ function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
   return a[field] > b[field] ? 1 : -1;
 }
 
+// エントリーをソートする。
 function sortEntries(entries: Entry[], criterion: SortCriterion): void {
   entries.sort((a, b) => {
     const { field, order } = criterion;
@@ -50,6 +54,8 @@ function sortEntries(entries: Entry[], criterion: SortCriterion): void {
   });
 }
 
+// ディレクトリの表示位置を変更する。
+// 上にまとめる、下にまとめる、等。
 function sortDirPosition(entries: Entry[], pos: SortCriterion['dir']): void {
   if (pos === 'none') {
     return;
