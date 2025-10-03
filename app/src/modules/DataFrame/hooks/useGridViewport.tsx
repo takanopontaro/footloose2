@@ -44,7 +44,7 @@ export const useGridViewport = (
       setFirstEntryIndex(0);
       return;
     }
-    // スクロール無しで全 entry を表示できる場合
+    // スクロール無しで全エントリーを表示できる場合
     if (index < maxRowCount * gridColumnCount) {
       setFirstEntryIndex(0);
       return;
