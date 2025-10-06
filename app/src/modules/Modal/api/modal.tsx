@@ -16,6 +16,8 @@ import {
 
 import type { Direction } from '@modules/App/types';
 
+// ListModal のカーソルを移動する。カーソルはループする。
+// filter-out 等でカレント行が無い場合は、最初の項目をカレントにする。
 function moveCursorListModal(step: number): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
@@ -24,7 +26,10 @@ function moveCursorListModal(step: number): void {
   writeState($listModalActiveEntryName, data[next].value);
 }
 
-function confirmPrimaryActionListModal(): void {
+// ListModal のプライマリ処理を実行する。
+// 引数として ListModalData か undefined を渡す。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executePrimaryActionListModal(): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
   const item = data.find((d) => d.value === name);
@@ -34,7 +39,10 @@ function confirmPrimaryActionListModal(): void {
   focusDataFrame();
 }
 
-function confirmSecondaryActionListModal(): void {
+// ListModal のセカンダリ処理を実行する。
+// 引数として ListModalData か undefined を渡す。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executeSecondaryActionListModal(): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
   const item = data.find((d) => d.value === name);
@@ -44,20 +52,22 @@ function confirmSecondaryActionListModal(): void {
   focusDataFrame();
 }
 
-function cancelActionListModal(): void {
-  const data = readState($listModalDataset);
-  const name = readState($listModalActiveEntryName);
-  const item = data.find((d) => d.value === name);
+// ListModal のキャンセル処理を実行する。
+// 引数は無し。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executeCancelActionListModal(): void {
   const { cancel } = readState($listModalAction);
-  cancel?.(item);
+  cancel?.();
   writeState($modal, RESET);
   focusDataFrame();
 }
 
+// ListModal の FilterQuery をクリアする。
 function clearListModalFilterQuery(): void {
   writeState($listModalFilterQuery, RESET);
 }
 
+// PromptModal を表示する。
 function showPromptModal(defaultValue: string): Promise<string> {
   return new Promise((resolve) => {
     writeState($promptModalData, defaultValue);
@@ -69,7 +79,10 @@ function showPromptModal(defaultValue: string): Promise<string> {
   });
 }
 
-function confirmActionPromptModal(): void {
+// PromptModal のプライマリ処理を実行する。(セカンダリ処理は無し)
+// 引数としてユーザー入力値を渡す。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executeActionPromptModal(): void {
   const data = readState($promptModalData);
   const { primary } = readState($promptModalAction);
   primary(data);
@@ -77,14 +90,17 @@ function confirmActionPromptModal(): void {
   focusDataFrame();
 }
 
-function cancelActionPromptModal(): void {
-  const data = readState($promptModalData);
+// PromptModal のキャンセル処理を実行する。
+// 引数は無し。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executeCancelActionPromptModal(): void {
   const { cancel } = readState($promptModalAction);
-  cancel?.(data);
+  cancel?.();
   writeState($modal, RESET);
   focusDataFrame();
 }
 
+// PromptModal 内のフォーカス可能要素にフォーカスを当てる。
 function focusElementPromptModal(direction: Direction): void {
   const ref = readState($modalRef);
   if (ref !== null) {
@@ -92,6 +108,7 @@ function focusElementPromptModal(direction: Direction): void {
   }
 }
 
+// ConfirmModal を表示する。
 function showConfirmModal(message: string): Promise<string> {
   return new Promise((resolve) => {
     writeState($confirmModalAction, {
@@ -102,20 +119,27 @@ function showConfirmModal(message: string): Promise<string> {
   });
 }
 
-function confirmActionConfirmModal(): void {
+// ConfirmModal のプライマリ処理を実行する。(セカンダリ処理は無し)
+// 引数は無し。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executeActionConfirmModal(): void {
   const { primary } = readState($confirmModalAction);
   primary();
   writeState($modal, RESET);
   focusDataFrame();
 }
 
-function cancelActionConfirmModal(): void {
+// ConfirmModal のキャンセル処理を実行する。
+// 引数は無し。
+// モーダルを閉じ、DataFrame にフォーカスを戻す。
+function executeCancelActionConfirmModal(): void {
   const { cancel } = readState($confirmModalAction);
   cancel?.();
   writeState($modal, RESET);
   focusDataFrame();
 }
 
+// ConfirmModal 内のフォーカス可能要素にフォーカスを当てる。
 function focusElementConfirmModal(direction: Direction): void {
   const ref = readState($modalRef);
   if (ref !== null) {
@@ -125,16 +149,16 @@ function focusElementConfirmModal(direction: Direction): void {
 
 export {
   moveCursorListModal,
-  confirmPrimaryActionListModal,
-  confirmSecondaryActionListModal,
-  cancelActionListModal,
+  executePrimaryActionListModal,
+  executeSecondaryActionListModal,
+  executeCancelActionListModal,
   clearListModalFilterQuery,
   showPromptModal,
-  confirmActionPromptModal,
-  cancelActionPromptModal,
+  executeActionPromptModal,
+  executeCancelActionPromptModal,
   focusElementPromptModal,
   showConfirmModal,
-  confirmActionConfirmModal,
-  cancelActionConfirmModal,
+  executeActionConfirmModal,
+  executeCancelActionConfirmModal,
   focusElementConfirmModal,
 };

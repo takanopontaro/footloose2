@@ -549,21 +549,21 @@ const commands: CommandsConfig = [
     },
   },
   {
-    name: 'ConfirmPrimaryActionListModal',
+    name: 'ExecutePrimaryActionListModal',
     action(api, combo) {
-      api.confirmPrimaryActionListModal();
+      api.executePrimaryActionListModal();
     },
   },
   {
-    name: 'ConfirmSecondaryActionListModal',
+    name: 'ExecuteSecondaryActionListModal',
     action(api, combo) {
-      api.confirmSecondaryActionListModal();
+      api.executeSecondaryActionListModal();
     },
   },
   {
-    name: 'CancelActionListModal',
+    name: 'ExecuteCancelActionListModal',
     action(api, combo) {
-      api.cancelActionListModal();
+      api.executeCancelActionListModal();
     },
   },
   {
@@ -581,15 +581,15 @@ const commands: CommandsConfig = [
     },
   },
   {
-    name: 'ConfirmActionPromptModal',
+    name: 'ExecuteActionPromptModal',
     action(api, combo) {
-      api.confirmActionPromptModal();
+      api.executeActionPromptModal();
     },
   },
   {
-    name: 'CancelActionPromptModal',
+    name: 'ExecuteCancelActionPromptModal',
     action(api, combo) {
-      api.cancelActionPromptModal();
+      api.executeCancelActionPromptModal();
     },
   },
 
@@ -601,15 +601,15 @@ const commands: CommandsConfig = [
     },
   },
   {
-    name: 'ConfirmActionConfirmModal',
+    name: 'ExecuteActionConfirmModal',
     action(api, combo) {
-      api.confirmActionConfirmModal();
+      api.executeActionConfirmModal();
     },
   },
   {
-    name: 'CancelActionConfirmModal',
+    name: 'ExecuteCancelActionConfirmModal',
     action(api, combo) {
-      api.cancelActionConfirmModal();
+      api.executeCancelActionConfirmModal();
     },
   },
 ];

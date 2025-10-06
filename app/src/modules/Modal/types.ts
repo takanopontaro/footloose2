@@ -1,9 +1,11 @@
+export type ModalCancelFn = () => void;
+
 export type ListModalData = { label: string; value: string };
 
 export type ListModalFn = (data?: ListModalData) => void;
 
 export type ListModalAction = {
-  cancel?: ListModalFn;
+  cancel?: ModalCancelFn;
   primary: ListModalFn;
   secondary?: ListModalFn;
 };
@@ -11,13 +13,13 @@ export type ListModalAction = {
 export type PromptModalFn = (data: string) => void;
 
 export type PromptModalAction = {
-  cancel?: PromptModalFn;
+  cancel?: ModalCancelFn;
   primary: PromptModalFn;
 };
 
 export type ConfirmModalFn = () => void;
 
 export type ConfirmModalAction = {
-  cancel?: ConfirmModalFn;
+  cancel?: ModalCancelFn;
   primary: ConfirmModalFn;
 };

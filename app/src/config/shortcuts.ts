@@ -718,17 +718,17 @@ const shortcuts: ShortcutsConfig = {
     ],
     'enter': [
       {
-        cmd: 'ConfirmPrimaryActionListModal',
+        cmd: 'ExecutePrimaryActionListModal',
       },
     ],
     'esc': [
       {
-        cmd: 'CancelActionListModal',
+        cmd: 'ExecuteCancelActionListModal',
       },
     ],
     'backspace': [
       {
-        cmd: 'ConfirmSecondaryActionListModal',
+        cmd: 'ExecuteSecondaryActionListModal',
         tags: ['ListModal:bookmark'],
       },
     ],
@@ -793,17 +793,17 @@ const shortcuts: ShortcutsConfig = {
     ],
     'enter': [
       {
-        cmd: 'ConfirmActionPromptModal',
+        cmd: 'ExecuteActionPromptModal',
         tags: ['PromptModal:input', 'PromptModal:confirm'],
       },
       {
-        cmd: 'CancelActionPromptModal',
+        cmd: 'ExecuteCancelActionPromptModal',
         tags: ['PromptModal:cancel'],
       },
     ],
     'esc': [
       {
-        cmd: 'CancelActionPromptModal',
+        cmd: 'ExecuteCancelActionPromptModal',
       },
     ],
   },
@@ -822,17 +822,17 @@ const shortcuts: ShortcutsConfig = {
     ],
     'enter': [
       {
-        cmd: 'ConfirmActionConfirmModal',
+        cmd: 'ExecuteActionConfirmModal',
         tags: ['ConfirmModal:confirm'],
       },
       {
-        cmd: 'CancelActionConfirmModal',
+        cmd: 'ExecuteCancelActionConfirmModal',
         tags: ['ConfirmModal:cancel'],
       },
     ],
     'esc': [
       {
-        cmd: 'CancelActionConfirmModal',
+        cmd: 'ExecuteCancelActionConfirmModal',
       },
     ],
   },
