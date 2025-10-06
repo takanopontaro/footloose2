@@ -7,14 +7,18 @@ import type { ReactNode } from 'react';
 import type { Direction } from '@modules/App/types';
 import type { LogLevel } from '@modules/LogFrame/types';
 
+// ログを書き出す。
 function writeLog(log: ReactNode, level: LogLevel = 'none'): void {
   writeState($logData, { level, log });
 }
 
+// ログをすべてクリアする。
 function clearAllLogs(): void {
   writeState($logData, RESET);
 }
 
+// LogFrame をスクロールする。
+// スクロール量は Config の logScrollAmount に準拠する。
 function scrollLogFrame(step: number): void {
   const ref = readState($logFrameRef);
   if (ref !== null) {
@@ -23,6 +27,7 @@ function scrollLogFrame(step: number): void {
   }
 }
 
+// LogFrame をページ単位でスクロールする。
 function scrollByPageLogFrame(direction: Direction): void {
   const ref = readState($logFrameRef);
   if (ref !== null) {
@@ -30,6 +35,7 @@ function scrollByPageLogFrame(direction: Direction): void {
   }
 }
 
+// LogFrame を端までスクロールする。
 function scrollToEdgeLogFrame(direction: Direction): void {
   const ref = readState($logFrameRef);
   if (ref !== null) {
