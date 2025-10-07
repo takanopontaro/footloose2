@@ -30,6 +30,7 @@ export type VirtualDirKind = 'tar' | 'tgz' | 'zip';
 
 export type SymlinkInfo = {
   target: string;
+  /** d:ディレクトリ | e:エラー | f:ファイル */
   type: 'd' | 'e' | 'f';
 };
 
