@@ -8,36 +8,57 @@ import {
 
 import type { SymlinkInfo } from '@modules/DataFrame/types';
 
-// 現在行 (name) を取得する。
-// EntryFilter により非表示になっている場合は空文字を返す。
+/**
+ * カレント行の name を返す。
+ * filter-out されている場合は空文字を返す。
+ *
+ * @param frame - 対象フレーム
+ * @param allowParent - `..` を含むか否か
+ *   false の時は `..` がカレント行であっても空文字を返す。
+ * @return カレント行の name または空文字
+ */
 function getTargetName(
   frame = readState($activeFrame),
   allowParent = false,
 ): string {
-  const curName = readState($activeEntryName(frame));
+  const name = readState($activeEntryName(frame));
   const entries = readState($filteredEntries(frame));
-  const names = new Set(entries.map((e) => e.name));
-  if (curName === '' || !names.has(curName)) {
+  const entryNames = new Set(entries.map((e) => e.name));
+  if (name === '' || !entryNames.has(name)) {
     return '';
   }
-  if (!allowParent && curName === '..') {
+  if (!allowParent && name === '..') {
     return '';
   }
-  return curName;
+  return name;
 }
 
-// 選択行の配列 (name) を取得する。
-// 空なら、現在行 (name) を取得する。
-// EntryFilter により非表示になっている場合は空文字を返す。
-function getTargetNames(frame = readState($activeFrame)): string[] {
-  const selectedNames = readState($selectedEntryNames(frame));
-  if (selectedNames.length > 0) {
-    return selectedNames;
+/**
+ * 選択行の name 配列を返す (`..` を含む)。
+ * 未選択ならカレント行の name を返す。
+ * カレント行が filter-out されている場合は空文字を返す。
+ *
+ * @param frame - 対象フレーム
+ * @param allowParent - `..` を含むか否か
+ *   false の時は `..` がカレント行であっても空文字を返す。
+ *   選択行が無い場合のみ有効。
+ * @return 選択行の name 配列または空配列
+ */
+function getTargetNames(
+  frame = readState($activeFrame),
+  allowParent = false,
+): string[] {
+  const names = readState($selectedEntryNames(frame));
+  if (names.length > 0) {
+    return names;
   }
-  const name = getTargetName(frame);
+  const name = getTargetName(frame, allowParent);
   return name === '' ? [] : [name];
 }
 
+/**
+ * エントリーの種類を照合する。
+ */
 function is(
   name: string,
   type: string,
@@ -48,30 +69,60 @@ function is(
   return entry?.perm.startsWith(type) === true;
 }
 
+/**
+ * そのエントリーがディレクトリか否かを返す。
+ *
+ * @param name - エントリーの name
+ * @param frame - 対象フレーム
+ * @return ディレクトリか否か
+ */
 function isDir(name: string, frame = readState($activeFrame)): boolean {
   return is(name, 'd', frame);
 }
 
+/**
+ * そのエントリーがファイルか否かを返す。
+ *
+ * @param name - エントリーの name
+ * @param frame - 対象フレーム
+ * @return ファイルか否か
+ */
 function isFile(name: string, frame = readState($activeFrame)): boolean {
   return is(name, '-', frame);
 }
 
+/**
+ * そのエントリーがシンボリックリンクか否かを返す。
+ *
+ * @param name - エントリーの name
+ * @param frame - 対象フレーム
+ * @return シンボリックリンクか否か
+ */
 function isSymlink(name: string, frame = readState($activeFrame)): boolean {
   return is(name, 'l', frame);
 }
 
+/**
+ * シンボリックリンクの情報を返す。
+ *
+ * @param name - エントリーの name
+ * @param frame - 対象フレーム
+ * @return SymlinkInfo または null (以下のような場合)
+ *   - シンボリックリンクではない。
+ *   - 情報取得時にエラーが起きた。
+ */
 function getSymlinkInfo(
   name: string,
   frame = readState($activeFrame),
-): SymlinkInfo | undefined {
+): SymlinkInfo | null {
   const entries = readState($filteredEntries(frame));
   const entry = entries.find((e) => e.name === name);
-  if (!entry || !entry.perm.startsWith('l')) {
-    return;
+  if (!entry || !isSymlink(name, frame)) {
+    return null;
   }
   const matches = entry.link.match(/^([dfe]):(.+)$/);
   if (!matches) {
-    return;
+    return null;
   }
   return {
     type: matches[1] as SymlinkInfo['type'],
