@@ -18,6 +18,7 @@ import {
 } from '@modules/Modal/state';
 
 import type { Frame, WsBookmarkResponse } from '@modules/App/types';
+import type { ChangeDirOptions } from '@modules/DataFrame/types';
 import type { ListModalAction } from '@modules/Modal/types';
 
 function showAllBookmarks(frame = readState($activeFrame)): void {
@@ -36,13 +37,7 @@ function showAllBookmarks(frame = readState($activeFrame)): void {
       }
       const dataset = bookmarks.map((v) => ({ label: v.name, value: v.path }));
       const action: ListModalAction = {
-        primary: (data) => {
-          if (data) {
-            changeDir(data.value, frame, false, (msg) =>
-              writeLog(msg, 'error'),
-            );
-          }
-        },
+        primary: (data) => data && changeDir(data.value, frame),
         secondary: (data) => data && deleteBookmark(data.value),
       };
       writeState($listModalActiveEntryName, dataset[0].value);
@@ -92,28 +87,32 @@ function navigate(
   frame: Frame,
   historyMode: boolean,
 ): void {
-  changeDir(path, frame, historyMode, (msg: string) => {
-    writeLog(msg, 'error');
-    let history = readState($history(frame));
-    history = history.filter((h) => h !== path);
-    writeState($history(frame), history);
-    if (history.length <= 1) {
-      writeState($historyCopy(frame), RESET);
-      writeState($historyIndex(frame), RESET);
-      return;
-    }
-    let copy = readState($historyCopy(frame));
-    if (copy === null) {
-      return;
-    }
-    copy = copy.filter((h) => h !== path);
-    writeState($historyCopy(frame), copy);
-    const index = readState($historyIndex(frame));
-    writeState(
-      $historyIndex(frame),
-      prevIndex < index ? prevIndex : prevIndex - 1,
-    );
-  });
+  const opts: ChangeDirOptions = {
+    errorHandler: (msg) => {
+      writeLog(msg, 'error');
+      let history = readState($history(frame));
+      history = history.filter((h) => h !== path);
+      writeState($history(frame), history);
+      if (history.length <= 1) {
+        writeState($historyCopy(frame), RESET);
+        writeState($historyIndex(frame), RESET);
+        return;
+      }
+      let copy = readState($historyCopy(frame));
+      if (copy === null) {
+        return;
+      }
+      copy = copy.filter((h) => h !== path);
+      writeState($historyCopy(frame), copy);
+      const index = readState($historyIndex(frame));
+      writeState(
+        $historyIndex(frame),
+        prevIndex < index ? prevIndex : prevIndex - 1,
+      );
+    },
+    historyMode,
+  };
+  changeDir(path, frame, opts);
 }
 
 function showFullHistory(frame = readState($activeFrame)): void {

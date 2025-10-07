@@ -68,3 +68,8 @@ export type PreviewInfo = {
     | RefObject<HTMLVideoElement | null>
     | null;
 };
+
+export type ChangeDirOptions = {
+  errorHandler?: (msg: string) => void;
+  historyMode?: boolean;
+};
