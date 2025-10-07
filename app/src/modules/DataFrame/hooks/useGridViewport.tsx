@@ -13,7 +13,7 @@ import type { RefObject } from 'react';
 import type { Frame } from '@modules/App/types';
 
 // グリッドのビューポートに関する処理を行う。
-// 表示可能行数や開始エントリーの更新など。
+// 表示可能行数や開始エントリの更新など。
 export const useGridViewport = (
   frame: Frame,
   gridRef: RefObject<HTMLDivElement | null>,
@@ -44,7 +44,7 @@ export const useGridViewport = (
       setFirstEntryIndex(0);
       return;
     }
-    // スクロール無しで全エントリーを表示できる場合
+    // スクロール無しで全エントリを表示できる場合
     if (index < maxRowCount * gridColumnCount) {
       setFirstEntryIndex(0);
       return;

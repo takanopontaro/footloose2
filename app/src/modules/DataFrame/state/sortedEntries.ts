@@ -25,7 +25,7 @@ function sizeToBytes(size: string): number {
   return value * (sizeUnits.get(unit) ?? 1);
 }
 
-// エントリーの指定したフィールドを比較する。
+// エントリの指定したフィールドを比較する。
 function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
   if (field === 'size') {
     return sizeToBytes(a.size) - sizeToBytes(b.size);
@@ -42,7 +42,7 @@ function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
   return a[field] > b[field] ? 1 : -1;
 }
 
-// エントリーをソートする。
+// エントリをソートする。
 function sortEntries(entries: Entry[], criterion: SortCriterion): void {
   entries.sort((a, b) => {
     const { field, order } = criterion;

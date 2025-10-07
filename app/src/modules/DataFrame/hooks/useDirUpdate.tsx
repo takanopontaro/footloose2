@@ -13,10 +13,10 @@ import {
 import type { Frame, WsDirUpdateResponse } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
-// カレント行だったエントリーが削除された場合の、新しいカレント行を返す。
-// 新カレントは、可能な限りひとつ前のエントリーとする。
+// カレント行だったエントリが削除された場合の、新しいカレント行を返す。
+// 新カレントは、可能な限りひとつ前のエントリとする。
 // それも削除されていれば更にひとつ前…と繰り返し、無ければ `..` とする。
-// newRawEntries に対象エントリーがあっても、filter-out されている場合は
+// newRawEntries に対象エントリがあっても、filter-out されている場合は
 // カレント行にはできないため、次の候補を探す。
 function getFallbackActiveEntryName(
   oldRawEntries: Entry[],
@@ -37,10 +37,10 @@ function getFallbackActiveEntryName(
   return '..';
 }
 
-// 選択行だったエントリーが削除された場合を考慮した、新しい選択行リストを返す。
-// filter-out されているエントリーは選択対象外のため、
-// 単純に $filteredEntries に含まれないエントリーを除外するだけでよい。
-// 結果として、削除されたエントリーも省かれる。
+// 選択行だったエントリが削除された場合を考慮した、新しい選択行リストを返す。
+// filter-out されているエントリは選択対象外のため、
+// 単純に $filteredEntries に含まれないエントリを除外するだけでよい。
+// 結果として、削除されたエントリも省かれる。
 function getFallbackSelectedEntryNames(
   filteredEntryNames: Set<string>,
   selectedEntryNames: string[],
@@ -49,7 +49,7 @@ function getFallbackSelectedEntryNames(
 }
 
 // ディレクトリが更新された時の処理を行う。
-// サーバーからイベントが飛んでくるので、エントリーの更新などを行う。
+// サーバーからイベントが飛んでくるので、エントリの更新などを行う。
 export const useDirUpdate = (frame: Frame): void => {
   const ws = useAtomValue($ws);
 
@@ -85,7 +85,7 @@ export const useDirUpdate = (frame: Frame): void => {
         const filteredEntryNames = new Set(filteredEntries.map((e) => e.name));
         const selectedEntryNames = get($selectedEntryNames(frame));
 
-        // 選択行だったエントリーが削除された場合を考慮した、新しい選択行リスト。
+        // 選択行だったエントリが削除された場合を考慮した、新しい選択行リスト。
         const entryNames = getFallbackSelectedEntryNames(
           filteredEntryNames,
           selectedEntryNames,
@@ -93,7 +93,7 @@ export const useDirUpdate = (frame: Frame): void => {
 
         set($selectedEntryNames(frame), entryNames);
 
-        // カレント行だったエントリーが削除された場合の、新しいカレント行。
+        // カレント行だったエントリが削除された場合の、新しいカレント行。
         const entryName = getFallbackActiveEntryName(
           oldRawEntries,
           newRawEntryNames,

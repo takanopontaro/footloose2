@@ -26,13 +26,13 @@ function getPrevDirName(newCurDir: string, frame: Frame): null | string {
   if (prevCurDir === newCurDir || !prevCurDir.startsWith(newCurDir)) {
     return null;
   }
-  // エントリー名を抽出する。
+  // エントリ名を抽出する。
   const matches = prevCurDir.match(/[^/]+$/);
   return matches ? matches[0] : null;
 }
 
-// エントリーの総数とグリッドの列数から、グリッドの総セル数を計算する。
-// 以下だと、エントリー数は 10 で、総セル数は 12 になる。
+// エントリの総数とグリッドの列数から、グリッドの総セル数を計算する。
+// 以下だと、エントリ数は 10 で、総セル数は 12 になる。
 // +----+----+----+----+
 // |  0 |  1 |  2 |  3 |
 // +----+----+----+----+
@@ -88,8 +88,8 @@ function calcGridIndex(
     return mod === 0 ? 0 : mod + colCount;
   }
 
-  // 下移動で、次のインデックスが総エントリー数を超えた場合、同列最終行に移動する。
-  // ただし、そこにエントリーが無い場合は、最終エントリーに移動する。
+  // 下移動で、次のインデックスが総エントリ数を超えた場合、同列最終行に移動する。
+  // ただし、そこにエントリが無い場合は、最終エントリに移動する。
   const maxIndex = totalEntries - 1;
   if (newIndex > maxIndex) {
     const totalCells = calcTotalCells(totalEntries, colCount);
@@ -126,7 +126,7 @@ function cycleGridIndex(
   if (newIndex < totalItems) {
     return newIndex;
   }
-  // 移動先にエントリーが無い場合、ここに入る。
+  // 移動先にエントリが無い場合、ここに入る。
   // (コメントのグリッドで言うと、10, 11 の時)
   // カーソルの移動方向に基づいて、新しい移動先を決める。
   switch (direction) {

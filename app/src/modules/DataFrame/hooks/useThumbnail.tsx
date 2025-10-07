@@ -7,7 +7,7 @@ import type { ReactNode } from 'react';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
-// エントリーが画像の時、それを表示する img タグを返す。
+// エントリが画像の時、それを表示する img タグを返す。
 export const useThumbnail = (
   entry: Entry,
   frame: Frame,

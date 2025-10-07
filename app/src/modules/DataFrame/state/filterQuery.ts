@@ -15,7 +15,7 @@ import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
-// エントリーの filter-out に応じて、表示領域内の開始エントリーを更新する。
+// エントリの filter-out に応じて、表示領域内の開始エントリを更新する。
 function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
   const activeEntryName = readState($activeEntryName(frame));
   const gridColumnCount = readState($gridColumnCount(frame));
@@ -26,7 +26,7 @@ function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
   // $filteredEntries にはまだ未反映なためである。
   const curIndex = entries.findIndex((e) => e.name === activeEntryName);
 
-  // スクロール無しで全エントリーを表示できる場合
+  // スクロール無しで全エントリを表示できる場合
   if (curIndex === -1 || curIndex < maxRowCount * gridColumnCount) {
     writeState($firstVisibleEntryIndex(frame), 0);
     return;
@@ -67,7 +67,7 @@ export const $filterQuery = atomFamily((frame: Frame) =>
       }
 
       // ------------------------------------
-      // エントリーが filter-out されるため、
+      // エントリが filter-out されるため、
       // $firstVisibleEntryIndex や $selectedEntryNames を更新する。
       // できれば $filteredEntries 内で行いたいところだが、
       // read-only atom であり、setter が無いため、ここで行う。
@@ -81,7 +81,7 @@ export const $filterQuery = atomFamily((frame: Frame) =>
         entries = entries.filter((e) => re.test(e.name));
         updateFirstVisibleEntryIndex(entries, frame);
 
-        // filter-out される (だろう) エントリーを非選択にする。
+        // filter-out される (だろう) エントリを非選択にする。
         // (filter-out 自体は $filteredEntries で行われる)
         const entryNames = new Set(entries.map((e) => e.name));
         set($selectedEntryNames(frame), (prev) =>

@@ -57,7 +57,7 @@ function getTargetNames(
 }
 
 /**
- * エントリーの種類を照合する。
+ * エントリの種類を照合する。
  */
 function is(
   name: string,
@@ -70,9 +70,9 @@ function is(
 }
 
 /**
- * そのエントリーがディレクトリか否かを返す。
+ * そのエントリがディレクトリか否かを返す。
  *
- * @param name - エントリーの name
+ * @param name - エントリの name
  * @param frame - 対象フレーム
  * @return ディレクトリか否か
  */
@@ -81,9 +81,9 @@ function isDir(name: string, frame = readState($activeFrame)): boolean {
 }
 
 /**
- * そのエントリーがファイルか否かを返す。
+ * そのエントリがファイルか否かを返す。
  *
- * @param name - エントリーの name
+ * @param name - エントリの name
  * @param frame - 対象フレーム
  * @return ファイルか否か
  */
@@ -92,9 +92,9 @@ function isFile(name: string, frame = readState($activeFrame)): boolean {
 }
 
 /**
- * そのエントリーがシンボリックリンクか否かを返す。
+ * そのエントリがシンボリックリンクか否かを返す。
  *
- * @param name - エントリーの name
+ * @param name - エントリの name
  * @param frame - 対象フレーム
  * @return シンボリックリンクか否か
  */
@@ -105,7 +105,7 @@ function isSymlink(name: string, frame = readState($activeFrame)): boolean {
 /**
  * シンボリックリンクの情報を返す。
  *
- * @param name - エントリーの name
+ * @param name - エントリの name
  * @param frame - 対象フレーム
  * @return SymlinkInfo または null (以下のような場合)
  *   - シンボリックリンクではない。

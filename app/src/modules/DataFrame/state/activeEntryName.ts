@@ -57,7 +57,7 @@ export const $activeEntryName = atomFamily((frame: Frame) =>
       // set の後に get しても、同一トランザクションなら古い値が返ってくる。
       const activeEntryIndex = get($activeEntryIndex(frame));
 
-      // -1 ということは、newVal のエントリーが filter-out されているということ。
+      // -1 ということは、newVal のエントリが filter-out されているということ。
       // 矛盾が生じるため、リセットする。
       if (activeEntryIndex === -1) {
         set(activeEntryNameAtom(frame), RESET);

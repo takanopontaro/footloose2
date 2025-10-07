@@ -20,7 +20,7 @@ type ReturnValue = {
 };
 
 // グリッドのビューポート状態を返す。
-// 全エントリーを表示しきれているか、最終行が見えているか、等。
+// 全エントリを表示しきれているか、最終行が見えているか、等。
 export const useGridState = (
   frame: Frame,
   gridRef: RefObject<HTMLDivElement | null>,
