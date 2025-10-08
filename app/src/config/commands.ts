@@ -210,9 +210,9 @@ const commands: CommandsConfig = [
     },
   },
   {
-    name: 'BookmarkSrcDirPath',
+    name: 'BookmarkCurrentDir',
     action(api, combo) {
-      api.bookmarkSrcDirPath();
+      api.bookmarkCurrentDir();
     },
   },
 

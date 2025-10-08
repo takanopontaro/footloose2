@@ -412,7 +412,7 @@ const shortcuts: ShortcutsConfig = {
     ],
     'shift+ctrl+b': [
       {
-        cmd: 'BookmarkSrcDirPath',
+        cmd: 'BookmarkCurrentDir',
       },
     ],
     'plus': [
