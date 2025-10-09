@@ -1,6 +1,11 @@
 import { cycleIndex, readState } from '@libs/utils';
 import { $ws } from '@modules/App/state';
-import { $currentDir } from '@modules/DataFrame/state';
+import {
+  $activeEntryIndex,
+  $currentDir,
+  $filteredEntries,
+  $gridColumnCount,
+} from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 
 import type { WsSendCallback } from '@libs/ws';
@@ -59,23 +64,26 @@ function calcTotalCells(totalEntries: number, colCount: number): number {
 // |  8 |  9 |    |    |
 // +----+----+----+----+
 function calcGridIndex(
-  curIndex: number,
+  frame: Frame,
   delta: number,
   direction: CursorDirection,
-  totalEntries: number,
-  colCount: number,
 ): number {
+  const curIndex = readState($activeEntryIndex(frame));
+  const gridColumnCount = readState($gridColumnCount(frame));
+  const entries = readState($filteredEntries(frame));
+  const totalEntries = entries.length;
+
   let newIndex = curIndex + delta;
 
   // 左右移動の場合
   if (direction === 'left' || direction === 'right') {
     // カレント行の、始まり (左端) のインデックス
-    const curRowStartIndex = curIndex - (curIndex % colCount);
+    const curRowStartIndex = curIndex - (curIndex % gridColumnCount);
     if (newIndex < curRowStartIndex) {
       return curRowStartIndex;
     }
     // カレント行の、終わり (右端) のインデックス
-    const curRowEndIndex = curRowStartIndex + colCount - 1;
+    const curRowEndIndex = curRowStartIndex + gridColumnCount - 1;
     if (newIndex > curRowEndIndex) {
       return curRowEndIndex;
     }
@@ -84,17 +92,17 @@ function calcGridIndex(
 
   // 上移動で、次のインデックスがマイナスの場合、同列一行目に移動する。
   if (newIndex < 0) {
-    const mod = newIndex % colCount;
-    return mod === 0 ? 0 : mod + colCount;
+    const mod = newIndex % gridColumnCount;
+    return mod === 0 ? 0 : mod + gridColumnCount;
   }
 
   // 下移動で、次のインデックスが総エントリ数を超えた場合、同列最終行に移動する。
   // ただし、そこにエントリが無い場合は、最終エントリに移動する。
   const maxIndex = totalEntries - 1;
   if (newIndex > maxIndex) {
-    const totalCells = calcTotalCells(totalEntries, colCount);
-    const lastRowStartIndex = totalCells - colCount;
-    newIndex = lastRowStartIndex + (newIndex % colCount);
+    const totalCells = calcTotalCells(totalEntries, gridColumnCount);
+    const lastRowStartIndex = totalCells - gridColumnCount;
+    newIndex = lastRowStartIndex + (newIndex % gridColumnCount);
     return newIndex <= maxIndex ? newIndex : maxIndex;
   }
 
@@ -115,17 +123,22 @@ function calcGridIndex(
 // |  8 |  9 |    |    |
 // +----+----+----+----+
 function cycleGridIndex(
-  curIndex: number,
+  frame: Frame,
   delta: number,
   direction: CursorDirection,
-  totalItems: number,
-  totalCells: number,
 ): number {
-  // グリッドなので totalItems ではなく totalCells を基準に循環させる。
+  const curIndex = readState($activeEntryIndex(frame));
+  const gridColumnCount = readState($gridColumnCount(frame));
+  const entries = readState($filteredEntries(frame));
+  const totalEntries = entries.length;
+  const totalCells = calcTotalCells(totalEntries, gridColumnCount);
+
+  // グリッドなので totalEntries ではなく totalCells を基準に循環させる。
   const newIndex = cycleIndex(curIndex, delta, totalCells);
-  if (newIndex < totalItems) {
+  if (newIndex < totalEntries) {
     return newIndex;
   }
+
   // 移動先にエントリが無い場合、ここに入る。
   // (コメントのグリッドで言うと、10, 11 の時)
   // カーソルの移動方向に基づいて、新しい移動先を決める。
@@ -133,7 +146,7 @@ function cycleGridIndex(
     case 'up':
     case 'left':
     case 'down':
-      return totalItems - 1;
+      return totalEntries - 1;
     case 'right':
       return 0;
   }
