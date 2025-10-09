@@ -22,8 +22,8 @@ function moveCursorListModal(step: number): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
   const index = data.findIndex((d) => d.value === name);
-  const next = index !== -1 ? cycleIndex(index, step, data.length) : 0;
-  writeState($listModalActiveEntryName, data[next].value);
+  const newIndex = index !== -1 ? cycleIndex(index, step, data.length) : 0;
+  writeState($listModalActiveEntryName, data[newIndex].value);
 }
 
 // ListModal のプライマリ処理を実行する。
