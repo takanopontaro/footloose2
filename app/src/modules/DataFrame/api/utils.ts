@@ -48,9 +48,9 @@ function getTargetNames(
   frame = readState($activeFrame),
   allowParent = false,
 ): string[] {
-  const names = readState($selectedEntryNames(frame));
-  if (names.length > 0) {
-    return names;
+  const selectedNames = readState($selectedEntryNames(frame));
+  if (selectedNames.length > 0) {
+    return selectedNames;
   }
   const name = getTargetName(frame, allowParent);
   return name === '' ? [] : [name];
