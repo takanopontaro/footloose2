@@ -192,13 +192,13 @@ function historyGo(delta: number, frame = readState($activeFrame)): void {
   const history = readState($history(frame));
   const copy = readState($historyCopy(frame));
   const curIndex = readState($historyIndex(frame));
-  const nextIndex = curIndex + delta * -1;
+  const newIndex = curIndex + delta * -1;
 
   // コピーがあるということは、現在 history-mode であることを意味する。
   // 履歴を行ったり来たりしている状態。
 
   // history-mode かつ次のインデックスがゼロ以下なら、移動しつつモードを解除する。
-  if (copy && nextIndex <= 0) {
+  if (copy && newIndex <= 0) {
     navigate(curIndex, copy[0], frame, false);
     return;
   }
@@ -206,7 +206,7 @@ function historyGo(delta: number, frame = readState($activeFrame)): void {
   // インデックスを更新して、モードを保ったまま移動する。
   // インデックスはループさせない。
   if (copy) {
-    const i = nextIndex < copy.length ? nextIndex : copy.length - 1;
+    const i = newIndex < copy.length ? newIndex : copy.length - 1;
     writeState($historyIndex(frame), i);
     navigate(curIndex, copy[i], frame, true);
     return;
@@ -214,9 +214,9 @@ function historyGo(delta: number, frame = readState($activeFrame)): void {
 
   // コピーがない場合、それを作って history-mode に入ってから移動する。
   // ただし履歴が一個以下の場合は何もしない。
-  if (nextIndex > 0 && history.length > 1) {
+  if (newIndex > 0 && history.length > 1) {
     const h = [...history];
-    const i = nextIndex < h.length ? nextIndex : h.length - 1;
+    const i = newIndex < h.length ? newIndex : h.length - 1;
     writeState($historyCopy(frame), h);
     writeState($historyIndex(frame), i);
     navigate(curIndex, h[i], frame, true);
