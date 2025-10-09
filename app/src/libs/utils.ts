@@ -74,8 +74,8 @@ function getFocusableEl(
 
   // 移動方向 (1 | -1) を移動量として再利用する。
   const delta = direction;
-  const next = cycleIndex(index, delta, elements.length);
-  return elements[next];
+  const newIndex = cycleIndex(index, delta, elements.length);
+  return elements[newIndex];
 }
 
 // CSS カスタムプロパティを取得する。
