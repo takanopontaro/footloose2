@@ -14,29 +14,53 @@ import { writeLog } from '@modules/LogFrame/api';
 
 import type { WsSuccessResponse } from '@modules/App/types';
 
+/**
+ * gallery-mode に入る。
+ *
+ * @param frame - 対象フレーム
+ */
 function enterGalleryMode(frame = readState($activeFrame)): void {
   writeState($modes(frame), (prev) => [...prev, 'gallery']);
 }
 
+/**
+ * gallery-mode を終了する。
+ *
+ * @param frame - 対象フレーム
+ */
 function exitGalleryMode(frame = readState($activeFrame)): void {
   writeState($modes(frame), (prev) => prev.filter((m) => m !== 'gallery'));
 }
 
+/**
+ * EntryFilter をクリアする。
+ *
+ * @param frame - 対象フレーム
+ */
 function clearEntryFilter(frame = readState($activeFrame)): void {
   writeState($filterQuery(frame), RESET);
 }
 
-function getApp(path: string): string | undefined {
+/**
+ * Config の associations を参照して、
+ * そのエントリを開くのに適切なアプリ名を返す。
+ *
+ * @param path - エントリのパス
+ * @return アプリ名または null
+ */
+function getApp(path: string): null | string {
   const type = mime.getType(path);
-  const associations = readState($config).associations;
+  const { associations } = readState($config);
   for (const assoc of associations) {
+    // 関数なら実行して、アプリ名の取得を試みる。
     if (typeof assoc === 'function') {
       const app = assoc(type, path);
-      if (app !== undefined) {
+      if (app !== null) {
         return app;
       }
       continue;
     }
+    // MIME タイプまたはエントリのパスでマッチするか確認する。
     const { app, kind, pattern } = assoc;
     if (
       (kind === 'mime' && type !== null && pattern.test(type)) ||
@@ -45,8 +69,18 @@ function getApp(path: string): string | undefined {
       return app;
     }
   }
+  return null;
 }
 
+/**
+ * 指定したアプリでエントリを開く。
+ *
+ * @param path - エントリのパス
+ * @param app - アプリ名
+ *   省略すると Config の associations に基づいてアプリが選ばれる。
+ *   候補がない場合は規定のアプリが使われる。
+ * @param frame - 対象フレーム
+ */
 function openWith(
   path?: string,
   app?: string,
@@ -58,7 +92,8 @@ function openWith(
     writeLog(messages[0], 'info');
     return;
   }
-  app = app ?? getApp(path);
+  // app が undefined の場合、規定のアプリが使われる。
+  app = app ?? getApp(path) ?? undefined;
   wsSend<WsSuccessResponse>(
     'open',
     { path, app },
@@ -67,6 +102,13 @@ function openWith(
   );
 }
 
+/**
+ * テキストをクリップボードにコピーする。
+ *
+ * @param text - クリップボードにコピーするテキスト
+ * @param successMsg - コピー成功時のメッセージ
+ * @param errorMsg - コピー失敗時のメッセージ
+ */
 function copyTextToClipboard(
   text: string,
   successMsg: string,
@@ -78,36 +120,53 @@ function copyTextToClipboard(
     .catch((e) => writeLog(`${errorMsg}: ${e}`, 'error'));
 }
 
+/**
+ * 選択されているエントリのパスをクリップボードにコピーする。
+ * 選択行がない場合はカレント行のパスをコピーする。
+ * カレントが `..` の時は親ディレクトリのパスをコピーする。
+ *
+ * @param frame - 対象フレーム
+ */
 function copySrcPathsToClipboard(frame = readState($activeFrame)): void {
   const { messages } = readState($config);
-  const names = getTargetNames(frame);
-  const curName = readState($activeEntryName(frame));
-  if (names.length === 0 && curName !== '..') {
-    writeLog(messages[0], 'info');
-    return;
-  }
-  const dirName = readState($currentDir(frame));
-  if (names.length === 0 && curName === '..') {
-    const text = dirName.replace(/\/[^/]+\/?$/, '') || '/';
+  const curDir = readState($currentDir(frame));
+  const activeEntryName = readState($activeEntryName(frame));
+  const targetNames = getTargetNames(frame);
+
+  // 選択行が無く、カレント行が `..` の時は親ディレクトリのパスをコピーする。
+  // ルートにいる場合、親はルート自身とする。
+  if (targetNames.length === 0 && activeEntryName === '..') {
+    const text = curDir.replace(/\/[^/]+\/?$/, '') || '/';
     copyTextToClipboard(text, messages[8], messages[9]);
     return;
   }
+
   const entries = readState($filteredEntries(frame));
-  const text = names
+
+  // 画面表示と同じエントリ順でコピーしたいが、
+  // targetNames の順序がそれと一致しているとは限らないため、
+  // entries (画面表示) を基準にして targetNames をソートする。
+  const text = targetNames
     .sort((a, b) => {
       const indexA = entries.findIndex((e) => e.name === a);
       const indexB = entries.findIndex((e) => e.name === b);
       return indexA - indexB;
     })
-    .map((n) => `${dirName}/${n}`)
+    .map((n) => `${curDir}/${n}`)
     .join('\n');
+
   copyTextToClipboard(text, messages[8], messages[9]);
 }
 
+/**
+ * カレントディレクトリのパスをクリップボードにコピーする。
+ *
+ * @param frame - 対象フレーム
+ */
 function copySrcDirPathToClipboard(frame = readState($activeFrame)): void {
   const { messages } = readState($config);
-  const dirName = readState($currentDir(frame));
-  copyTextToClipboard(dirName, messages[10], messages[11]);
+  const curDir = readState($currentDir(frame));
+  copyTextToClipboard(curDir, messages[10], messages[11]);
 }
 
 export {

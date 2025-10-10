@@ -12,6 +12,7 @@ const associations: AssociationsConfig = [
   //   if (mime === 'application/toml') {
   //     return 'Visual Studio Code';
   //   }
+  //   return null;
   // },
 ];
 

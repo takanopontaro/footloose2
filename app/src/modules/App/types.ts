@@ -177,7 +177,7 @@ export type ShortcutsConfig = Partial<
 >;
 
 type Association =
-  | ((mime: null | string, path: string) => string | undefined)
+  | ((mime: null | string, path: string) => null | string)
   | { app: string; kind: 'mime' | 'path'; pattern: RegExp };
 
 export type AssociationsConfig = Association[];
