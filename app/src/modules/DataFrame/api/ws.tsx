@@ -1,7 +1,11 @@
 import { readState } from '@libs/utils';
-import { $activeFrame, $inactiveFrame } from '@modules/App/state';
+import { $activeFrame } from '@modules/App/state';
 import { getTargetNames } from '@modules/DataFrame/api';
-import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
+import {
+  getOtherFrame,
+  handleWsSendError,
+  wsSend,
+} from '@modules/DataFrame/libs';
 import { $currentDir } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 import { ProgressTaskLog } from '@modules/LogFrame/components';
@@ -16,66 +20,105 @@ import type {
   ShTaskCallback,
 } from '@modules/DataFrame/types';
 
-async function runProgressTask(callback: ProgressTaskCallback): Promise<void> {
-  const frame = readState($activeFrame);
-  const names = getTargetNames(frame);
-  if (names.length === 0) {
+/**
+ * ProgressTask を実行する。
+ *
+ * @param callback - コールバック関数
+ *   対象エントリの配列、コピー元ディレクトリ、コピー先ディレクトリを受け取り、
+ *   ProgressTaskCallbackResult を返す。
+ * @param frame - 対象フレーム
+ */
+async function runProgressTask(
+  callback: ProgressTaskCallback,
+  frame = readState($activeFrame),
+): Promise<void> {
+  const targetNames = getTargetNames(frame);
+  if (targetNames.length === 0) {
     return;
   }
+
   const srcDir = readState($currentDir(frame));
-  const destDir = readState($currentDir(readState($inactiveFrame)));
-  const config = await callback(names, srcDir, destDir);
-  if (config === null) {
+  const destDir = readState($currentDir(getOtherFrame(frame)));
+
+  const info = await callback(targetNames, srcDir, destDir);
+  if (!info) {
     return;
   }
+
   wsSend<WsProgressTaskResponse>(
     'progress',
     {
-      sources: config.src,
-      destination: config.dest,
-      config: { cmd: config.cmd, total: config.total },
+      sources: info.src,
+      destination: info.dest,
+      config: { cmd: info.cmd, total: info.total },
     },
     (resp) => {
       if (handleWsSendError(resp, frame)) {
         return;
       }
-      const log = <ProgressTaskLog label={config.label} pid={resp.data.pid} />;
+      const log = <ProgressTaskLog label={info.label} pid={resp.data.pid} />;
       writeLog(log, 'progress');
     },
     frame,
   );
 }
 
+/**
+ * ProgressTask を中止する。
+ *
+ * @param pid - ProgressTask のプロセス ID
+ * @param frame - 対象フレーム
+ */
 function abortProgressTask(pid: string, frame = readState($activeFrame)): void {
   wsSend<WsSuccessResponse>(
     'kill',
     { pid },
-    (resp) => handleWsSendError(resp, frame),
+    // handleWsSendError に frame は渡さなくてよい。
+    // ProgressTask は非同期タスクなため、
+    // 実行時と中止時とで $activeFrame が変わっている可能性があるため。
+    // abortProgressTask の frame 引数を必須にするという手もあるが、
+    // 呼び出し元の負担が増えるためやらないことにした。
+    (resp) => handleWsSendError(resp),
     frame,
   );
 }
 
-async function runShTask(callback: ShTaskCallback): Promise<void> {
-  const frame = readState($activeFrame);
-  const names = getTargetNames(frame);
+/**
+ * ShTask を実行する。
+ *
+ * @param callback - コールバック関数
+ *   対象エントリの配列、コピー元ディレクトリ、コピー先ディレクトリを受け取り、
+ *   ShTaskCallbackResult を返す。
+ * @param frame - 対象フレーム
+ */
+async function runShTask(
+  callback: ShTaskCallback,
+  frame = readState($activeFrame),
+): Promise<void> {
+  // ShTask は対象エントリの有る無しにかかわらず実行できるため、
+  // length のチェックはしない。
+  const targetNames = getTargetNames(frame);
+
   const srcDir = readState($currentDir(frame));
-  const destDir = readState($currentDir(readState($inactiveFrame)));
-  const config = await callback(names, srcDir, destDir);
-  if (config === null) {
+  const destDir = readState($currentDir(getOtherFrame(frame)));
+
+  const info = await callback(targetNames, srcDir, destDir);
+  if (!info) {
     return;
   }
+
   wsSend<WsDataResponse>(
     'sh',
     {
-      sources: config.src,
-      destination: config.dest,
-      config: { cmd: config.cmd },
+      sources: info.src,
+      destination: info.dest,
+      config: { cmd: info.cmd },
     },
     (resp) => {
       if (handleWsSendError(resp, frame)) {
         return;
       }
-      writeLog(config.log, 'info');
+      writeLog(info.log, 'info');
     },
     frame,
   );
