@@ -5,7 +5,9 @@ import { $rawEntries, $sort } from '@modules/DataFrame/state';
 import type { Frame } from '@modules/App/types';
 import type { Entry, SortCriterion } from '@modules/DataFrame/types';
 
-// 容量の単位とバイト数の定義
+/**
+ * 容量の単位とバイト数の定義。
+ */
 const sizeUnits = new Map([
   ['B', 1],
   ['K', 1024],
@@ -14,8 +16,13 @@ const sizeUnits = new Map([
   ['T', 1024 ** 4],
 ]);
 
-// 容量表記からバイト数を算出する。
-// '1.5M' -> 1572864
+/**
+ * 容量表記からバイト数を算出する。
+ * 例： `1.5M` -> 1572864
+ *
+ * @param size - エントリの size
+ * @return バイト数
+ */
 function sizeToBytes(size: string): number {
   if (size === '0') {
     return 0;
@@ -25,7 +32,14 @@ function sizeToBytes(size: string): number {
   return value * (sizeUnits.get(unit) ?? 1);
 }
 
-// エントリの指定したフィールドを比較する。
+/**
+ * ソート用に、エントリの指定したフィールドを比較する。
+ *
+ * @param a - エントリ A
+ * @param b - エントリ B
+ * @param field - 比較するフィールド
+ * @return 比較結果
+ */
 function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
   if (field === 'size') {
     return sizeToBytes(a.size) - sizeToBytes(b.size);
@@ -42,7 +56,12 @@ function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
   return a[field] > b[field] ? 1 : -1;
 }
 
-// エントリをソートする。
+/**
+ * エントリをソートする。
+ *
+ * @param entries - エントリ一覧
+ * @param criterion - ソート基準
+ */
 function sortEntries(entries: Entry[], criterion: SortCriterion): void {
   entries.sort((a, b) => {
     const { field, order } = criterion;
@@ -54,8 +73,13 @@ function sortEntries(entries: Entry[], criterion: SortCriterion): void {
   });
 }
 
-// ディレクトリの表示位置を変更する。
-// 上にまとめる、下にまとめる、等。
+/**
+ * ディレクトリの表示位置を変更する。
+ * 上にまとめる、下にまとめる、等。
+ *
+ * @param entries - エントリ一覧
+ * @param pos - ディレクトリの表示位置
+ */
 function sortDirPosition(entries: Entry[], pos: SortCriterion['dir']): void {
   if (pos === 'none') {
     return;
@@ -69,6 +93,9 @@ function sortDirPosition(entries: Entry[], pos: SortCriterion['dir']): void {
   });
 }
 
+/**
+ * ソート済みのエントリ一覧。
+ */
 export const $sortedEntries = atomFamily((frame: Frame) =>
   atom((get) => {
     const rawEntries = get($rawEntries(frame));

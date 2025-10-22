@@ -25,7 +25,7 @@ function isVideo(el: HTMLElement | null): el is HTMLVideoElement {
 }
 
 /**
- * preview-mode に入る。
+ * preview モードに入る。
  * CSS によりプレビューエリアが表示される。
  *
  * @param frame - 対象フレーム
@@ -35,7 +35,7 @@ function showPreviewArea(frame = readState($activeFrame)): void {
 }
 
 /**
- * preview-mode を終了する。
+ * preview モードを終了する。
  * CSS によりプレビューエリアが非表示になる。
  *
  * @param frame - 対象フレーム

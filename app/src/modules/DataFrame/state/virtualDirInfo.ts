@@ -13,6 +13,9 @@ const virtualDirInfoAtom = atomFamily((_frame: Frame) =>
   atomWithReset<VdConfig | null>(null),
 );
 
+/**
+ * 仮想ディレクトリの詳細情報。
+ */
 export const $virtualDirInfo = atomFamily((frame: Frame) =>
   atom(
     (get) => get(virtualDirInfoAtom(frame)),

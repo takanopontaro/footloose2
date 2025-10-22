@@ -8,6 +8,10 @@ import {
 
 import type { Frame } from '@modules/App/types';
 
+/**
+ * 現在のグリッドの表示領域に表示できるエントリ一覧。
+ * 表示しきれないエントリは含まれない。
+ */
 export const $renderedEntries = atomFamily((frame: Frame) =>
   atom((get) => {
     const entries = get($filteredEntries(frame));

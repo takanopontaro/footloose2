@@ -7,6 +7,9 @@ import type { Frame, Mode } from '@modules/App/types';
 
 const modesAtom = atomFamily((_frame: Frame) => atomWithReset<Mode[]>([]));
 
+/**
+ * モード。
+ */
 export const $modes = atomFamily((frame: Frame) =>
   atom(
     (get) => get(modesAtom(frame)),

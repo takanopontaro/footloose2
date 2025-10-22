@@ -16,8 +16,13 @@ type ActionsConfig = Omit<ShortcutCommand, 'cmd'> & {
   action: CommandAction;
 };
 
-// コマンドオブジェクトを元に、そのコマンドの関数本体を取得し、
-// 元の設定と組み合わせて返す。
+/**
+ * コマンドオブジェクトを元に、そのコマンドの関数本体を取得し、
+ * 元の設定と組み合わせて返す。
+ *
+ * @param shortcutCommandList - ShortcutCommand のリスト
+ * @return コマンドの関数本体を含む設定のリスト
+ */
 function getActionsConfigList(
   shortcutCommandList: ShortcutCommand[],
 ): ActionsConfig[] {
@@ -32,8 +37,14 @@ function getActionsConfigList(
   return res;
 }
 
-// その値が集合に含まれるかを判定する。
-// 先頭に ! が付いている場合は、含まれないことを判定する。
+/**
+ * その値が集合に含まれるか否かを判定する。
+ * 先頭に ! が付いている場合は、含まれないことを判定する。
+ *
+ * @param value - 判定する値
+ * @param curValues - 集合
+ * @return 含まれるか否か
+ */
 function match<T>(value: string, curValues: T[]): boolean {
   if (value.startsWith('!')) {
     const v = value.slice(1);
@@ -42,7 +53,12 @@ function match<T>(value: string, curValues: T[]): boolean {
   return curValues.includes(value as T);
 }
 
-// 現在の mode や tag に基づいた、適切なコマンドを取得する関数を返す。
+/**
+ * 現在の mode や tag に基づいた、適切なコマンドを取得する関数を返す。
+ *
+ * @param shortcutCommandList - ShortcutCommand のリスト
+ * @return コマンド取得関数
+ */
 function makeGetAvailableActions(
   shortcutCommandList: ShortcutCommand[],
 ): () => ActionsConfig[] {
@@ -63,6 +79,9 @@ function makeGetAvailableActions(
 
 const scopeAtom = atom<Scope>('');
 
+/**
+ *
+ */
 export const $scope = atom(
   (get) => get(scopeAtom),
   (get, set, newVal: SetStateAction<Scope>) => {

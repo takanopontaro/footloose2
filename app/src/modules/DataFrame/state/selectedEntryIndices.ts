@@ -9,6 +9,9 @@ import {
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
+/**
+ * 選択されているエントリのインデックス一覧。
+ */
 export const $selectedEntryIndices = atomFamily((frame: Frame) =>
   atom(
     (get) => {

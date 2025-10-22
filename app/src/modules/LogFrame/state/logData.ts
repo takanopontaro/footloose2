@@ -6,6 +6,9 @@ import type { LogData } from '@modules/LogFrame/types';
 
 const logDataAtom = atomWithReset<LogData[]>([]);
 
+/**
+ * LogFrame に表示するログのデータ。
+ */
 export const $logData = atom(
   (get) => get(logDataAtom),
   // newVal として、単体の LogData もしくは LogData[] の updater を

@@ -8,6 +8,9 @@ import {
 
 import type { Frame } from '@modules/App/types';
 
+/**
+ * グリッドの表示領域において、最後尾に表示されるエントリのインデックス。
+ */
 export const $lastVisibleEntryIndex = atomFamily((frame: Frame) =>
   atom((get) => {
     const firstEntryIndex = get($firstVisibleEntryIndex(frame));

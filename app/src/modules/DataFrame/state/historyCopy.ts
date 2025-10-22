@@ -9,6 +9,10 @@ const historyCopyAtom = atomFamily((_frame: Frame) =>
   atomWithReset<string[] | null>(null),
 );
 
+/**
+ * 履歴のコピー。
+ * history モード時に使用される。
+ */
 export const $historyCopy = atomFamily((frame: Frame) =>
   atom(
     (get) => get(historyCopyAtom(frame)),

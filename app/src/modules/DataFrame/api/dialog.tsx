@@ -104,7 +104,7 @@ function deleteBookmark(path: string): void {
  * @param prevHistoryIndex - ひとつ前の履歴インデックス
  * @param path - 移動先のパス
  * @param frame - 対象フレーム
- * @param historyMode - history-mode で移動するか否か
+ * @param historyMode - history モードで移動するか否か
  */
 function navigate(
   prevHistoryIndex: number,
@@ -121,7 +121,7 @@ function navigate(
       history = history.filter((h) => h !== path);
       writeState($history(frame), history);
 
-      // 履歴がひとつ以下なら history-mode を解除して return する。
+      // 履歴がひとつ以下なら history モードを解除して return する。
       if (history.length <= 1) {
         writeState($historyCopy(frame), RESET);
         writeState($historyIndex(frame), RESET);
@@ -156,7 +156,7 @@ function navigate(
 /**
  * 履歴一覧を表示する。
  * 履歴を選択するとそのディレクトリに移動する。
- * history-mode にはしない。
+ * history モードにはしない。
  *
  * @param frame - 対象フレーム
  */
@@ -194,10 +194,10 @@ function historyGo(delta: number, frame = readState($activeFrame)): void {
   const curIndex = readState($historyIndex(frame));
   const newIndex = curIndex + delta * -1;
 
-  // コピーがあるということは、現在 history-mode であることを意味する。
+  // コピーがあるということは、現在 history モードであることを意味する。
   // 履歴を行ったり来たりしている状態。
 
-  // history-mode かつ次のインデックスがゼロ以下なら、移動しつつモードを解除する。
+  // history モードかつ次のインデックスがゼロ以下なら、移動しつつモードを解除する。
   if (copy && newIndex <= 0) {
     navigate(curIndex, copy[0], frame, false);
     return;
@@ -212,7 +212,7 @@ function historyGo(delta: number, frame = readState($activeFrame)): void {
     return;
   }
 
-  // コピーがない場合、それを作って history-mode に入ってから移動する。
+  // コピーがない場合、それを作って history モードに入ってから移動する。
   // ただし履歴が一個以下の場合は何もしない。
   if (newIndex > 0 && history.length > 1) {
     const h = [...history];

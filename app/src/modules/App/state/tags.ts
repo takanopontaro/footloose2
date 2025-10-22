@@ -7,6 +7,9 @@ import type { Tag } from '@modules/App/types';
 
 const tagsAtom = atomWithReset<Tag[]>([]);
 
+/**
+ * タグ。
+ */
 export const $tags = atom(
   (get) => get(tagsAtom),
   (get, set, newVal: SetStateAction<Tag[]> | typeof RESET) => {

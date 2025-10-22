@@ -7,7 +7,14 @@ import type { ReactNode } from 'react';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
-// エントリが画像の時、それを表示する img タグを返す。
+/**
+ * エントリが画像の時、それを表示する img 要素を返す。
+ *
+ * @param entry - 対象エントリ
+ * @param frame - 対象フレーム
+ * @param className - img 要素に付与するクラス名
+ * @return img 要素または null
+ */
 export const useThumbnail = (
   entry: Entry,
   frame: Frame,

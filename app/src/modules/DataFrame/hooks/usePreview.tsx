@@ -6,8 +6,15 @@ import { $currentDir } from '@modules/DataFrame/state';
 import type { Frame } from '@modules/App/types';
 import type { Entry, PreviewInfo } from '@modules/DataFrame/types';
 
-// エントリの種類に応じて、プレビュー用のタグを返す。
-// 画像 <img> / ビデオ・オーディオ <video> / その他 <iframe>
+/**
+ * エントリの種類に応じて、プレビュー用の情報を返す。
+ * 画像 <img> | ビデオ・オーディオ <video> | その他 <iframe>
+ *
+ * @param entry - 対象エントリ
+ * @param frame - 対象フレーム
+ * @param className - プレビュー要素に付与するクラス名
+ * @return プレビュー情報
+ */
 export const usePreview = (
   entry: Entry | null,
   frame: Frame,

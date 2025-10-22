@@ -8,8 +8,12 @@ import {
 
 import type { Frame } from '@modules/App/types';
 
-// DataFrame をスコープにする。
-// 結果として、そのフレームにフォーカスが当たる。
+/**
+ * DataFrame をスコープにする。
+ * 結果として、そのフレームにフォーカスが当たる。
+ *
+ * @param frame - 対象フレーム
+ */
 function setDataFrameInScope(frame: Frame): void {
   const entries = readState($filteredEntries(frame));
   const name = readState($activeEntryName(frame));
@@ -22,42 +26,56 @@ function setDataFrameInScope(frame: Frame): void {
   writeState($scope, 'DataFrame');
 }
 
-// アクティブなフレームにフォーカスを当てる。
+/**
+ * アクティブなフレームにフォーカスを当てる。
+ */
 function focusDataFrame(): void {
   const frame = readState($activeFrame);
   setDataFrameInScope(frame);
 }
 
-// 非アクティブなフレームにフォーカスを当てる。
+/**
+ * 非アクティブなフレームにフォーカスを当てる。
+ */
 function focusOtherDataFrame(): void {
   const frame = readState($inactiveFrame);
   writeState($activeFrame, frame);
   setDataFrameInScope(frame);
 }
 
-// A フレーム (左) にフォーカスを当てる。
+/**
+ * A フレーム (左) にフォーカスを当てる。
+ */
 function focusDataFrameA(): void {
   writeState($activeFrame, 'a');
   setDataFrameInScope('a');
 }
 
-// B フレーム (右) にフォーカスを当てる。
+/**
+ * B フレーム (右) にフォーカスを当てる。
+ */
 function focusDataFrameB(): void {
   writeState($activeFrame, 'b');
   setDataFrameInScope('b');
 }
 
-// LogFrame にフォーカスを当てる。
+/**
+ * LogFrame にフォーカスを当てる。
+ */
 function focusLogFrame(): void {
   writeState($scope, 'LogFrame');
 }
 
-// EntryFilter にフォーカスを当てる。
+/**
+ * EntryFilter にフォーカスを当てる。
+ */
 function focusEntryFilter(): void {
   writeState($scope, 'EntryFilter');
 }
 
-// ListModal のリスト部にフォーカスを当てる。
+/**
+ * ListModal のリスト部にフォーカスを当てる。
+ */
 function focusListModal(): void {
   const dataset = readState($listModalDataset);
   // 全リストデータが filter-out されている場合。
@@ -74,17 +92,23 @@ function focusListModal(): void {
   writeState($scope, 'ListModal');
 }
 
-// ListModal の EntryFilter 部にフォーカスを当てる。
+/**
+ * ListModal の EntryFilter 部にフォーカスを当てる。
+ */
 function focusListModalEntryFilter(): void {
   writeState($scope, 'ListModalEntryFilter');
 }
 
-// PromptModal にフォーカスを当てる。
+/**
+ * PromptModal にフォーカスを当てる。
+ */
 function focusPromptModal(): void {
   writeState($scope, 'PromptModal');
 }
 
-// ConfirmModal にフォーカスを当てる。
+/**
+ * ConfirmModal にフォーカスを当てる。
+ */
 function focusConfirmModal(): void {
   writeState($scope, 'ConfirmModal');
 }

@@ -10,6 +10,9 @@ const selectedEntryNamesAtom = atomFamily((_frame: Frame) =>
   atomWithReset<string[]>([]),
 );
 
+/**
+ * 選択されているエントリの名前一覧。
+ */
 export const $selectedEntryNames = atomFamily((frame: Frame) =>
   atom(
     (get) => get(selectedEntryNamesAtom(frame)),

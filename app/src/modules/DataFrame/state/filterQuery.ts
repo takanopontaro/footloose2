@@ -15,7 +15,12 @@ import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
-// エントリの filter-out に応じて、表示領域内の開始エントリを更新する。
+/**
+ * エントリ一覧の filter-out 状況に応じて、表示領域内の開始エントリを更新する。
+ *
+ * @param entries - エントリ一覧
+ * @param frame - 対象フレーム
+ */
 function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
   const activeEntryName = readState($activeEntryName(frame));
   const gridColumnCount = readState($gridColumnCount(frame));
@@ -40,6 +45,10 @@ function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
 
 const filterQueryAtom = atomFamily((_frame: Frame) => atomWithReset(''));
 
+/**
+ * EntryFilter の中身。
+ * この値を正規表現パターンとして、エントリ一覧が filter-out される。
+ */
 export const $filterQuery = atomFamily((frame: Frame) =>
   atom(
     (get) => get(filterQueryAtom(frame)),
@@ -67,7 +76,7 @@ export const $filterQuery = atomFamily((frame: Frame) =>
       }
 
       // ------------------------------------
-      // エントリが filter-out されるため、
+      // エントリ一覧が filter-out されるため、
       // $firstVisibleEntryIndex や $selectedEntryNames を更新する。
       // できれば $filteredEntries 内で行いたいところだが、
       // read-only atom であり、setter が無いため、ここで行う。

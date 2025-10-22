@@ -7,6 +7,10 @@ import type { ListModalData } from '@modules/Modal/types';
 
 const listModalDatasetAtom = atomWithReset<ListModalData[]>([]);
 
+/**
+ * ListModal に表示するデータ。
+ * get 時は filter-out されたものを返す。
+ */
 export const $listModalDataset = atom(
   (get) => {
     let dataset = get(listModalDatasetAtom);

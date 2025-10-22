@@ -12,8 +12,13 @@ import {
 import type { RefObject } from 'react';
 import type { Frame } from '@modules/App/types';
 
-// グリッドのビューポートに関する処理を行う。
-// 表示可能行数や開始エントリの更新など。
+/**
+ * グリッドの表示領域に関する処理を行う。
+ * 表示可能行数や開始エントリの更新など。
+ *
+ * @param frame - 対象フレーム
+ * @param gridRef - グリッドの ref
+ */
 export const useGridViewport = (
   frame: Frame,
   gridRef: RefObject<HTMLDivElement | null>,

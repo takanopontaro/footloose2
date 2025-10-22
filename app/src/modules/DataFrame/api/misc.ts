@@ -15,7 +15,7 @@ import { writeLog } from '@modules/LogFrame/api';
 import type { WsSuccessResponse } from '@modules/App/types';
 
 /**
- * gallery-mode に入る。
+ * gallery モードに入る。
  *
  * @param frame - 対象フレーム
  */
@@ -24,7 +24,7 @@ function enterGalleryMode(frame = readState($activeFrame)): void {
 }
 
 /**
- * gallery-mode を終了する。
+ * gallery モードを終了する。
  *
  * @param frame - 対象フレーム
  */

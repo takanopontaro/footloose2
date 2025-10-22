@@ -5,6 +5,9 @@ import { $activeEntryName, $filteredEntries } from '@modules/DataFrame/state';
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
+/**
+ * カレント行のインデックス。
+ */
 export const $activeEntryIndex = atomFamily((frame: Frame) =>
   atom(
     (get) => {

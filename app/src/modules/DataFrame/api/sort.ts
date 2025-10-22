@@ -6,7 +6,7 @@ import { $sort } from '@modules/DataFrame/state';
 import type { SortCriterion } from '@modules/DataFrame/types';
 
 /**
- * エントリリストをソートする。
+ * エントリ一覧をソートする。
  *
  * @param field - 対象フィールド
  * @param order - ソート順
@@ -21,7 +21,7 @@ function sortEntries(
 }
 
 /**
- * エントリリストのソートを切り替える。
+ * エントリ一覧のソートを切り替える。
  * デフォルトは昇順で、降順と交互に切り替える。
  *
  * @param field - 対象フィールド
@@ -45,7 +45,7 @@ function cycleSortOrder(
 }
 
 /**
- * エントリリストのソートを解除する。
+ * エントリ一覧のソートを解除する。
  *
  * @param frame - 対象フレーム
  */

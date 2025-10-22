@@ -12,7 +12,12 @@ import {
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
-function updateFirstEntryIndexInGalleryMode(frame: Frame): void {
+/**
+ * カレント行の変更に応じて、表示領域内の開始エントリを更新する。
+ *
+ * @param frame - 対象フレーム
+ */
+function updateFirstVisibleEntryIndexInGalleryMode(frame: Frame): void {
   const activeEntryIndex = readState($activeEntryIndex(frame));
   const firstEntryIndex = readState($firstVisibleEntryIndex(frame));
   const lastEntryIndex = readState($lastVisibleEntryIndex(frame));
@@ -38,6 +43,9 @@ function updateFirstEntryIndexInGalleryMode(frame: Frame): void {
 
 const activeEntryNameAtom = atomFamily((_frame: Frame) => atomWithReset('..'));
 
+/**
+ * カレント行のエントリ名。
+ */
 export const $activeEntryName = atomFamily((frame: Frame) =>
   atom(
     (get) => get(activeEntryNameAtom(frame)),
@@ -65,7 +73,7 @@ export const $activeEntryName = atomFamily((frame: Frame) =>
 
       const isGalleryMode = get($isGalleryMode(frame));
       if (isGalleryMode) {
-        updateFirstEntryIndexInGalleryMode(frame);
+        updateFirstVisibleEntryIndexInGalleryMode(frame);
         return;
       }
 

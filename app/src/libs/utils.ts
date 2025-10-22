@@ -2,11 +2,19 @@ import { store } from '@libs/store';
 
 import type { Direction } from '@modules/App/types';
 
-// jotai の setter と getter
-// フックとは違い、React のライフサイクルとは関係なく即反映される。
+/**
+ * jotai の setter と getter。
+ * フックとは違い、React のライフサイクルとは関係なく即反映される。
+ */
 const { get: readState, set: writeState } = store;
 
-// ふたつのオブジェクトが同じかどうか、浅い比較を行う。
+/**
+ * ふたつのオブジェクトが同じか否か、浅い比較を行う。
+ *
+ * @param a - 比較対象のオブジェクト
+ * @param b - 比較対象のオブジェクト
+ * @return 同じか否か
+ */
 function shallowEqualObject(
   a: Record<string, unknown>,
   b: Record<string, unknown>,
@@ -27,7 +35,13 @@ function shallowEqualObject(
   return true;
 }
 
-// ふたつの配列が同じかどうか、浅い比較を行う。
+/**
+ * ふたつの配列が同じか否か、浅い比較を行う。
+ *
+ * @param a - 比較対象の配列
+ * @param b - 比較対象の配列
+ * @return 同じか否か
+ */
 function shallowEqualArray(a: unknown[], b: unknown[]): boolean {
   if (a === b) {
     return true;
@@ -38,9 +52,15 @@ function shallowEqualArray(a: unknown[], b: unknown[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-// 対象エリア内のフォーカス可能な要素を、移動方向に基づいて返す。
-// 最初の要素の逆方向は最後の要素、最後の要素の順方向は最初の要素、
-// というように循環して返す。
+/**
+ * 対象エリア内のフォーカス可能な要素を、移動方向に基づいて返す。
+ * 最初の要素の逆方向は最後の要素、最後の要素の順方向は最初の要素、
+ * というように循環して返す。
+ *
+ * @param container - 対象のコンテナ要素
+ * @param direction - 移動方向
+ * @return フォーカス可能な要素または null
+ */
 function getFocusableEl(
   container: HTMLElement,
   direction: Direction,
@@ -78,14 +98,27 @@ function getFocusableEl(
   return elements[newIndex];
 }
 
-// CSS カスタムプロパティを取得する。
+/**
+ * CSS カスタムプロパティを取得する。
+ * そのプロパティが未設定の場合は空文字を返す。
+ *
+ * @param name - カスタムプロパティの名前
+ * @return カスタムプロパティの値または空文字
+ */
 function getCssVariable(name: string): string {
   const root = document.documentElement;
   return getComputedStyle(root).getPropertyValue(name).trim();
 }
 
-// インデックスを循環させる。
-// 最小値を下回ると最大値に、最大値を上回ると最小値に戻る。
+/**
+ * インデックスを循環させる。
+ * 最小値を下回ると最大値に、最大値を上回ると最小値に戻る。
+ *
+ * @param curIndex - 現在のインデックス
+ * @param delta - 移動量
+ * @param totalItems - アイテムの総数
+ * @return 循環後のインデックス
+ */
 function cycleIndex(
   curIndex: number,
   delta: number,

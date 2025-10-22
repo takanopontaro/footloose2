@@ -435,7 +435,7 @@ const commands: CommandsConfig = [
     },
   },
 
-  // 仮想ディレクトリ系
+  // virtual-dir モード系
   {
     name: 'HandleVirtualEntry',
     action(api, combo) {
@@ -461,7 +461,7 @@ const commands: CommandsConfig = [
     },
   },
 
-  // Gallery Mode 系
+  // gallery モード系
   {
     name: 'EnterGalleryMode',
     action(api, combo) {
@@ -475,7 +475,7 @@ const commands: CommandsConfig = [
     },
   },
 
-  // Preview Mode 系
+  // preview モード系
   {
     name: 'ShowPreviewArea',
     action(api, combo) {

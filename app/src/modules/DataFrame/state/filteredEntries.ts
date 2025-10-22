@@ -4,6 +4,10 @@ import { $filterQuery, $sortedEntries } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
 
+/**
+ * EntryFilter で filter-out された後のエントリ一覧。
+ * ソートも反映されている。
+ */
 export const $filteredEntries = atomFamily((frame: Frame) =>
   atom((get) => {
     const entries = get($sortedEntries(frame));

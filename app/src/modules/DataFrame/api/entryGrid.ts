@@ -22,7 +22,7 @@ import type { CursorDirection } from '@modules/DataFrame/types';
  * 配列インデックスとしての移動量は 4 になる。
  *
  * @param step - グリッドにおける移動量
- *   上に 1、右に 3 といった上下左右に対する移動量
+ *   上に 1、右に 3 といった上下左右に対する移動量。
  * @param direction - 移動方向
  * @param frame - 対象フレーム
  * @return インデックスとしての移動量
@@ -130,7 +130,7 @@ function moveCursorByStartingLetter(
   const entries = readState($filteredEntries(frame));
   const curIndex = readState($activeEntryIndex(frame));
 
-  // カレント行を基準にエントリリストを二分割し前後を入れ替える。
+  // カレント行を基準にエントリ一覧を二分割し前後を入れ替える。
   // こうすることで、同じキー押下で順繰りにループ選択できる。
   const firstPart = entries.slice(0, curIndex + 1);
   const secondPart = entries.slice(curIndex + 1);

@@ -23,28 +23,46 @@ const LISTENER_STATUS = {
   watchError: 'WATCH_ERROR',
 } as const;
 
-// 型ガード
-// リスナー型のレスポンスかどうかを返す。
+/**
+ * WebSocket レスポンスがリスナー型か否かを返す型ガード。
+ *
+ * @param resp - レスポンス
+ * @return リスナー型のレスポンスか否か
+ */
 function isListenerResp(resp: WsResponse): resp is WsListenerResponse {
   const values = Object.values(LISTENER_STATUS) as readonly string[];
   return values.includes(resp.status);
 }
 
-class Ws {
-  // WebSocket のインスタンス
+class WsClass {
+  /**
+   * WebSocket のインスタンス。
+   */
   #ws: WebSocket | null = null;
 
-  // リスナー
-  // 継続的に監視するもの (watch など)
+  /**
+   * リスナー。
+   * 継続的に監視するもの (watch など)。
+   * 引数として WebSocket レスポンスが渡される。
+   */
   #listeners: {
     [K in keyof ListenerRespMap]?: ((resp: ListenerRespMap[K]) => void)[];
   } = {};
 
-  // コールバック
-  // 一度限りの単発もの (command など)
+  /**
+   * コールバック。
+   * 一度限りの単発もの (command など)。
+   * 引数として WebSocket レスポンスが渡される。
+   */
   #callbacks = new Map<string, (resp: unknown) => void>();
 
-  init(ws: WebSocket): Ws {
+  /**
+   * 初期化する。
+   *
+   * @param ws - WebSocket のインスタンス
+   * @return 自分自身のインスタンス
+   */
+  init(ws: WebSocket): WsClass {
     this.#ws = ws;
     ws.addEventListener('message', (e: MessageEvent<string>) => {
       const resp = JSON.parse(e.data) as WsResponse;
@@ -63,7 +81,12 @@ class Ws {
     return this;
   }
 
-  // リスナーを登録する。
+  /**
+   * リスナーを登録する。
+   *
+   * @param status - WebSocket レスポンスのステータス
+   * @param listener - 登録するリスナー関数
+   */
   registerListener<S extends keyof ListenerRespMap>(
     status: S,
     listener: (resp: ListenerRespMap[S]) => void,
@@ -80,7 +103,12 @@ class Ws {
     this.#listeners[status].push(listener);
   }
 
-  // リスナーを実行する。
+  /**
+   * リスナーを実行する。
+   *
+   * @param status - WebSocket レスポンスのステータス
+   * @param resp - WebSocket レスポンス
+   */
   #execListener<S extends keyof ListenerRespMap>(
     status: S,
     resp: ListenerRespMap[S],
@@ -91,7 +119,12 @@ class Ws {
     }
   }
 
-  // リスナーを削除する。
+  /**
+   * リスナーを削除する。
+   *
+   * @param status - WebSocket レスポンスのステータス
+   * @param listener - 削除するリスナー関数
+   */
   removeListener<S extends keyof ListenerRespMap>(
     status: S,
     listener: (resp: ListenerRespMap[S]) => void,
@@ -109,9 +142,14 @@ class Ws {
     }
   }
 
-  // WebSocket サーバーにデータを送信する。
-  // id を発行し、それをキーとしてコールバックを登録してから送る。
-  // 受信時、その id がレスポンスに含まれているため、コールバックを取得できる。
+  /**
+   * WebSocket サーバーにデータを送信する。
+   * id を発行し、それをキーにしてコールバックを登録してから送る。
+   * 受信時は、その id がレスポンスに含まれているため、コールバックを取得できる。
+   *
+   * @param data - 送信するデータ
+   * @param callback - 登録するコールバック関数
+   */
   send<R extends WsResponse>(
     data: Omit<WsCommand, 'id'>,
     callback: WsSendCallback<R>,
@@ -127,7 +165,7 @@ class Ws {
   }
 }
 
-const ws = new Ws();
+const ws = new WsClass();
 
 export type { WsSendCallback };
 export { ws as Ws, LISTENER_STATUS };

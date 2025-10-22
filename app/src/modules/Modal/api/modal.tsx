@@ -16,8 +16,13 @@ import {
 
 import type { Direction } from '@modules/App/types';
 
-// ListModal のカーソルを移動する。カーソルはループする。
-// filter-out 等でカレント行が無い場合は、最初の項目をカレントにする。
+/**
+ * ListModal のカーソルを移動する。
+ * カーソルはループする。
+ * filter-out 等でカレント行が無い場合は、最初の項目をカレントにする。
+ *
+ * @param step - カーソルの移動量
+ */
 function moveCursorListModal(step: number): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
@@ -26,9 +31,11 @@ function moveCursorListModal(step: number): void {
   writeState($listModalActiveEntryName, data[newIndex].value);
 }
 
-// ListModal のプライマリ処理を実行する。
-// 引数として ListModalData か undefined を渡す。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * ListModal のプライマリ処理を実行する。
+ * 引数として ListModalData か undefined が渡される。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executePrimaryActionListModal(): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
@@ -39,9 +46,11 @@ function executePrimaryActionListModal(): void {
   focusDataFrame();
 }
 
-// ListModal のセカンダリ処理を実行する。
-// 引数として ListModalData か undefined を渡す。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * ListModal のセカンダリ処理を実行する。
+ * 引数として ListModalData か undefined が渡される。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executeSecondaryActionListModal(): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
@@ -52,9 +61,11 @@ function executeSecondaryActionListModal(): void {
   focusDataFrame();
 }
 
-// ListModal のキャンセル処理を実行する。
-// 引数は無し。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * ListModal のキャンセル処理を実行する。
+ * 引数は無し。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executeCancelActionListModal(): void {
   const { cancel } = readState($listModalAction);
   cancel?.();
@@ -62,12 +73,19 @@ function executeCancelActionListModal(): void {
   focusDataFrame();
 }
 
-// ListModal の FilterQuery をクリアする。
+/**
+ * ListModal の FilterQuery をクリアする。
+ */
 function clearListModalFilterQuery(): void {
   writeState($listModalFilterQuery, RESET);
 }
 
-// PromptModal を表示する。
+/**
+ * PromptModal を表示する。
+ *
+ * @param defaultValue - テキストフィールドの初期値
+ * @return ユーザー入力値 (キャンセル時は空文字) の Promise
+ */
 function showPromptModal(defaultValue: string): Promise<string> {
   return new Promise((resolve) => {
     writeState($promptModalData, defaultValue);
@@ -79,9 +97,12 @@ function showPromptModal(defaultValue: string): Promise<string> {
   });
 }
 
-// PromptModal のプライマリ処理を実行する。(セカンダリ処理は無し)
-// 引数としてユーザー入力値を渡す。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * PromptModal のプライマリ処理を実行する。
+ * 引数としてユーザー入力値が渡される。
+ * セカンダリ処理は無し。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executeActionPromptModal(): void {
   const data = readState($promptModalData);
   const { primary } = readState($promptModalAction);
@@ -90,9 +111,11 @@ function executeActionPromptModal(): void {
   focusDataFrame();
 }
 
-// PromptModal のキャンセル処理を実行する。
-// 引数は無し。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * PromptModal のキャンセル処理を実行する。
+ * 引数は無し。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executeCancelActionPromptModal(): void {
   const { cancel } = readState($promptModalAction);
   cancel?.();
@@ -100,15 +123,24 @@ function executeCancelActionPromptModal(): void {
   focusDataFrame();
 }
 
-// PromptModal 内のフォーカス可能要素にフォーカスを当てる。
+/**
+ * 移動方向に基づいて、PromptModal 内のフォーカス可能要素にフォーカスを当てる。
+ *
+ * @param direction - フォーカスの移動方向
+ */
 function focusElementPromptModal(direction: Direction): void {
   const ref = readState($modalRef);
-  if (ref !== null) {
+  if (ref) {
     getFocusableEl(ref, direction)?.focus();
   }
 }
 
-// ConfirmModal を表示する。
+/**
+ * ConfirmModal を表示する。
+ *
+ * @param message - モーダルに表示する文章
+ * @return ユーザー選択値 ('ok' または '') の Promise
+ */
 function showConfirmModal(message: string): Promise<string> {
   return new Promise((resolve) => {
     writeState($confirmModalAction, {
@@ -119,9 +151,12 @@ function showConfirmModal(message: string): Promise<string> {
   });
 }
 
-// ConfirmModal のプライマリ処理を実行する。(セカンダリ処理は無し)
-// 引数は無し。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * ConfirmModal のプライマリ処理を実行する。
+ * 引数は無し。
+ * セカンダリ処理は無し。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executeActionConfirmModal(): void {
   const { primary } = readState($confirmModalAction);
   primary();
@@ -129,9 +164,11 @@ function executeActionConfirmModal(): void {
   focusDataFrame();
 }
 
-// ConfirmModal のキャンセル処理を実行する。
-// 引数は無し。
-// モーダルを閉じ、DataFrame にフォーカスを戻す。
+/**
+ * ConfirmModal のキャンセル処理を実行する。
+ * 引数は無し。
+ * モーダルを閉じ、DataFrame にフォーカスを戻す。
+ */
 function executeCancelActionConfirmModal(): void {
   const { cancel } = readState($confirmModalAction);
   cancel?.();
@@ -139,10 +176,14 @@ function executeCancelActionConfirmModal(): void {
   focusDataFrame();
 }
 
-// ConfirmModal 内のフォーカス可能要素にフォーカスを当てる。
+/**
+ * 移動方向に基づいて、ConfirmModal 内のフォーカス可能要素にフォーカスを当てる。
+ *
+ * @param direction - フォーカスの移動方向
+ */
 function focusElementConfirmModal(direction: Direction): void {
   const ref = readState($modalRef);
-  if (ref !== null) {
+  if (ref) {
     getFocusableEl(ref, direction)?.focus();
   }
 }

@@ -16,20 +16,20 @@ import type {
   WsSuccessResponse,
 } from '@modules/App/types';
 import type {
-  ProgressTaskCallback,
-  ShTaskCallback,
+  ProgressTaskArgsGenerator,
+  ShTaskArgsGenerator,
 } from '@modules/DataFrame/types';
 
 /**
  * ProgressTask を実行する。
  *
- * @param callback - コールバック関数
- *   対象エントリの配列、コピー元ディレクトリ、コピー先ディレクトリを受け取り、
- *   ProgressTaskCallbackResult を返す。
+ * @param generator - ProgressTask に渡す引数を生成する関数
+ *   対象エントリの配列、ソースディレクトリ、出力先ディレクトリを受け取り、
+ *   ProgressTaskArgs を返す。
  * @param frame - 対象フレーム
  */
 async function runProgressTask(
-  callback: ProgressTaskCallback,
+  generator: ProgressTaskArgsGenerator,
   frame = readState($activeFrame),
 ): Promise<void> {
   const targetNames = getTargetNames(frame);
@@ -40,23 +40,23 @@ async function runProgressTask(
   const srcDir = readState($currentDir(frame));
   const destDir = readState($currentDir(getOtherFrame(frame)));
 
-  const info = await callback(targetNames, srcDir, destDir);
-  if (!info) {
+  const args = await generator(targetNames, srcDir, destDir);
+  if (!args) {
     return;
   }
 
   wsSend<WsProgressTaskResponse>(
     'progress',
     {
-      sources: info.src,
-      destination: info.dest,
-      config: { cmd: info.cmd, total: info.total },
+      sources: args.src,
+      destination: args.dest,
+      config: { cmd: args.cmd, total: args.total },
     },
     (resp) => {
       if (handleWsSendError(resp, frame)) {
         return;
       }
-      const log = <ProgressTaskLog label={info.label} pid={resp.data.pid} />;
+      const log = <ProgressTaskLog label={args.label} pid={resp.data.pid} />;
       writeLog(log, 'progress');
     },
     frame,
@@ -86,13 +86,13 @@ function abortProgressTask(pid: string, frame = readState($activeFrame)): void {
 /**
  * ShTask を実行する。
  *
- * @param callback - コールバック関数
- *   対象エントリの配列、コピー元ディレクトリ、コピー先ディレクトリを受け取り、
- *   ShTaskCallbackResult を返す。
+ * @param generator - ShTask に渡す引数を生成する関数
+ *   対象エントリの配列、ソースディレクトリ、出力先ディレクトリを受け取り、
+ *   ShTaskArgs を返す。
  * @param frame - 対象フレーム
  */
 async function runShTask(
-  callback: ShTaskCallback,
+  generator: ShTaskArgsGenerator,
   frame = readState($activeFrame),
 ): Promise<void> {
   // ShTask は対象エントリの有る無しにかかわらず実行できるため、
@@ -102,23 +102,23 @@ async function runShTask(
   const srcDir = readState($currentDir(frame));
   const destDir = readState($currentDir(getOtherFrame(frame)));
 
-  const info = await callback(targetNames, srcDir, destDir);
-  if (!info) {
+  const args = await generator(targetNames, srcDir, destDir);
+  if (!args) {
     return;
   }
 
   wsSend<WsDataResponse>(
     'sh',
     {
-      sources: info.src,
-      destination: info.dest,
-      config: { cmd: info.cmd },
+      sources: args.src,
+      destination: args.dest,
+      config: { cmd: args.cmd },
     },
     (resp) => {
       if (handleWsSendError(resp, frame)) {
         return;
       }
-      writeLog(info.log, 'info');
+      writeLog(args.log, 'info');
     },
     frame,
   );

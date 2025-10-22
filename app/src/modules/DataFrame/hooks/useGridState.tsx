@@ -19,8 +19,14 @@ type ReturnValue = {
   isOverflowing: boolean;
 };
 
-// グリッドのビューポート状態を返す。
-// 全エントリを表示しきれているか、最終行が見えているか、等。
+/**
+ * グリッドの表示領域の状態を返す。
+ * 全エントリを表示しきれているか、最終行が見えているか、等。
+ *
+ * @param frame - 対象フレーム
+ * @param gridRef - グリッドの ref
+ * @return グリッドの表示領域の状態
+ */
 export const useGridState = (
   frame: Frame,
   gridRef: RefObject<HTMLDivElement | null>,
