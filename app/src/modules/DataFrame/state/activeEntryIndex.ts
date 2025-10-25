@@ -6,7 +6,7 @@ import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
 /**
- * カレント行のインデックス。
+ * カレントエントリのインデックス。
  */
 export const $activeEntryIndex = atomFamily((frame: Frame) =>
   atom(

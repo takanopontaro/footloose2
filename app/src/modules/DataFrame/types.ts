@@ -135,7 +135,7 @@ export type ProgressTaskArgs = {
 export type ProgressTaskArgsGenerator = (
   /**
    * 対象エントリ名の一覧。
-   * 選択行があればそれを、なければカレント行が使われる。
+   * 選択行があればそれらを、なければカレントエントリが使われる。
    */
   targetNames: string[],
   /**
@@ -176,7 +176,7 @@ export type ShTaskArgs = {
 export type ShTaskArgsGenerator = (
   /**
    * 対象エントリ名の一覧。
-   * 選択行があればそれを、なければカレント行が使われる。
+   * 選択行があればそれらを、なければカレントエントリが使われる。
    */
   targetNames: string[],
   /**

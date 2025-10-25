@@ -25,7 +25,7 @@ export const $currentDir = atomFamily((frame: Frame) =>
       set(currentDirAtom(frame), newVal);
       set($prevSessionDir(frame), newVal);
 
-      // virtual-dir mode の時は履歴を残したくないため return する。
+      // virtual-dir モードの時は履歴を残したくないため return する。
       const modes = get($modes(frame));
       if (modes.includes('virtual-dir')) {
         return;

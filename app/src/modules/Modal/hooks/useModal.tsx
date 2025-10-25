@@ -87,7 +87,7 @@ export const useModal = (
     };
   }, [dialogRef, setModalRef]);
 
-  // mount 時にモーダルを開く。
+  // マウント時にモーダルを開く。
   // アクセシビリティのため HTMLDialogElement.showModal() を使う。
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#accessibility
   useEffect(() => {

@@ -130,7 +130,7 @@ function moveCursorByStartingLetter(
   const entries = readState($filteredEntries(frame));
   const curIndex = readState($activeEntryIndex(frame));
 
-  // カレント行を基準にエントリ一覧を二分割し前後を入れ替える。
+  // カレントエントリを基準にエントリ一覧を二分割し前後を入れ替える。
   // こうすることで、同じキー押下で順繰りにループ選択できる。
   const firstPart = entries.slice(0, curIndex + 1);
   const secondPart = entries.slice(curIndex + 1);
@@ -190,7 +190,7 @@ function toggleRowSelectionByIndex(
 }
 
 /**
- * カレント行の選択状態を制御する。
+ * カレントエントリの選択状態を制御する。
  *
  * @param select - 選択するか否か (undefined の場合はトグル)
  * @param frame - 対象フレーム

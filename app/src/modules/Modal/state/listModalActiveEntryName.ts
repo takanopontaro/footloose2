@@ -1,6 +1,6 @@
 import { atomWithReset } from 'jotai/utils';
 
 /**
- * ListModal のカレント行のエントリ名。
+ * ListModal のカレントエントリの name。
  */
 export const $listModalActiveEntryName = atomWithReset('');

@@ -14,17 +14,17 @@ import type { Frame, WsDirUpdateResponse } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
 /**
- * カレント行だったエントリが削除された場合の、新しいカレント行を返す。
+ * カレントだったエントリが削除された場合の、新しいカレントエントリを返す。
  * 新カレントは、可能な限りひとつ前のエントリとする。
  * それも削除されていれば更にひとつ前…と繰り返し、無ければ `..` とする。
  * newRawEntries に対象エントリがあっても、
- * filter-out されている場合はカレント行にはできないため、次の候補を探す。
+ * filter-out されている場合はカレントにはできないため、次の候補を探す。
  *
  * @param oldRawEntries - 旧エントリ一覧
  * @param newRawEntryNames - 新エントリ一覧の name 集合
  * @param filteredEntryNames - filter-out 後のエントリ一覧の name 集合
- * @param prevActiveEntryName - 旧カレント行の name
- * @return 新カレント行の name
+ * @param prevActiveEntryName - 旧カレントエントリの name
+ * @return 新カレントエントリの name
  */
 function getFallbackActiveEntryName(
   oldRawEntries: Entry[],
@@ -89,11 +89,12 @@ export const useDirUpdate = (frame: Frame): void => {
 
         set($rawEntries(frame), newRawEntries);
 
-        const hasDeletedEntries =
+        // カレントだったエントリが削除されたか否か。
+        const isDeleted =
           oldRawEntryNames.has(activeEntryName) &&
           !newRawEntryNames.has(activeEntryName);
 
-        if (!hasDeletedEntries) {
+        if (!isDeleted) {
           return;
         }
 
@@ -111,7 +112,7 @@ export const useDirUpdate = (frame: Frame): void => {
 
         set($selectedEntryNames(frame), entryNames);
 
-        // カレント行だったエントリが削除された場合の、新しいカレント行。
+        // カレントだったエントリが削除された場合の、新しいカレントエントリ。
         const entryName = getFallbackActiveEntryName(
           oldRawEntries,
           newRawEntryNames,

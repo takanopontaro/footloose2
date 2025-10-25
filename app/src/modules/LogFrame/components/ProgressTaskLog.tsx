@@ -44,8 +44,8 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
   }, [pid, setLogData]);
 
   // 一定時間後に moveLogToEnd を実行する。
-  // その際、自身が unmount される。
-  // 開発時は useEffect が二度実行されるため、念のため cleanup しておく。
+  // その際、自身がアンマウントされる。
+  // 開発時は useEffect が二度実行されるため、念のためクリーンアップしておく。
   useEffect(() => {
     if (info.status !== 'progress') {
       return;
@@ -59,7 +59,7 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
     };
   }, [settings.progressTaskLogInterval, info.status, moveLogToEnd, pid]);
 
-  // progress task をキャンセルする。
+  // ProgressTask をキャンセルする。
   const abort = useCallback(
     (e: MouseEvent) => {
       (e.target as HTMLButtonElement).disabled = true;

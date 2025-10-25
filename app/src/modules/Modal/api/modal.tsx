@@ -19,7 +19,7 @@ import type { Direction } from '@modules/App/types';
 /**
  * ListModal のカーソルを移動する。
  * カーソルはループする。
- * filter-out 等でカレント行が無い場合は、最初の項目をカレントにする。
+ * filter-out 等でカレントエントリが無い場合は、最初の項目をカレントにする。
  *
  * @param step - カーソルの移動量
  */

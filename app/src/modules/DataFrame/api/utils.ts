@@ -9,13 +9,13 @@ import {
 import type { SymlinkInfo } from '@modules/DataFrame/types';
 
 /**
- * カレント行の name を返す。
+ * カレントエントリの name を返す。
  * filter-out されている場合は空文字を返す。
  *
  * @param frame - 対象フレーム
  * @param allowParent - `..` を含むか否か
- *   false の時は `..` がカレント行であっても空文字を返す。
- * @return カレント行の name または空文字
+ *   false の時は `..` がカレントエントリであっても空文字を返す。
+ * @return カレントエントリの name または空文字
  */
 function getTargetName(
   frame = readState($activeFrame),
@@ -35,12 +35,12 @@ function getTargetName(
 
 /**
  * 選択行の name 配列を返す (`..` を含む)。
- * 未選択ならカレント行の name を返す。
- * カレント行が filter-out されている場合は空文字を返す。
+ * 未選択ならカレントエントリの name を返す。
+ * カレントエントリが filter-out されている場合は空文字を返す。
  *
  * @param frame - 対象フレーム
  * @param allowParent - `..` を含むか否か
- *   false の時は `..` がカレント行であっても空文字を返す。
+ *   false の時は `..` がカレントエントリであっても空文字を返す。
  *   選択行が無い場合のみ有効。
  * @return 選択行の name 配列または空配列
  */

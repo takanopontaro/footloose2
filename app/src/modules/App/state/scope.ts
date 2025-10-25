@@ -54,7 +54,7 @@ function match<T>(value: string, curValues: T[]): boolean {
 }
 
 /**
- * 現在の mode や tag に基づいた、適切なコマンドを取得する関数を返す。
+ * 現在のモードやタグに基づいた、適切なコマンドを取得する関数を返す。
  *
  * @param shortcutCommandList - ShortcutCommand のリスト
  * @return コマンド取得関数
@@ -80,7 +80,7 @@ function makeGetAvailableActions(
 const scopeAtom = atom<Scope>('');
 
 /**
- *
+ * スコープ。
  */
 export const $scope = atom(
   (get) => get(scopeAtom),
@@ -95,7 +95,7 @@ export const $scope = atom(
     set(scopeAtom, newVal);
 
     // ------------------------------------
-    // scope に紐づいたショートカットキーを設定する。
+    // スコープに紐づいたショートカットキーを設定する。
 
     Mousetrap.reset();
 

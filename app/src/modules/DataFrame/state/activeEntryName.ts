@@ -13,7 +13,7 @@ import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
 /**
- * カレント行の変更に応じて、表示領域内の開始エントリを更新する。
+ * カレントエントリの変更に応じて、表示領域内の先頭エントリを更新する。
  *
  * @param frame - 対象フレーム
  */
@@ -23,6 +23,8 @@ function updateFirstVisibleEntryIndexInGalleryMode(frame: Frame): void {
   const lastEntryIndex = readState($lastVisibleEntryIndex(frame));
   const gridColumnCount = readState($gridColumnCount(frame));
 
+  // カレントエントリが先頭エントリよりも前 (表示領域外) にある場合、
+  // カレント行の先頭エントリを $firstVisibleEntryIndex に設定する。
   if (activeEntryIndex < firstEntryIndex) {
     const newIndex =
       Math.floor(activeEntryIndex / gridColumnCount) * gridColumnCount;
@@ -30,7 +32,10 @@ function updateFirstVisibleEntryIndexInGalleryMode(frame: Frame): void {
     return;
   }
 
+  // カレントエントリが末尾エントリよりも後 (表示領域外) にある場合、
+  // それが表示領域内に来るように $firstVisibleEntryIndex を設定する。
   if (activeEntryIndex > lastEntryIndex) {
+    // カレントエントリを表示領域内に収めるために必要な行数。
     const rowDelta = Math.ceil(
       (activeEntryIndex - lastEntryIndex) / gridColumnCount,
     );
@@ -44,7 +49,7 @@ function updateFirstVisibleEntryIndexInGalleryMode(frame: Frame): void {
 const activeEntryNameAtom = atomFamily((_frame: Frame) => atomWithReset('..'));
 
 /**
- * カレント行のエントリ名。
+ * カレントエントリの name。
  */
 export const $activeEntryName = atomFamily((frame: Frame) =>
   atom(
@@ -73,10 +78,14 @@ export const $activeEntryName = atomFamily((frame: Frame) =>
 
       const isGalleryMode = get($isGalleryMode(frame));
       if (isGalleryMode) {
+        // カレントエントリが表示領域外になった時の $firstVisibleEntryIndex の調整。
+        // gallery モードの場合、複雑な計算が必要になる。
         updateFirstVisibleEntryIndexInGalleryMode(frame);
         return;
       }
 
+      // リスト表示の時の $firstVisibleEntryIndex の調整。
+      // gallery モードと違って単純な計算で済む。
       const activeEntryIdx = get($activeEntryIndex(frame));
       const firstEntryIndex = get($firstVisibleEntryIndex(frame));
       const lastEntryIndex = get($lastVisibleEntryIndex(frame));

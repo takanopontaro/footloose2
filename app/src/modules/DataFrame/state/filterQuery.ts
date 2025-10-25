@@ -16,7 +16,7 @@ import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
 /**
- * エントリ一覧の filter-out 状況に応じて、表示領域内の開始エントリを更新する。
+ * エントリ一覧の filter-out 状況に応じて、表示領域内の先頭エントリを更新する。
  *
  * @param entries - エントリ一覧
  * @param frame - 対象フレーム
@@ -29,16 +29,29 @@ function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
   // $activeEntryIndex を使いたいところだが、この時点ではまだ使えない。
   // 引数の entries には $filterQuery が反映されているが、
   // $filteredEntries にはまだ未反映なためである。
+  // $activeEntryIndex は $filteredEntries を参照しているため、
+  // この時点ではまだ正確なインデックスを得られない。
+  // よって findIndex する必要がある。
   const curIndex = entries.findIndex((e) => e.name === activeEntryName);
 
-  // スクロール無しで全エントリを表示できる場合
+  // カレントエントリが filter-out されている、または
+  // スクロール無しで全エントリを表示できる場合。
   if (curIndex === -1 || curIndex < maxRowCount * gridColumnCount) {
     writeState($firstVisibleEntryIndex(frame), 0);
     return;
   }
 
-  const diff = Math.ceil(maxRowCount / 2) * gridColumnCount;
-  let firstEntryIndex = curIndex - diff;
+  // ------------------------------------
+  // $firstVisibleEntryIndex を更新する。
+  // カーソル (カレントエントリ) が表示領域内に来るようにする。
+
+  // 表示領域内の全エントリの半分に相当するエントリ数。
+  const halfEntryCount = Math.ceil(maxRowCount / 2) * gridColumnCount;
+
+  // カーソルが表示領域の中央あたりに来るよう、先頭エントリを調整する。
+  let firstEntryIndex = curIndex - halfEntryCount;
+
+  // グリッドがズレないように、列数の倍数が先頭インデックスになるよう調整する。
   firstEntryIndex = firstEntryIndex - (firstEntryIndex % gridColumnCount);
   writeState($firstVisibleEntryIndex(frame), firstEntryIndex);
 }
@@ -80,7 +93,7 @@ export const $filterQuery = atomFamily((frame: Frame) =>
       // $firstVisibleEntryIndex や $selectedEntryNames を更新する。
       // できれば $filteredEntries 内で行いたいところだが、
       // read-only atom であり、setter が無いため、ここで行う。
-      // (getter 内で atom の更新はしたくない)
+      // (getter 内で atom の更新をしたくない)
 
       // パターン入力中は容易に不完全な正規表現になり得るため、
       // try-catch でしっかりガードする。

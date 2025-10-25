@@ -11,7 +11,7 @@ const selectedEntryNamesAtom = atomFamily((_frame: Frame) =>
 );
 
 /**
- * 選択されているエントリの名前一覧。
+ * 選択されているエントリの name 一覧。
  */
 export const $selectedEntryNames = atomFamily((frame: Frame) =>
   atom(

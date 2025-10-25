@@ -122,7 +122,7 @@ function copyTextToClipboard(
 
 /**
  * 選択されているエントリのパスをクリップボードにコピーする。
- * 選択行がない場合はカレント行のパスをコピーする。
+ * 選択行がない場合はカレントエントリのパスをコピーする。
  * カレントが `..` の時は親ディレクトリのパスをコピーする。
  *
  * @param frame - 対象フレーム
@@ -133,7 +133,7 @@ function copySrcPathsToClipboard(frame = readState($activeFrame)): void {
   const activeEntryName = readState($activeEntryName(frame));
   const targetNames = getTargetNames(frame);
 
-  // 選択行が無く、カレント行が `..` の時は親ディレクトリのパスをコピーする。
+  // 選択行が無く、カレントエントリが `..` の時は親ディレクトリのパスをコピーする。
   // ルートにいる場合、親はルート自身とする。
   if (targetNames.length === 0 && activeEntryName === '..') {
     const text = curDir.replace(/\/[^/]+\/?$/, '') || '/';

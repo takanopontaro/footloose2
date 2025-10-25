@@ -18,8 +18,8 @@ function setDataFrameInScope(frame: Frame): void {
   const entries = readState($filteredEntries(frame));
   const name = readState($activeEntryName(frame));
   const exists = entries.some((e) => e.name === name);
-  // カレント行が filter-out されている場合は `..` をカレントにする。
-  // (カレント行が無い状態でフレームをアクティブにしないため)
+  // カレントエントリが filter-out されている場合は `..` をカレントにする。
+  // (カレントが無い状態でフレームをアクティブにしたくないため)
   if (!exists) {
     writeState($activeEntryName(frame), entries[0].name);
   }
@@ -84,8 +84,8 @@ function focusListModal(): void {
   }
   const name = readState($listModalActiveEntryName);
   const exists = dataset.some((d) => d.label === name);
-  // カレント行が filter-out されている場合は最初のデータをカレントにする。
-  // (カレント行が無い状態でリストをアクティブにしないため)
+  // カレントエントリが filter-out されている場合は最初のデータをカレントにする。
+  // (カレントが無い状態でリストをアクティブにしたくないため)
   if (!exists) {
     writeState($listModalActiveEntryName, dataset[0].label);
   }

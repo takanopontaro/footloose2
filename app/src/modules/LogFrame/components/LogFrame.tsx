@@ -32,7 +32,7 @@ const LogFrameComponent: FC = () => {
     }, []),
   );
 
-  // progress task の終了処理をする。
+  // ProgressTask の終了処理をする。
   const handleProgressEnd = useAtomCallback<void, [WsProgressEndResponse]>(
     useCallback((_get, set, resp) => {
       const { pid } = resp.data;
@@ -56,7 +56,7 @@ const LogFrameComponent: FC = () => {
     ),
   );
 
-  // progress task の中止処理をする。
+  // ProgressTask の中止処理をする。
   const handleProgressAbort = useAtomCallback<void, [WsProgressAbortResponse]>(
     useCallback((_get, set, resp) => {
       const { pid } = resp.data;

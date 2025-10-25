@@ -136,7 +136,7 @@ function changeVirtualDir(
       writeState($rawEntries(frame), entries);
       writeState(
         $activeEntryName(frame),
-        // 今までいたエントリをカレント行にする。
+        // 今までいたエントリ (ディレクトリ) をカレントエントリにする。
         prevDirName === null ? RESET : prevDirName,
       );
       writeState($selectedEntryNames(frame), RESET);
