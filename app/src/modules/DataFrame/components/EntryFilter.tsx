@@ -6,10 +6,19 @@ import { $filterQuery } from '@modules/DataFrame/state';
 import type { FC, FocusEvent, FormEvent } from 'react';
 import type { Frame } from '@modules/App/types';
 
+/**
+ * EntryFilter コンポーネントの props。
+ */
 type Props = {
+  /**
+   * 対象フレーム。
+   */
   frame: Frame;
 };
 
+/**
+ * エントリ一覧の絞り込み入力欄コンポーネント。
+ */
 const EntryFilterComponent: FC<Props> = ({ frame }) => {
   const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const [scope, setScope] = useAtom($scope);

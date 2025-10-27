@@ -10,15 +10,35 @@ import type {
   ProgressTaskStatus,
 } from '@modules/LogFrame/types';
 
+/**
+ * そのログデータが ProgressTask のものか否かを返す型ガード。
+ *
+ * @param data - ログデータ
+ * @return ProgressTask のものか否か
+ */
 function isProgressTaskLog(data: LogData): data is ProgressTaskLogData {
   return data.level === 'progress';
 }
 
+/**
+ * ProgressTaskLog コンポーネントの props。
+ */
 type Props = {
+  /**
+   * 表示ラベル。
+   */
   label: string;
+  /**
+   * プロセス ID。
+   */
   pid: string;
 };
 
+/**
+ * ProgressTask のログを表示するコンポーネント。
+ * プログレスバーや中止ボタンが付いている。
+ * 他のログに紛れて画面外に流れて行ってしまわないよう一定間隔で最新位置に移動する。
+ */
 const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
   const [statusEl, setStatusEl] = useState<ReactNode | null>(null);
   const setLogData = useSetAtom($logData);

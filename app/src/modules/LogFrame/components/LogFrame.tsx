@@ -16,6 +16,9 @@ import type {
   WsProgressResponse,
 } from '@modules/App/types';
 
+/**
+ * ログを表示するコンポーネント。
+ */
 const LogFrameComponent: FC = () => {
   const [scope, setScope] = useAtom($scope);
   const [logData, setLogData] = useAtom($logData);

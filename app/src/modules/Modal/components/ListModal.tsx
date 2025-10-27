@@ -11,10 +11,19 @@ import {
 
 import type { FC, FocusEvent, FormEvent } from 'react';
 
+/**
+ * ListModal コンポーネントの props。
+ */
 type Props = {
+  /**
+   * モーダルを開いた時に付けるタグの接尾詞。
+   */
   tag: 'bookmark' | 'history';
 };
 
+/**
+ * リスト選択モーダルのコンポーネント。
+ */
 const ListModalComponent: FC<Props> = ({ tag }) => {
   const [scope, setScope] = useAtom($scope);
   const [filter, setFilter] = useAtom($listModalFilterQuery);

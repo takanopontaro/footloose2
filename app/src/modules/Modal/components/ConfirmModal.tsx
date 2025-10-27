@@ -3,10 +3,19 @@ import { useModal } from '@modules/Modal/hooks';
 
 import type { FC } from 'react';
 
+/**
+ * ConfirmModal コンポーネントの props。
+ */
 type Props = {
+  /**
+   * モーダル内に表示する文字列。
+   */
   message: string;
 };
 
+/**
+ * 確認モーダルのコンポーネント。
+ */
 const ConfirmModalComponent: FC<Props> = ({ message }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 

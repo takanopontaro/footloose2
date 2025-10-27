@@ -12,12 +12,30 @@ import type { FC } from 'react';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
+/**
+ * ディレクトリにあるエントリ郡の統計情報。
+ */
 type DirStats = {
+  /**
+   * ディレクトリの数。
+   */
   dirs: number;
+  /**
+   * ファイルの数。
+   */
   files: number;
+  /**
+   * シンボリックリンクの数。
+   */
   links: number;
 };
 
+/**
+ * エントリ一覧の統計情報を取得する。
+ *
+ * @param entries - エントリ一覧
+ * @return 統計情報
+ */
 function getDirStats(entries: Entry[]): DirStats {
   const stats: DirStats = { dirs: 0, files: 0, links: 0 };
   for (const { name, perm } of entries) {
@@ -39,10 +57,19 @@ function getDirStats(entries: Entry[]): DirStats {
   return stats;
 }
 
+/**
+ * DirInfo コンポーネントの props。
+ */
 type Props = {
+  /**
+   * 対象フレーム。
+   */
   frame: Frame;
 };
 
+/**
+ * ディレクトリの詳細情報を表示するコンポーネント。
+ */
 const DirInfoComponent: FC<Props> = ({ frame }) => {
   const [dirs, setDirs] = useState(0);
   const [files, setFiles] = useState(0);

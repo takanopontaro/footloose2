@@ -10,10 +10,19 @@ import {
 import type { FC } from 'react';
 import type { Frame } from '@modules/App/types';
 
+/**
+ * Preview コンポーネントの props。
+ */
 type Props = {
+  /**
+   * 対象フレーム。
+   */
   frame: Frame;
 };
 
+/**
+ * エントリのプレビュー表示コンポーネント。
+ */
 const PreviewComponent: FC<Props> = ({ frame }) => {
   const setPreviewRef = useSetAtom($previewRef(frame));
   const activeEntryIndex = useAtomValue($activeEntryIndex(frame));

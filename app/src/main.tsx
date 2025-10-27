@@ -7,9 +7,15 @@ import { $config } from '@modules/App/state';
 
 import type { Config } from '@modules/App/types';
 
+/**
+ * ルートコンポーネント。
+ * Config を受け取り、jotai の store に格納する。
+ */
 function init(config: Config): void {
   store.set($config, config);
+
   const root = document.getElementById('root')!;
+
   createRoot(root).render(
     <StrictMode>
       <Provider store={store}>

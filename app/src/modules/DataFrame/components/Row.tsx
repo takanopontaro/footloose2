@@ -5,13 +5,31 @@ import type { FC } from 'react';
 import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
+/**
+ * Row コンポーネントの props。
+ */
 type Props = {
+  /**
+   * カレントエントリか否か。
+   */
   current: boolean;
+  /**
+   * 対象エントリ。
+   */
   entry: Entry;
+  /**
+   * 対象フレーム。
+   */
   frame: Frame;
+  /**
+   * 選択されているか否か。
+   */
   selected: boolean;
 };
 
+/**
+ * エントリ一覧の行コンポーネント。
+ */
 const RowComponent: FC<Props> = ({ current, entry, frame, selected }) => {
   const thumbnail = useThumbnail(entry, frame, 'entryGrid_thumbnail');
   const { link, name, perm, size, time } = entry;

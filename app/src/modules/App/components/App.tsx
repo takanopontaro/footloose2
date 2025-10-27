@@ -8,6 +8,10 @@ import { LogFrame } from '@modules/LogFrame/components';
 
 import type { FC } from 'react';
 
+/**
+ * アプリケーションのメインコンポーネント。
+ * 各種フレームとモーダルを表示する。
+ */
 const AppComponent: FC = () => {
   const wsAtom = useWebSocket(3000);
   const [dirPathA, dirPathB] = useInitialDir();

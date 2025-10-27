@@ -26,12 +26,28 @@ import {
 import type { FC, FocusEvent } from 'react';
 import type { Frame } from '@modules/App/types';
 
+/**
+ * DataFrame コンポーネントの props。
+ */
 type Props = {
+  /**
+   * 対象フレーム。
+   */
   frame: Frame;
+  /**
+   * 初期ディレクトリ。
+   */
   initialDir: string;
+  /**
+   * 初期フォーカスを当てるか否か。
+   */
   initialFocus?: boolean;
 };
 
+/**
+ * エントリ一覧を表示するコンポーネント。
+ * リスト表示とグリッド表示が可能。
+ */
 const DataFrameComponent: FC<Props> = ({
   frame,
   initialDir,

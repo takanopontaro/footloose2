@@ -5,6 +5,9 @@ import { $promptModalData } from '@modules/Modal/state';
 
 import type { FC } from 'react';
 
+/**
+ * 入力モーダルのコンポーネント。
+ */
 const PromptModalComponent: FC = () => {
   const [data, setData] = useAtom($promptModalData);
   const dialogRef = useRef<HTMLDialogElement>(null);
