@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai';
 import { memo, useEffect, useState } from 'react';
 import { $modes } from '@modules/App/state';
+import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $filteredEntries,
   $rawEntries,
@@ -107,7 +108,7 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
           </span>
         ))}
       </div>
-      <div className="dirInfo_sort">{`${sort.field}:${sort.order}`}</div>
+      <div className="dirInfo_sort">{getSortDisplay(sort)}</div>
     </div>
   );
 };

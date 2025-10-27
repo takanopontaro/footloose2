@@ -15,7 +15,7 @@ import type {
   WsErrorResponse,
   WsResponse,
 } from '@modules/App/types';
-import type { CursorDirection } from '@modules/DataFrame/types';
+import type { CursorDirection, SortCriterion } from '@modules/DataFrame/types';
 
 /**
  * 対になるフレームを返す。
@@ -186,6 +186,16 @@ function cycleGridIndex(
 }
 
 /**
+ * ソート基準の表示文字列を返す。
+ *
+ * @param sort - ソート基準
+ * @return 表示文字列
+ */
+function getSortDisplay(sort: SortCriterion): string {
+  return `${sort.field}:${sort.order}`;
+}
+
+/**
  * WebSocket のレスポンスが汎用エラーかどうかを返す型ガード。
  *
  * @param resp - WebSocket のレスポンス
@@ -252,6 +262,7 @@ export {
   calcTotalCells,
   calcGridIndex,
   cycleGridIndex,
+  getSortDisplay,
   isErrorResp,
   isCommandErrorResp,
   wsSend,

@@ -16,6 +16,7 @@ import {
   useGridViewport,
   useWatchError,
 } from '@modules/DataFrame/hooks';
+import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $selectedEntryNames,
   $sort,
@@ -87,7 +88,7 @@ const DataFrameComponent: FC<Props> = ({
       })}
       data-frame={frame}
       data-mode={modes.join(' ')}
-      data-sort={`${sort.field}:${sort.order}`}
+      data-sort={getSortDisplay(sort)}
       tabIndex={-1}
       onFocus={handleFocus}
     >
