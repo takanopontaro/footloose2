@@ -6,6 +6,9 @@ import { shortcuts } from '@config/shortcuts';
 
 import type { Config } from '@modules/App/types';
 
+/**
+ * アプリケーションのデフォルト設定。
+ */
 const config: Config = {
   commands,
   shortcuts,
