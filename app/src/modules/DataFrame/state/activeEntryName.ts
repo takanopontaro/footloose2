@@ -13,7 +13,7 @@ import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
 /**
- * カレントエントリの変更に応じて、表示領域内の先頭エントリを更新する。
+ * カレントエントリの変更に応じて、表示領域内の開始エントリを更新する。
  *
  * @param frame - 対象フレーム
  */
@@ -23,7 +23,7 @@ function updateFirstVisibleEntryIndexInGalleryMode(frame: Frame): void {
   const lastEntryIndex = readState($lastVisibleEntryIndex(frame));
   const gridColumnCount = readState($gridColumnCount(frame));
 
-  // カレントエントリが先頭エントリよりも前 (表示領域外) にある場合、
+  // カレントエントリが開始エントリよりも前 (表示領域外) にある場合、
   // カレント行の先頭エントリを $firstVisibleEntryIndex に設定する。
   if (activeEntryIndex < firstEntryIndex) {
     const newIndex =

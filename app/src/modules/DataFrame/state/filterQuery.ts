@@ -16,7 +16,7 @@ import type { Frame } from '@modules/App/types';
 import type { Entry } from '@modules/DataFrame/types';
 
 /**
- * エントリ一覧の filter-out 状況に応じて、表示領域内の先頭エントリを更新する。
+ * エントリ一覧の filter-out 状況に応じて、表示領域内の開始エントリを更新する。
  *
  * @param entries - エントリ一覧
  * @param frame - 対象フレーム
@@ -48,7 +48,7 @@ function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
   // 表示領域内の全エントリの半分に相当するエントリ数。
   const halfEntryCount = Math.ceil(maxRowCount / 2) * gridColumnCount;
 
-  // カーソルが表示領域の中央あたりに来るよう、先頭エントリを調整する。
+  // カーソルが表示領域の中央あたりに来るよう、開始エントリを調整する。
   let firstEntryIndex = curIndex - halfEntryCount;
 
   // グリッドがズレないように、列数の倍数が先頭インデックスになるよう調整する。

@@ -15,7 +15,7 @@ import type { Frame } from '@modules/App/types';
 
 /**
  * グリッドの表示領域に関する情報の更新を行う。
- * 表示可能行数、先頭エントリのインデックス、等。
+ * 表示可能行数、開始エントリのインデックス、等。
  *
  * @param frame - 対象フレーム
  * @param gridRef - グリッドの ref
@@ -71,7 +71,7 @@ export const useGridViewport = (
     // リスト表示 (一列グリッド) 時はカレントエントリ自身。
     const curRowStartIndex = index - (index % gridColumnCount);
 
-    // 仮にカレント行を表示領域の先頭行にした場合、
+    // 仮にカレント行を表示領域の開始行にした場合、
     // 表示領域に表示されるはずのエントリの行数。
     const visibleRowCount = Math.ceil(
       (entries.length - curRowStartIndex) / gridColumnCount,
@@ -89,7 +89,7 @@ export const useGridViewport = (
       return;
     }
 
-    // 空行がない場合は、カレント行が表示領域の先頭行になるようにする。
+    // 空行がない場合は、カレント行が表示領域の開始行になるようにする。
     // リスト表示とグリッド表示を切り替えると表示領域内のエントリ数が変わる。
     // そうなると、カーソル (カレントエントリ) が表示領域外に出てしまうことが
     // あり得るため、これを防ぐ。

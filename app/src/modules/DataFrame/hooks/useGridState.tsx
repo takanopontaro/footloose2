@@ -59,7 +59,7 @@ export const useGridState = (
   const [isCursorOnLastVisibleRow, setIsCursorOnLastVisibleRow] =
     useState(false);
 
-  // カーソルが表示領域の先頭行にあるか否か。
+  // カーソルが表示領域の開始行にあるか否か。
   // 以下のようにエントリ一覧の上部が見切れている時に、
   // 0 の位置にカーソルを移動した場合、全体的な表示を上寄せにしたい。
   // その手がかりとして使用する。
@@ -106,12 +106,12 @@ export const useGridState = (
   }, [entries.length, gridColumnCount, gridRef, isGalleryMode, rowHeight]);
 
   useLayoutEffect(() => {
-    // まず先頭行のチェックを行う。
+    // まず開始行のチェックを行う。
 
-    // 先頭行の次の行の、先頭エントリのインデックス。
+    // 開始行の次の行の、先頭エントリのインデックス。
     const secondRowStartIndex = firstEntryIndex + gridColumnCount;
 
-    // カーソルが先頭行にあるか否か。
+    // カーソルが開始行にあるか否か。
     const isOnFirstRow = activeEntryIndex < secondRowStartIndex;
     if (isOnFirstRow) {
       setIsCursorOnFirstVisibleRow(true);
