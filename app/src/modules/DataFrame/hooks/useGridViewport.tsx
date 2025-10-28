@@ -7,6 +7,7 @@ import {
   $firstVisibleEntryIndex,
   $renderedRowHeight,
   $isGalleryMode,
+  $filteredEntries,
 } from '@modules/DataFrame/state';
 
 import type { RefObject } from 'react';
@@ -25,6 +26,7 @@ export const useGridViewport = (
 ): void => {
   const [maxRowCount, setMaxRowCount] = useAtom($maxVisibleRowCount(frame));
   const setFirstEntryIndex = useSetAtom($firstVisibleEntryIndex(frame));
+  const entries = useAtomValue($filteredEntries(frame));
   const gridColumnCount = useAtomValue($gridColumnCount(frame));
   const rowHeight = useAtomValue($renderedRowHeight);
   const isGalleryMode = useAtomValue($isGalleryMode(frame));
@@ -58,18 +60,39 @@ export const useGridViewport = (
       setFirstEntryIndex(0);
       return;
     }
+
     // スクロール無しで全エントリを表示できる場合。
     if (index < maxRowCount * gridColumnCount) {
       setFirstEntryIndex(0);
       return;
     }
+
     // カレント行の、先頭エントリのインデックス。
     // リスト表示 (一列グリッド) 時はカレントエントリ自身。
-    const newIndex = index - (index % gridColumnCount);
-    // カレント行が、表示領域の先頭行になるようにする。
+    const curRowStartIndex = index - (index % gridColumnCount);
+
+    // 仮にカレント行を表示領域の先頭行にした場合、
+    // 表示領域に表示されるはずのエントリの行数。
+    const visibleRowCount = Math.ceil(
+      (entries.length - curRowStartIndex) / gridColumnCount,
+    );
+
+    // その場合の空行数。例えば 5 行表示可能なエリアに 3 行分のエントリしか
+    // 表示されない場合、2 になる。
+    const remainingRowCount = maxRowCount - visibleRowCount;
+
+    // 空行がある＝下が空いているということ。
+    // 見た目が悪いので、開始エントリを前にズラして空きを埋める。
+    if (remainingRowCount > 0) {
+      const newIndex = curRowStartIndex - remainingRowCount * gridColumnCount;
+      setFirstEntryIndex(newIndex);
+      return;
+    }
+
+    // 空行がない場合は、カレント行が表示領域の先頭行になるようにする。
     // リスト表示とグリッド表示を切り替えると表示領域内のエントリ数が変わる。
     // そうなると、カーソル (カレントエントリ) が表示領域外に出てしまうことが
     // あり得るため、これを防ぐ。
-    setFirstEntryIndex(newIndex);
-  }, [gridColumnCount, maxRowCount, setFirstEntryIndex]);
+    setFirstEntryIndex(curRowStartIndex);
+  }, [entries.length, gridColumnCount, maxRowCount, setFirstEntryIndex]);
 };
