@@ -196,6 +196,7 @@ function historyGo(delta: number, frame = readState($activeFrame)): void {
 
   // コピーがあるということは、現在 history モードであることを意味する。
   // 履歴を行ったり来たりしている状態。
+  // このモードの挙動については $historyCopy のコメントを参照のこと。
 
   // history モードかつ次のインデックスがゼロ以下なら、移動しつつモードを解除する。
   if (copy && newIndex <= 0) {
