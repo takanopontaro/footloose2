@@ -33,22 +33,56 @@ function sizeToBytes(size: string): number {
 }
 
 /**
- * ソート用に、エントリの指定したフィールドを比較する。
+ * 派生エントリ群。
+ * ソートの補助データとして使用する。
+ */
+type DerivedEntries = Map<
+  string,
+  {
+    /**
+     * Entry.name を小文字に変換したもの。
+     */
+    name: string;
+    /**
+     * Entry.time を ISO 8601 形式に変換したもの。
+     */
+    time: string;
+  }
+>;
+
+/**
+ * エントリの指定したフィールドを比較するソート関数。
+ * ソートのコストを下げるため、補助データとして派生エントリ群を使用する。
  *
  * @param a - エントリ A
  * @param b - エントリ B
  * @param field - 比較するフィールド
+ * @param derivedEntries - 派生エントリ群
  * @return 比較結果
  */
-function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
+function compareFields(
+  a: Entry,
+  b: Entry,
+  field: keyof Entry,
+  derivedEntries: DerivedEntries,
+): number {
+  const a2 = derivedEntries.get(a.name);
+  const b2 = derivedEntries.get(b.name);
+  if (!a2 || !b2) {
+    throw new Error('unreachable');
+  }
+  if (field === 'name') {
+    return a2.name > b2.name ? 1 : -1;
+  }
   if (field === 'size') {
     return sizeToBytes(a.size) - sizeToBytes(b.size);
   }
   if (field === 'time') {
-    return a.time.localeCompare(b.time);
-  }
-  if (field === 'name') {
-    return a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase() ? 1 : -1;
+    if (a2.time === b2.time) {
+      return 0;
+    }
+    // ISO 8601 形式のため、そのまま比較できる。
+    return a2.time < b2.time ? -1 : 1;
   }
   if (a[field] === b[field]) {
     return 0;
@@ -57,15 +91,31 @@ function compareFields(a: Entry, b: Entry, field: keyof Entry): number {
 }
 
 /**
+ * yy/mm/dd hh:mm:ss の正規表現。
+ */
+const datetimeRegex = /^(\d{2})\/(\d{2})\/(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;
+
+/**
  * エントリをソートする。
  *
  * @param entries - エントリ一覧
  * @param criterion - ソート基準
  */
 function sortEntries(entries: Entry[], criterion: SortCriterion): void {
+  // ソートの精度と効率性を上げるための補助データ (派生エントリ群)。
+  // name を小文字に、time を ISO 8601 形式にあらかじめ変換しておく。
+  const derivedEntries: DerivedEntries = new Map(
+    entries.map((e) => [
+      e.name,
+      {
+        name: e.name.toLocaleLowerCase(),
+        time: e.time.replace(datetimeRegex, '20$1-$2-$3T$4:$5:$6'),
+      },
+    ]),
+  );
   entries.sort((a, b) => {
     const { field, order } = criterion;
-    let comparison = compareFields(a, b, field);
+    let comparison = compareFields(a, b, field, derivedEntries);
     if (order === 'desc') {
       comparison *= -1;
     }
