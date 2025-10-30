@@ -5,12 +5,10 @@ import { $modes } from '@modules/App/state';
 
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
-import type { VirtualDirKind } from '@modules/DataFrame/types';
-
-type VdConfig = { archive: string; kind: VirtualDirKind };
+import type { VirtualDirInfo } from '@modules/DataFrame/types';
 
 const virtualDirInfoAtom = atomFamily((_frame: Frame) =>
-  atomWithReset<VdConfig | null>(null),
+  atomWithReset<VirtualDirInfo | null>(null),
 );
 
 /**
@@ -19,7 +17,11 @@ const virtualDirInfoAtom = atomFamily((_frame: Frame) =>
 export const $virtualDirInfo = atomFamily((frame: Frame) =>
   atom(
     (get) => get(virtualDirInfoAtom(frame)),
-    (get, set, newVal: SetStateAction<VdConfig | null> | typeof RESET) => {
+    (
+      get,
+      set,
+      newVal: SetStateAction<VirtualDirInfo | null> | typeof RESET,
+    ) => {
       const curVal = get(virtualDirInfoAtom(frame));
       if (typeof newVal === 'function') {
         newVal = newVal(curVal);

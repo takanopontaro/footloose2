@@ -89,6 +89,20 @@ export type CursorDirection = 'down' | 'left' | 'right' | 'up';
 export type VirtualDirKind = 'tar' | 'tgz' | 'zip';
 
 /**
+ * 仮想ディレクトリの詳細情報。
+ */
+export type VirtualDirInfo = {
+  /**
+   * アーカイブのパス。
+   */
+  archive: string;
+  /**
+   * 仮想ディレクトリの種類。
+   */
+  kind: VirtualDirKind;
+};
+
+/**
  * シンボリックリンクの詳細情報。
  */
 export type SymlinkInfo = {
