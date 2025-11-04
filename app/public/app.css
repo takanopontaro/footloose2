@@ -721,6 +721,14 @@
   }
 }
 
+.dialog_promptBtn-cancel::before {
+  content: 'Cancel';
+}
+
+.dialog_promptBtn-confirm::before {
+  content: 'OK';
+}
+
 .dialog_confirm {
   /*  */
 }
@@ -749,6 +757,14 @@
     background-color: #555;
     outline: none;
   }
+}
+
+.dialog_confirmBtn-cancel::before {
+  content: 'Cancel';
+}
+
+.dialog_confirmBtn-confirm::before {
+  content: 'OK';
 }
 
 /* .previewWindow: class on server-generated iframe HTML (not React) */

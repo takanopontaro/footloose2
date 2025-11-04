@@ -42,17 +42,13 @@ const ConfirmModalComponent: FC<Props> = ({ message }) => {
             tabIndex={-1}
             type="button"
             onFocus={() => addTag('ConfirmModal:cancel')}
-          >
-            Cancel
-          </button>
+          />
           <button
             className="dialog_confirmBtn dialog_confirmBtn-confirm"
             tabIndex={-1}
             type="button"
             onFocus={() => addTag('ConfirmModal:confirm')}
-          >
-            OK
-          </button>
+          />
         </div>
       </div>
     </dialog>

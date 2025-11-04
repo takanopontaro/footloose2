@@ -49,17 +49,13 @@ const PromptModalComponent: FC = () => {
             tabIndex={-1}
             type="button"
             onFocus={() => addTag('PromptModal:cancel')}
-          >
-            Cancel
-          </button>
+          />
           <button
             className="dialog_promptBtn dialog_promptBtn-confirm"
             tabIndex={-1}
             type="button"
             onFocus={() => addTag('PromptModal:confirm')}
-          >
-            OK
-          </button>
+          />
         </div>
       </div>
     </dialog>
