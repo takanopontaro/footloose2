@@ -1,7 +1,7 @@
 import { RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modal } from '@modules/App/state';
-import { changeVirtualDir, getTargetName } from '@modules/DataFrame/api';
+import { changeVirtualDir, getActiveEntryName } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
   getPrevDirName,
@@ -37,7 +37,7 @@ function changeDir(
   frame = readState($activeFrame),
   options?: ChangeDirOptions,
 ): void {
-  path = path ?? getTargetName(frame, true);
+  path = path ?? getActiveEntryName(frame, true);
 
   if (path === '') {
     const { messages } = readState($config);

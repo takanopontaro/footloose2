@@ -3,7 +3,7 @@ import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $inactiveFrame } from '@modules/App/state';
 import {
   changeDir,
-  getTargetName,
+  getActiveEntryName,
   getTargetNames,
 } from '@modules/DataFrame/api';
 import {
@@ -83,7 +83,7 @@ function changeVirtualDir(
   frame = readState($activeFrame),
 ): void {
   const { messages, settings } = readState($config);
-  path = path ?? getTargetName(frame, true);
+  path = path ?? getActiveEntryName(frame, true);
 
   if (path === '') {
     writeLog(`${frame}: ${messages[0]}`, 'info');

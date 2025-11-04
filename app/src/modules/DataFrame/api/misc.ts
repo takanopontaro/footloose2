@@ -2,7 +2,7 @@ import { RESET } from 'jotai/utils';
 import mime from 'mime';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modes } from '@modules/App/state';
-import { getTargetName, getTargetNames } from '@modules/DataFrame/api';
+import { getActiveEntryName, getTargetNames } from '@modules/DataFrame/api';
 import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
 import {
   $activeEntryName,
@@ -86,7 +86,7 @@ function openWith(
   app?: string,
   frame = readState($activeFrame),
 ): void {
-  path = path ?? getTargetName(frame);
+  path = path ?? getActiveEntryName(frame);
   if (path === '') {
     const { messages } = readState($config);
     writeLog(messages[0], 'info');

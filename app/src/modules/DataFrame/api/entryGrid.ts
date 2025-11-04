@@ -1,7 +1,7 @@
 import { RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
-import { getTargetName } from '@modules/DataFrame/api';
+import { getActiveEntryName } from '@modules/DataFrame/api';
 import { calcGridIndex, cycleGridIndex } from '@modules/DataFrame/libs';
 import {
   $activeEntryIndex,
@@ -199,7 +199,7 @@ function toggleRowSelection(
   select?: boolean,
   frame = readState($activeFrame),
 ): void {
-  const name = getTargetName(frame);
+  const name = getActiveEntryName(frame);
   if (name) {
     toggleRowSelectionByName(name, select, frame);
   }

@@ -17,7 +17,7 @@ import type { SymlinkInfo } from '@modules/DataFrame/types';
  *   false の時は `..` がカレントエントリであっても空文字を返す。
  * @return カレントエントリの name または空文字
  */
-function getTargetName(
+function getActiveEntryName(
   frame = readState($activeFrame),
   allowParent = false,
 ): string {
@@ -52,7 +52,7 @@ function getTargetNames(
   if (selectedNames.length > 0) {
     return selectedNames;
   }
-  const name = getTargetName(frame, allowParent);
+  const name = getActiveEntryName(frame, allowParent);
   return name === '' ? [] : [name];
 }
 
@@ -131,7 +131,7 @@ function getSymlinkInfo(
 }
 
 export {
-  getTargetName,
+  getActiveEntryName,
   getTargetNames,
   isDir,
   isFile,
