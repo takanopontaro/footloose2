@@ -55,21 +55,21 @@ export const useGridViewport = (
   // 列数が変わった時 (gallery モード切替時) や
   // 最大表示行数が更新された時に再計算する。
   useLayoutEffect(() => {
-    const index = activeEntryIndexRef.current;
-    if (index === -1) {
+    const curIndex = activeEntryIndexRef.current;
+    if (curIndex === -1) {
       setFirstEntryIndex(0);
       return;
     }
 
     // スクロール無しで全エントリを表示できる場合。
-    if (index < maxRowCount * gridColumnCount) {
+    if (curIndex < maxRowCount * gridColumnCount) {
       setFirstEntryIndex(0);
       return;
     }
 
     // カレント行の、先頭エントリのインデックス。
     // リスト表示 (一列グリッド) 時はカレントエントリ自身。
-    const curRowStartIndex = index - (index % gridColumnCount);
+    const curRowStartIndex = curIndex - (curIndex % gridColumnCount);
 
     // 仮にカレント行を表示領域の開始行にした場合、
     // 表示領域に表示されるはずのエントリの行数。
@@ -97,7 +97,7 @@ export const useGridViewport = (
       // 表示領域外直後のインデックス。表示領域が 0-9 の場合、10。
       const afterVisibleIndex = prev + maxRowCount * gridColumnCount;
       // カーソルが表示領域内にあるなら現在の値のままでよい。
-      return prev <= index && index < afterVisibleIndex
+      return prev <= curIndex && curIndex < afterVisibleIndex
         ? prev
         : curRowStartIndex;
     });
