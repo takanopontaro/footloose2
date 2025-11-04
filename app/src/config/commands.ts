@@ -130,7 +130,7 @@ const commands: CommandsConfig = [
   {
     name: 'HandleEntry',
     action(api, combo) {
-      const name = api.getTargetName(undefined, true);
+      const name = api.getActiveEntryName(undefined, true);
       if (name === '') {
         return;
       }
@@ -439,7 +439,7 @@ const commands: CommandsConfig = [
   {
     name: 'HandleVirtualEntry',
     action(api, combo) {
-      const name = api.getTargetName(undefined, true);
+      const name = api.getActiveEntryName(undefined, true);
       if (name === '') {
         return;
       }
