@@ -44,7 +44,7 @@ function getActiveEntryName(
  *   選択行が無い場合のみ有効。
  * @return 選択行の name 配列または空配列
  */
-function getTargetNames(
+function getTargetEntryNames(
   frame = readState($activeFrame),
   allowParent = false,
 ): string[] {
@@ -132,7 +132,7 @@ function getSymlinkInfo(
 
 export {
   getActiveEntryName,
-  getTargetNames,
+  getTargetEntryNames,
   isDir,
   isFile,
   isSymlink,

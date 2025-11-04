@@ -4,7 +4,7 @@ import { $activeFrame, $config, $inactiveFrame } from '@modules/App/state';
 import {
   changeDir,
   getActiveEntryName,
-  getTargetNames,
+  getTargetEntryNames,
 } from '@modules/DataFrame/api';
 import {
   getPrevDirName,
@@ -170,7 +170,7 @@ function extractSelectedEntries(
   paths?: string[],
   frame = readState($activeFrame),
 ): void {
-  paths = paths ?? getTargetNames(frame);
+  paths = paths ?? getTargetEntryNames(frame);
 
   if (paths.length === 0) {
     const { messages } = readState($config);

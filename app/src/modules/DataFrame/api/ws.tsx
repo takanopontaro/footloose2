@@ -1,6 +1,6 @@
 import { readState } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
-import { getTargetNames } from '@modules/DataFrame/api';
+import { getTargetEntryNames } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
   handleWsSendError,
@@ -32,7 +32,7 @@ async function runProgressTask(
   generator: ProgressTaskArgsGenerator,
   frame = readState($activeFrame),
 ): Promise<void> {
-  const targetNames = getTargetNames(frame);
+  const targetNames = getTargetEntryNames(frame);
   if (targetNames.length === 0) {
     return;
   }
@@ -97,7 +97,7 @@ async function runShTask(
 ): Promise<void> {
   // ShTask は対象エントリの有る無しにかかわらず実行できるため、
   // length のチェックはしない。
-  const targetNames = getTargetNames(frame);
+  const targetNames = getTargetEntryNames(frame);
 
   const srcDir = readState($currentDir(frame));
   const destDir = readState($currentDir(getOtherFrame(frame)));

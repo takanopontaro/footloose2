@@ -2,7 +2,10 @@ import { RESET } from 'jotai/utils';
 import mime from 'mime';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modes } from '@modules/App/state';
-import { getActiveEntryName, getTargetNames } from '@modules/DataFrame/api';
+import {
+  getActiveEntryName,
+  getTargetEntryNames,
+} from '@modules/DataFrame/api';
 import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
 import {
   $activeEntryName,
@@ -131,7 +134,7 @@ function copySrcPathsToClipboard(frame = readState($activeFrame)): void {
   const { messages } = readState($config);
   const curDir = readState($currentDir(frame));
   const activeEntryName = readState($activeEntryName(frame));
-  const targetNames = getTargetNames(frame);
+  const targetNames = getTargetEntryNames(frame);
 
   // 選択行が無く、カレントエントリが `..` の時は親ディレクトリのパスをコピーする。
   // ルートにいる場合、親はルート自身とする。
