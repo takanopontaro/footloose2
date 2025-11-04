@@ -93,6 +93,13 @@ export const useGridViewport = (
     // リスト表示とグリッド表示を切り替えると表示領域内のエントリ数が変わる。
     // そうなると、カーソル (カレントエントリ) が表示領域外に出てしまうことが
     // あり得るため、これを防ぐ。
-    setFirstEntryIndex(curRowStartIndex);
+    setFirstEntryIndex((prev) => {
+      // 表示領域外直後のインデックス。表示領域が 0-9 の場合、10。
+      const afterVisibleIndex = prev + maxRowCount * gridColumnCount;
+      // カーソルが表示領域内にあるなら現在の値のままでよい。
+      return prev <= index && index < afterVisibleIndex
+        ? prev
+        : curRowStartIndex;
+    });
   }, [entries.length, gridColumnCount, maxRowCount, setFirstEntryIndex]);
 };
