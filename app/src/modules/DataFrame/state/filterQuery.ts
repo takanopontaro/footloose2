@@ -26,11 +26,11 @@ function updateFirstVisibleEntryIndex(entries: Entry[], frame: Frame): void {
   const gridColumnCount = readState($gridColumnCount(frame));
   const maxRowCount = readState($maxVisibleRowCount(frame));
 
-  // $activeEntryIndex を使いたいところだが、この時点ではまだ使えない。
+  // $activeEntryIndex を使いたいところだが、
+  // この atom は $filteredEntries を内部的に参照しているため、
+  // この時点ではまだ正確なインデックスを得られない。
   // 引数の entries には $filterQuery が反映されているが、
   // $filteredEntries にはまだ未反映なためである。
-  // $activeEntryIndex は $filteredEntries を参照しているため、
-  // この時点ではまだ正確なインデックスを得られない。
   // よって findIndex する必要がある。
   const curIndex = entries.findIndex((e) => e.name === activeEntryName);
 
