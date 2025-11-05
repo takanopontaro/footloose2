@@ -9,17 +9,39 @@ import {
   $firstVisibleEntryIndex,
   $selectedEntryNames,
   $activeEntryIndex,
+  $renderedEntries,
+  $activeEntryName,
 } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';
 
 /**
- * エントリ一覧の filter-out 状況に応じて、表示領域内の開始エントリを更新する。
+ * 表示されているエントリ一覧におけるカレントエントリのインデックスを返す。
+ * 表示領域に 10 個のエントリが表示されているとして、
+ * その 5 番目がカレントの場合、4 を返す。
+ * ちなみに $activeEntryIndex は全エントリに対するインデックスである。
  *
  * @param frame - 対象フレーム
+ * @return カレントエントリのインデックス
  */
-function updateFirstVisibleEntryIndex(frame: Frame): void {
+function getRenderedEntryIndex(frame: Frame): number {
+  const activeEntryName = readState($activeEntryName(frame));
+  const renderedEntries = readState($renderedEntries(frame));
+  return renderedEntries.findIndex((e) => e.name === activeEntryName);
+}
+
+/**
+ * エントリ一覧の filter-out 状況に応じて、表示領域内の開始エントリを更新する。
+ *
+ * @param renderedEntryIndex - カレントエントリのインデックス
+ *   全エントリではなく表示されているエントリ一覧に対しての。
+ * @param frame - 対象フレーム
+ */
+function updateFirstVisibleEntryIndex(
+  renderedEntryIndex: number,
+  frame: Frame,
+): void {
   const activeEntryIndex = readState($activeEntryIndex(frame));
   const gridColumnCount = readState($gridColumnCount(frame));
   const maxRowCount = readState($maxVisibleRowCount(frame));
@@ -36,17 +58,13 @@ function updateFirstVisibleEntryIndex(frame: Frame): void {
 
   // ------------------------------------
   // $firstVisibleEntryIndex を更新する。
-  // カーソル (カレントエントリ) が表示領域内に来るようにする。
+  // カレントの位置はデータが更新される前のそれと同じにした方が目に優しい。
 
-  // 表示領域内の全エントリの半分に相当するエントリ数。
-  const halfEntryCount = Math.ceil(maxRowCount / 2) * gridColumnCount;
-
-  // カーソルが表示領域の中央あたりに来るよう、開始エントリを調整する。
-  let firstEntryIndex = activeEntryIndex - halfEntryCount;
-
-  // グリッドがズレないように、列数の倍数が先頭インデックスになるよう調整する。
-  firstEntryIndex = firstEntryIndex - (firstEntryIndex % gridColumnCount);
-  writeState($firstVisibleEntryIndex(frame), firstEntryIndex);
+  // activeEntryIndex は全エントリ (最新データ) の中での位置を表している。
+  // そこから renderedEntryIndex を引けば、
+  // 以前と同じカーソル位置になるよう調整された開始インデックスを算出できる。
+  const newIndex = activeEntryIndex - renderedEntryIndex;
+  writeState($firstVisibleEntryIndex(frame), newIndex);
 }
 
 const filterQueryAtom = atomFamily((_frame: Frame) => atomWithReset(''));
@@ -66,10 +84,17 @@ export const $filterQuery = atomFamily((frame: Frame) =>
       if (newVal === curVal) {
         return;
       }
+
+      // filter-out 後のカレント位置調整のため、
+      // 現在のカレントエントリのインデックスを取得しておく。
+      // filterQueryAtom を更新すると数珠つなぎに atom が更新されていくため、
+      // 前もって取得しておく必要がある。
+      const renderedEntryIndex = getRenderedEntryIndex(frame);
+
       if (newVal === RESET || newVal === '') {
         set(filterQueryAtom(frame), RESET);
         set($modes(frame), (prev) => prev.filter((m) => m !== 'filter'));
-        updateFirstVisibleEntryIndex(frame);
+        updateFirstVisibleEntryIndex(renderedEntryIndex, frame);
         return;
       }
 
@@ -90,7 +115,7 @@ export const $filterQuery = atomFamily((frame: Frame) =>
       // ここで得られるエントリ一覧にはすでに最新のフィルタが反映されている。
       const entries = get($filteredEntries(frame));
 
-      updateFirstVisibleEntryIndex(frame);
+      updateFirstVisibleEntryIndex(renderedEntryIndex, frame);
 
       // filter-out されたエントリを非選択状態にする。
       const entryNames = new Set(entries.map((e) => e.name));
