@@ -41,11 +41,11 @@ type Props = {
  */
 const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
   const [statusEl, setStatusEl] = useState<ReactNode | null>(null);
+  const timerRef = useRef(0);
   const setLogData = useSetAtom($logData);
   const { settings } = useAtomValue($config);
   const api = useAtomValue($api);
   const info = useAtomValue($progressTaskInfo(pid));
-  const timerRef = useRef(0);
 
   // 自身を最新の位置に移動する。
   const moveLogToEnd = useCallback(() => {

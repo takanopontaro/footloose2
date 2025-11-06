@@ -9,9 +9,9 @@ import type { FC } from 'react';
  * 入力モーダルのコンポーネント。
  */
 const PromptModalComponent: FC = () => {
-  const [data, setData] = useAtom($promptModalData);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [data, setData] = useAtom($promptModalData);
 
   const { addTag, handleClose, handleFocus } = useModal(
     dialogRef,

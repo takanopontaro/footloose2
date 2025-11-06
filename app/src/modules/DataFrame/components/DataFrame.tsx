@@ -54,6 +54,8 @@ const DataFrameComponent: FC<Props> = ({
   initialDir,
   initialFocus = false,
 }) => {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const setScope = useSetAtom($scope);
   const entries = useAtomValue($renderedEntries(frame));
@@ -61,8 +63,6 @@ const DataFrameComponent: FC<Props> = ({
   const selectedNames = useAtomValue($selectedEntryNames(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
-  const frameRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
   const curDir = useCurrentDir(frame, initialDir);
   const gridState = useGridState(frame, gridRef);
 

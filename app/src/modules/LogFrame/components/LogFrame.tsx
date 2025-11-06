@@ -20,12 +20,12 @@ import type {
  * ログを表示するコンポーネント。
  */
 const LogFrameComponent: FC = () => {
+  const divRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const [scope, setScope] = useAtom($scope);
   const [logData, setLogData] = useAtom($logData);
   const setLogFrameRef = useSetAtom($logFrameRef);
   const ws = useAtomValue($ws);
-  const divRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
 
   // progress をセットする。
   const handleProgress = useAtomCallback<void, [WsProgressResponse]>(

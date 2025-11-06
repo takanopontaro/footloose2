@@ -14,10 +14,9 @@ import type { FC } from 'react';
  */
 const AppComponent: FC = () => {
   const wsAtom = useWebSocket(3000);
-  const [dirPathA, dirPathB] = useInitialDir();
-
   const loadable = useAtomValue(wsAtom);
   const Modal = useAtomValue($modal);
+  const [dirPathA, dirPathB] = useInitialDir();
 
   switch (loadable.state) {
     case 'hasError':

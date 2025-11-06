@@ -20,10 +20,10 @@ type Props = {
  * エントリ一覧の絞り込み入力欄コンポーネント。
  */
 const EntryFilterComponent: FC<Props> = ({ frame }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const [scope, setScope] = useAtom($scope);
   const [filter, setFilter] = useAtom($filterQuery(frame));
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (activeFrame === frame && scope === 'EntryFilter') {

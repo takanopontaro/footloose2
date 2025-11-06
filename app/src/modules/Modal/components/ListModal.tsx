@@ -25,12 +25,12 @@ type Props = {
  * リスト選択モーダルのコンポーネント。
  */
 const ListModalComponent: FC<Props> = ({ tag }) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [scope, setScope] = useAtom($scope);
   const [filter, setFilter] = useAtom($listModalFilterQuery);
   const currentRowName = useAtomValue($listModalActiveEntryName);
   const dataset = useAtomValue($listModalDataset);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const { handleClose, handleFocus } = useModal(
     dialogRef,

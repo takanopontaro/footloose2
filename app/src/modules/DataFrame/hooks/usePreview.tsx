@@ -20,9 +20,9 @@ export const usePreview = (
   frame: Frame,
   className?: string,
 ): PreviewInfo => {
-  const curDir = useAtomValue($currentDir(frame));
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const curDir = useAtomValue($currentDir(frame));
 
   const info = useMemo(() => {
     if (entry === null || !entry.perm.startsWith('-')) {
