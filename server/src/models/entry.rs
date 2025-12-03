@@ -1,5 +1,14 @@
 use serde::{Deserialize, Serialize};
 
+/// エントリを表す構造体。
+///
+/// # Fields
+/// * `perm` - パーミッション文字列
+/// * `size` - ファイルサイズ (バイト)
+/// * `time` - 最終変更日時文字列
+/// * `name` - エントリ名
+/// * `link` - シンボリックリンクの実体パス
+///   リンクでない場合は空文字列。
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Entry {
     pub perm: String,

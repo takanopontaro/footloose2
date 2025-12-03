@@ -10,9 +10,11 @@ use serde_json::{json, Value};
 use std::sync::Arc;
 use tokio::sync::mpsc;
 
+/// ファイルをアプリケーションで開くタスク。
 pub struct OpenTask;
 
 impl OpenTask {
+    /// 新しい OpenTask インスタンスを生成する。
     pub fn new() -> Self {
         Self
     }
@@ -44,6 +46,8 @@ impl TaskBase for OpenTask {
         _: mpsc::Sender<TaskControl>,
     ) -> Result<TaskResult> {
         let path = cmd.arg_as_path("path", &cmd.cwd).unwrap();
+        // アプリケーションが指定されていればそれで、
+        // なければデフォルトのアプリケーションで開く。
         let res = match cmd.arg_as_str("app") {
             Some(app) => open::with(path, app),
             None => open::that(path),

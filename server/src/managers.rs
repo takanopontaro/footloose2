@@ -1,3 +1,5 @@
+//! 情報の管理機構を提供するモジュール。
+
 mod bookmark_manager;
 mod task_manager;
 mod watch_manager;

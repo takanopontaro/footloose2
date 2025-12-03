@@ -15,12 +15,22 @@ use serde_json::{json, Value};
 use std::{path::Path, sync::Arc};
 use tokio::sync::{mpsc, Mutex};
 
+/// 仮想ディレクトリを変更するタスク。
+///
+/// # Fields
+/// * `watch_manager` - WatchManager インスタンス
+/// * `time_style` - 日時のフォーマット文字列
 pub struct ChangeVirtualDirTask {
     watch_manager: Arc<Mutex<WatchManager>>,
     time_style: String,
 }
 
 impl ChangeVirtualDirTask {
+    /// 新しい ChangeVirtualDirTask インスタンスを生成する。
+    ///
+    /// # Arguments
+    /// * `watch_manager` - WatchManager インスタンス
+    /// * `time_style` - 日時のフォーマット文字列
     pub fn new(
         watch_manager: Arc<Mutex<WatchManager>>,
         time_style: &str,
@@ -31,6 +41,12 @@ impl ChangeVirtualDirTask {
         }
     }
 
+    /// 指定したパスの親ディレクトリのパスを取得する。
+    ///
+    /// パスがルートの場合、`/` を返す。
+    ///
+    /// # Arguments
+    /// * `path` - パス文字列
     fn parent_path(&self, path: &str) -> String {
         let mut p = Path::new(path)
             .parent()
@@ -43,23 +59,37 @@ impl ChangeVirtualDirTask {
         p
     }
 
+    /// パスが有効か否かを検証する。
+    ///
+    /// # Arguments
+    /// * `path` - 検証するパス
+    /// * `cwd` - 基準となるディレクトリ
+    /// * `filter` - フィルタ用の正規表現
+    ///   Mac のリソースフォークなど、除外したいパスがある場合に指定する。
     fn validate_path(
         &self,
         path: &str,
         cwd: &str,
         filter: &Option<Regex>,
     ) -> bool {
+        // カレントディレクトリ外のパスは無効とする。
         if !path.starts_with(cwd) {
             return false;
         }
+        // フィルタが指定されていない場合は無条件で有効とする。
         if filter.is_none() {
             return true;
         }
         let re = filter.as_ref().unwrap();
         let path = path.strip_prefix(cwd).unwrap();
+        // フィルタにマッチ「しない」場合に有効とする。
         !re.is_match(path)
     }
 
+    /// 空のディレクトリエントリを生成する。
+    ///
+    /// # Arguments
+    /// * `name` - ディレクトリ名
     fn dir_entry(&self, name: &str) -> Entry {
         Entry {
             perm: "d---------".to_owned(),
@@ -70,6 +100,14 @@ impl ChangeVirtualDirTask {
         }
     }
 
+    /// アーカイブ内のエントリ一覧を取得する。
+    ///
+    /// # Arguments
+    /// * `kind` - アーカイブの種類
+    /// * `archive` - アーカイブファイルのパス
+    /// * `cwd` - 基準となるディレクトリ
+    /// * `filter` - フィルタ用の正規表現
+    ///   Mac のリソースフォークなど、除外したいパスがある場合に指定する。
     fn get_entries(
         &self,
         kind: &ArchiveKind,
@@ -80,6 +118,7 @@ impl ChangeVirtualDirTask {
         let mut parent_ent = parent_entry(archive, &self.time_style)?;
         let mut cwd = cwd.to_owned();
         if !cwd.is_empty() {
+            // 以下のように整形する。
             // /foo/bar -> foo/bar/
             cwd = cwd[1..].to_string() + "/";
         }
@@ -89,9 +128,66 @@ impl ChangeVirtualDirTask {
             ArchiveKind::Tar => Box::new(Tar::new(archive, &self.time_style)?),
             ArchiveKind::Tgz => Box::new(Tgz::new(archive, &self.time_style)?),
         };
+
+        // 現在のディレクトリに存在するエントリ一覧。
+        //
+        // 例えばアーカイブの内容が以下だとすると、
+        // game/action/image.jpg
+        // game/text.txt
+        // movies/action/image.jpg
+        // movies/text.txt
+        // text.txt
+        //
+        // 格納されるエントリ一覧は以下となる。
+        // game
+        // movies
+        // text.txt
         let mut entries: Vec<Entry> = vec![];
+
+        // スラッシュを含まない 1 セグメント (末尾スラッシュは OK) を表す。
+        // OK: foo.txt, bar.jpg, foo/, bar/
+        // NG: foo/bar/, foo/bar.txt, foo/bar/baz/foobar.jpg
+        //
+        // 現在のディレクトリにあるエントリか否かを判別するために使用する。
+        // アーカイブには全エントリのパスが入っており、下層や上層のエントリも含まれる。
+        // 欲しいのは現在のディレクトリにあるエントリ一覧なため、この判別が必要にある。
+        //
+        // foo.txt, bar.jpg は通常エントリ、foo/, bar/ はディレクトリエントリである。
+        // 一方 foo/bar/, foo/bar.txt は現在より下層にあるエントリである。
         let re_entry = Regex::new(r"^[^/]+/?$").unwrap();
+
+        // 現在のディレクトリにあるディレクトリを取得するために使用される。
+        // 最低でもひとつのスラッシュが含まれている必要がある。
+        // OK: foo/, foo/bar/, foo/bar/baz.txt
+        // NG: foo.txt, bar.jpg, foo, bar
+        //
+        // foo/bar/baz.txt の場合、foo がキャプチャされる。
+        // bar/ の場合、bar がキャプチャされる。
         let re_dir = Regex::new(r"^([^/]+)/").unwrap();
+
+        // アーカイブに含まれる全エントリをひとつずつ処理する。
+        // アーカイブの作成方法によって、ディレクトリエントリが含まれる場合と
+        // 含まれない場合があることに注意。
+        // ディレクトリエントリがある場合、タイムスタンプ等のリアルなメタ情報を持った、
+        // ディレクトリのエントリインスタンスを作成できる。ない場合はダミーとなる。
+        //
+        // ディレクトリエントリあり：
+        // game/
+        // game/action/
+        // game/action/image.jpg
+        // game/text.txt
+        // movies/
+        // movies/action/
+        // movies/action/image.jpg
+        // movies/text.txt
+        // text.txt
+        //
+        // ディレクトリエントリなし：
+        // game/action/image.jpg
+        // game/text.txt
+        // movies/action/image.jpg
+        // movies/text.txt
+        // text.txt
         for entry in archive.entries()? {
             let entry = entry?;
             let path = entry.path();
@@ -102,24 +198,52 @@ impl ChangeVirtualDirTask {
                 parent_ent = entry.entry("..");
                 continue;
             }
+
+            // 通常エントリ：
+            // cwd: rust/util/
+            // path: rust/util/ascii/src/main.rs
+            // -> name: ascii/src/main.rs
+            //
+            // ディレクトリエントリ：
+            // cwd: rust/util/
+            // path: rust/util/ascii/src/
+            // -> name: ascii/src/
             let mut name = path.strip_prefix(&cwd).unwrap_or(&path);
+
+            // re_entry にマッチするということは、アーカイブ内にエントリ情報が
+            // あったということだから、entry メソッドを使ってエントリを作成できる。
+            // タイムスタンプ等のメタ情報はリアルなものが設定される。
             if re_entry.is_match(name) {
                 name = name.strip_suffix("/").unwrap_or(name);
                 let ent = entry.entry(name);
                 entries.push(ent);
                 continue;
             }
+
+            // 現在のディレクトリにあるディレクトリの取得を試みる。
             let Some(caps) = re_dir.captures(name) else {
                 continue;
             };
+
+            // re_entry にマッチしなかったのでアーカイブ内にエントリ情報はない。
+            // つまりディレクトリエントリが含まれないタイプのアーカイブファイルである。
+            // この場合、自前でディレクトリエントリを作成する必要がある。
             let dir = &caps[1];
+
+            // すでに同じ名前のディレクトリエントリが作成済みならスキップする。
+            // 例えば foo/bar/ -> foo/bar/a.txt -> foo/bar/baz/b.jpg という
+            // ループ処理の時、foo が重複作成されないようにする。
             let exists = entries.iter().any(|e| e.name == dir);
             if exists {
                 continue;
             }
+
+            // ディレクトリエントリを作成して格納する。
+            // 自前なのでタイムスタンプ等のメタ情報はダミーである。
             let ent = self.dir_entry(dir);
             entries.push(ent);
         }
+
         entries.sort_by(|a, b| a.name.cmp(&b.name));
         entries.insert(0, parent_ent);
         Ok(entries)
@@ -162,14 +286,28 @@ impl TaskBase for ChangeVirtualDirTask {
         let archive = cmd.arg_as_path("archive", &cmd.cwd).unwrap();
         let path = cmd.arg_as_path("path", &cmd.cwd).unwrap();
         let filter = cmd.arg_as_str("filter").and_then(|s| Regex::new(s).ok());
-        // /xx/yy/zz.zip/aa/bb -> /aa/bb
+
+        // `path` には
+        // アーカイブのファイルシステムパス＋仮想ディレクトリのパス
+        // が格納されている。
+        //
+        // 例： /Users/xxxx/Desktop/archive.zip/movies/action/
+        // ここからアーカイブのパスを取り除いて、仮想ディレクトリのパスを取得する。
+        // -> /movies/action/
+        //
+        // None の場合、アーカイブ外のパスを指定していることになるため
+        // VirtualDirError::OutsideRoot を返す。
         let Some(cwd) = path.strip_prefix(&archive) else {
             let err = VirtualDirError::OutsideRoot;
             return Ok(TaskResult::error(err.into()));
         };
+
         let res = match self.get_entries(&kind, &archive, cwd, &filter) {
             Ok(data) => {
                 let manager = self.watch_manager.lock().await;
+                // 無事仮想ディレクトリ内に入れたため、現在の監視パスは解除しておく。
+                // 空文字を指定することで確実に解除できる。
+                // ちなみに仮想ディレクトリ内は監視対象外である。
                 manager.unwatch(&cmd.frame, "", arg).await;
                 let data = json!({ "path": path, "entries": data });
                 TaskResult::data(data, None)

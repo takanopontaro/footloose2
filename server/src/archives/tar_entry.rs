@@ -3,6 +3,14 @@ use crate::{helpers::perm_string, traits::ArchiveEntry};
 use chrono::{Local, TimeZone as _};
 use std::{borrow::Cow, io::Read, os::unix::ffi::OsStringExt};
 
+/// Tar のエントリを表す構造体。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
+/// * `perm` - パーミッション文字列
+/// * `path` - エントリのパス
+/// * `size` - ファイルサイズ (バイト)
+/// * `time` - 最終更新日時
 pub struct TarEntry {
     time_style: String,
     perm: String,
@@ -12,6 +20,13 @@ pub struct TarEntry {
 }
 
 impl TarEntry {
+    /// 新しい TarEntry インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `time_style` - 日時のフォーマット文字列
+    ///
+    /// # Returns
+    /// デフォルト値で初期化された TarEntry インスタンス
     pub fn new(time_style: &str) -> Self {
         let mut ins = Self {
             time_style: time_style.to_owned(),
@@ -26,6 +41,10 @@ impl TarEntry {
         ins
     }
 
+    /// tar::Entry を元にこのインスタンスを初期化する。
+    ///
+    /// # Arguments
+    /// * `file` - tar::Entry の参照
     pub fn init<R: Read>(&mut self, file: &tar::Entry<'_, R>) {
         self.perm = self.get_perm(file);
         self.path = self.get_path(file);
@@ -33,6 +52,16 @@ impl TarEntry {
         self.time = self.get_time(file);
     }
 
+    /// エントリのパーミッション文字列を取得する。
+    ///
+    /// 失敗した場合はデフォルトのパーミッション文字列を返す。
+    ///
+    /// # Arguments
+    /// * `file` - tar::Entry の参照
+    ///
+    /// # Returns
+    /// `ls -l` 形式のパーミッション文字列
+    /// 例： `-rwxr-xr-x`
     fn get_perm<R: Read>(&self, file: &tar::Entry<'_, R>) -> String {
         let header = file.header();
         let ent_type = header.entry_type();
@@ -50,6 +79,13 @@ impl TarEntry {
         format!("{}{}", first, perm)
     }
 
+    /// エントリのパスを取得する。
+    ///
+    /// # Arguments
+    /// * `file` - tar::Entry の参照
+    ///
+    /// # Returns
+    /// デコードされたパス文字列
     fn get_path<R: Read>(&self, file: &tar::Entry<'_, R>) -> String {
         let mut raw = file.header().path_bytes();
         let str_p = String::from_utf8_lossy(&raw);
@@ -64,6 +100,13 @@ impl TarEntry {
         self.decode_path(&raw)
     }
 
+    /// エントリのサイズを取得する。
+    ///
+    /// # Arguments
+    /// * `file` - tar::Entry の参照
+    ///
+    /// # Returns
+    /// ファイルサイズ (バイト)
     fn get_size<R: Read>(&self, file: &tar::Entry<'_, R>) -> u64 {
         match file.header().size() {
             Ok(s) => s,
@@ -71,6 +114,15 @@ impl TarEntry {
         }
     }
 
+    /// エントリの最終更新日時を取得する。
+    ///
+    /// `time_style` に基づいてフォーマットされる。
+    ///
+    /// # Arguments
+    /// * `file` - tar::Entry の参照
+    ///
+    /// # Returns
+    /// フォーマットされた日時文字列
     fn get_time<R: Read>(&self, file: &tar::Entry<'_, R>) -> String {
         let Ok(ts) = file.header().mtime() else {
             return self.default_time();

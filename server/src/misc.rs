@@ -1,3 +1,5 @@
+//! 種種雑多な機能を提供するモジュール。
+
 mod command;
 mod frame_set;
 mod ls;

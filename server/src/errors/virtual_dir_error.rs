@@ -2,6 +2,12 @@ use crate::traits::ErrorCode;
 
 use thiserror::Error;
 
+/// 仮想ディレクトリ操作に関するエラー。
+///
+/// # Variants
+/// * `UnsupportedArchive` - サポートされていないアーカイブ形式である
+/// * `OutsideRoot` - 仮想ディレクトリ外へのアクセスである
+/// * `Args` - コマンド引数が不正である
 #[derive(Debug, Error, PartialEq)]
 pub enum VirtualDirError {
     #[error("Unsupported archive type")]

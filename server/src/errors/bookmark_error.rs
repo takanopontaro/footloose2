@@ -2,6 +2,13 @@ use crate::traits::ErrorCode;
 
 use thiserror::Error;
 
+/// ブックマーク操作に関するエラー。
+///
+/// # Variants
+/// * `NotAvailable` - ブックマーク機能が利用できない
+/// * `NotFound` - 指定されたブックマークが見つからない
+/// * `Exists` - ブックマークがすでに存在する
+/// * `IO` - ファイルアクセスに失敗した
 #[derive(Debug, Error, PartialEq)]
 pub enum BookmarkError {
     #[error("Bookmark not available")]

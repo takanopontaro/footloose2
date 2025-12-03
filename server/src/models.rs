@@ -1,3 +1,5 @@
+//! データモデルを提供するモジュール。
+
 mod archive_kind;
 mod bookmark;
 mod entry;

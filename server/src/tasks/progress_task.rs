@@ -26,18 +26,35 @@ use tokio::{
 };
 use uuid::Uuid;
 
+/// 進行状況を報告しながら実行するタスク。
 pub struct ProgressTask;
 
 impl ProgressTask {
+    /// 新しい ProgressTask インスタンスを生成する。
     pub fn new() -> Self {
         Self
     }
 
+    /// コマンドからタスク設定を取得する。
+    ///
+    /// # Arguments
+    /// * `cmd` - 対象コマンド
     fn config(&self, cmd: &Command) -> ProgressTaskConfig {
         let c = cmd.arg("config").unwrap().clone();
         serde_json::from_value::<ProgressTaskConfig>(c).unwrap()
     }
 
+    /// 処理対象エントリの総数を算出するシェルコマンドを実行する。
+    ///
+    /// # Arguments
+    /// * `cmd_str` - 実行するコマンド文字列
+    /// * `srcs` - ソースパスの配列
+    /// * `dest` - 展開先ディレクトリ
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// 成功： 処理対象の総数
+    /// 失敗： stderr
     fn exec_count_shcmd(
         &self,
         cmd_str: &str,
@@ -45,24 +62,49 @@ impl ProgressTask {
         dest: &Option<String>,
         cwd: &str,
     ) -> Result<usize> {
+        // コマンド文字列内の `%s` をソースパスに置換する。
+        // パスは `"` でクォートされ、複数の場合はスペースで連結される。
+        // 例： `foo %s` -> `foo "path/to/src1" "path/to/src2"`
         let srcs = quote_paths(srcs);
         let mut cmd_str = cmd_str.replace("%s", &srcs);
+
+        // コマンド文字列内の `%d` を展開先のディレクトリパスに置換する。
+        // パスは `"` でクォートされる。
+        // 例： `foo %d` -> `foo "path/to/dest"`
         if let Some(dest) = dest {
             let dest = quote_paths(slice::from_ref(dest));
             cmd_str = cmd_str.replace("%d", &dest);
         }
+
         let output = StdCommand::new("sh")
             .current_dir(cwd)
             .arg("-c")
             .arg(cmd_str)
             .output()?;
+
         if !output.status.success() {
             bail!(String::from_utf8_lossy(&output.stderr).to_string());
         }
+
         let count = String::from_utf8_lossy(&output.stdout).to_string();
         Ok(count.trim().parse()?)
     }
 
+    /// シェルコマンドを非同期で実行する。
+    ///
+    /// `cwd` をカレントディレクトリとして実行される。
+    ///
+    /// # Arguments
+    /// * `cmd_str` - 実行するコマンド文字列
+    /// * `srcs` - ソースパスの配列
+    ///   呼び出し元で `cwd` を基準とした相対パスに変換済み。
+    /// * `dest` - 展開先ディレクトリ
+    ///   呼び出し元で `cwd` を基準とした相対パスに変換済み。
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// 成功： stdout (改行区切り)
+    /// 失敗： stderr
     fn exec_shcmd(
         &self,
         cmd_str: &str,
@@ -70,12 +112,20 @@ impl ProgressTask {
         dest: Option<String>,
         cwd: &str,
     ) -> Result<(Child, BufReader<ChildStdout>, BufReader<ChildStderr>)> {
+        // コマンド文字列内の `%s` をソースパスに置換する。
+        // パスは `"` でクォートされ、複数の場合はスペースで連結される。
+        // 例： `foo %s` -> `foo "path/to/src1" "path/to/src2"`
         let srcs = quote_paths(&srcs);
         let mut cmd_str = cmd_str.replace("%s", &srcs);
+
+        // コマンド文字列内の `%d` を展開先のディレクトリパスに置換する。
+        // パスは `"` でクォートされる。
+        // 例： `foo %d` -> `foo "path/to/dest"`
         if let Some(dest) = dest {
             let dest = quote_paths(&[dest]);
             cmd_str = cmd_str.replace("%d", &dest);
         }
+
         let mut child = TokioCommand::new("sh")
             .current_dir(cwd)
             .arg("-c")
@@ -83,11 +133,19 @@ impl ProgressTask {
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()?;
+
         let stdout = child.stdout.take().context("")?;
         let stderr = child.stderr.take().context("")?;
         Ok((child, BufReader::new(stdout), BufReader::new(stderr)))
     }
 
+    /// ProgressTask のハンドラを作成する。
+    ///
+    /// # Arguments
+    /// * `arg` - ProgressTask の設定
+    ///
+    /// # Returns
+    /// プロセス ID と中断処理関数のタプル
     fn create_progress(&self, arg: ProgressTaskArg) -> (String, DisposeType) {
         let ProgressTaskArg {
             total,
@@ -99,24 +157,28 @@ impl ProgressTask {
         } = arg;
 
         let pid = Uuid::new_v4().to_string();
-
         let pid_ = pid.clone();
         let child_ = child.clone();
         let sender_ = sender.clone();
+
+        // メイン処理の非同期タスク
         let handle = tokio::spawn(async move {
             let mut intv = interval(Duration::from_secs(1));
             let mut buf = Vec::new();
-            let mut count = 0;
+            let mut count = 0; // 処理済みエントリ数
+
             // 1 秒以内に終わるなら progress を発行してほしくないため、
-            // 最初の tick() を消化しておく
+            // 最初の tick() を消化しておく。
             intv.tick().await;
+
+            // stdout を読んで count を加算しつつ、定期的に進捗率を送信する。
             loop {
                 tokio::select! {
                     res = stdout.read_until(b'\n', &mut buf) => {
-                        buf.clear();
+                        buf.clear(); // 使わないのでクリアする。
                         count += 1;
                         match res {
-                            Ok(0) => break,
+                            Ok(0) => break, // EOF
                             Ok(_) => continue,
                             Err(err) => {
                                 let _ = sender_
@@ -131,11 +193,16 @@ impl ProgressTask {
                     }
                 }
             }
+
+            // コマンド (子プロセス) の終了を待って結果を送信する。
             match child_.lock().await.wait().await {
                 Ok(status) => {
                     if status.success() {
                         let _ = sender_.progress_end(&pid_).await;
                     } else {
+                        // エラー時は stderr を読み取って送信する。
+                        // exit code が 0 でありながらエラーということもあり得るが、
+                        // それは無視する。
                         let mut buf = String::new();
                         let _ = stderr.read_to_string(&mut buf).await;
                         let err = anyhow!(buf);
@@ -143,9 +210,12 @@ impl ProgressTask {
                     }
                 }
                 Err(err) => {
+                    // 厳密には進捗エラーとは異なるが、同じ扱いとする。
                     let _ = sender_.progress_error(&pid_, &err.into()).await;
                 }
             }
+
+            // 終了メッセージを TaskManager に送信する。
             let ctrl = TaskControl {
                 pid: pid_,
                 status: TaskStatus::End,
@@ -153,6 +223,8 @@ impl ProgressTask {
             let _ = tx.send(ctrl).await;
         });
 
+        // 中断処理関数を生成する。
+        // メイン処理を中止、子プロセスを強制終了し、中断メッセージを送信する。
         let pid_ = pid.clone();
         let dispose = move || {
             Box::pin(async move {
@@ -212,6 +284,7 @@ impl TaskBase for ProgressTask {
         let srcs = cmd.arg_as_path_array("sources", &cmd.cwd).unwrap();
         let dest = cmd.arg_as_path("destination", &cmd.cwd);
         let config = self.config(cmd);
+        // 総数を算出する。エラー時は便宜上 usize::MAX とする。
         let total = self
             .exec_count_shcmd(&config.total, &srcs, &dest, &cmd.cwd)
             .unwrap_or(usize::MAX);

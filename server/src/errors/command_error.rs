@@ -2,6 +2,12 @@ use crate::traits::ErrorCode;
 
 use thiserror::Error;
 
+/// コマンド処理に関するエラー。
+///
+/// # Variants
+/// * `Parse` - コマンドの解析に失敗した
+/// * `NotFound` - コマンドが存在しない
+/// * `Args` - コマンド引数が不正である
 #[derive(Debug, Error, PartialEq)]
 pub enum CommandError {
     #[error("Failed to parse command")]

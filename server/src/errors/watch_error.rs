@@ -2,6 +2,12 @@ use crate::traits::ErrorCode;
 
 use thiserror::Error;
 
+/// ディレクトリ監視に関するエラー。
+///
+/// # Variants
+/// * `Watch` - ディレクトリ監視の開始に失敗した
+/// * `Dir` - ディレクトリが利用不可になった
+///   対象が削除された場合などに発生する。
 #[derive(Debug, Error, PartialEq)]
 pub enum WatchError {
     #[error("Failed to watch ({1}): {0}")]

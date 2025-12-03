@@ -3,6 +3,14 @@ use crate::{helpers::perm_string, traits::ArchiveEntry};
 use chrono::{Local, NaiveDate, NaiveDateTime, TimeZone as _};
 use zip::{read::ZipFile, ExtraField::ExtendedTimestamp};
 
+/// Zip のエントリを表す構造体。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
+/// * `perm` - パーミッション文字列
+/// * `path` - エントリのパス
+/// * `size` - ファイルサイズ (バイト)
+/// * `time` - 最終更新日時
 pub struct ZipEntry {
     time_style: String,
     perm: String,
@@ -12,6 +20,13 @@ pub struct ZipEntry {
 }
 
 impl ZipEntry {
+    /// 新しい ZipEntry インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `time_style` - 日時のフォーマット文字列
+    ///
+    /// # Returns
+    /// デフォルト値で初期化された ZipEntry インスタンス
     pub fn new(time_style: &str) -> Self {
         let mut ins = Self {
             time_style: time_style.to_owned(),
@@ -26,6 +41,10 @@ impl ZipEntry {
         ins
     }
 
+    /// ZipFile を元にこのインスタンスを初期化する。
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
     pub fn init(&mut self, file: &ZipFile) {
         self.perm = self.get_perm(file);
         self.path = self.get_path(file);
@@ -33,6 +52,15 @@ impl ZipEntry {
         self.time = self.get_time(file);
     }
 
+    /// タイムゾーン付き変更時刻を取得する。
+    ///
+    /// `time_style` に基づいてフォーマットされる。
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
+    ///
+    /// # Returns
+    /// フォーマットされた日時文字列または None
     fn mtime_with_tz(&self, file: &ZipFile) -> Option<String> {
         for field in file.extra_data_fields() {
             if let ExtendedTimestamp(ts) = field {
@@ -45,6 +73,13 @@ impl ZipEntry {
         None
     }
 
+    /// タイムゾーンなしの変更時刻を取得する。
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
+    ///
+    /// # Returns
+    /// NaiveDateTime オブジェクト
     fn naive_time(&self, file: &ZipFile) -> Option<NaiveDateTime> {
         let dt = file.last_modified()?;
         let naive = NaiveDate::from_ymd_opt(
@@ -60,6 +95,14 @@ impl ZipEntry {
         Some(naive)
     }
 
+    /// エントリのパーミッション文字列を取得する。
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
+    ///
+    /// # Returns
+    /// `ls -l` 形式のパーミッション文字列
+    /// 例： `drwxr-xr-x`
     fn get_perm(&self, file: &ZipFile) -> String {
         let first = if file.is_symlink() {
             'l'
@@ -75,15 +118,43 @@ impl ZipEntry {
         format!("{}{}", first, perm)
     }
 
+    /// エントリのパスを取得する。
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
+    ///
+    /// # Returns
+    /// デコードされたパス文字列
     fn get_path(&self, file: &ZipFile) -> String {
         let raw = file.name_raw();
         self.decode_path(raw)
     }
 
+    /// エントリのサイズを取得する。
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
+    ///
+    /// # Returns
+    /// ファイルサイズ (バイト)
     fn get_size(&self, file: &ZipFile) -> u64 {
         file.size()
     }
 
+    /// エントリの最終更新日時を取得する。
+    ///
+    /// `time_style` に基づいてフォーマットされる。
+    ///
+    /// 取得優先度は以下の通り。
+    /// 1. タイムゾーン付き
+    /// 2. タイムゾーンなし
+    /// 3. デフォルト値
+    ///
+    /// # Arguments
+    /// * `file` - ZipFile の参照
+    ///
+    /// # Returns
+    /// フォーマットされた日時文字列
     fn get_time(&self, file: &ZipFile) -> String {
         if let Some(mtime) = self.mtime_with_tz(file) {
             return mtime;

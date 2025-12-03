@@ -7,11 +7,23 @@ use async_trait::async_trait;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+/// 自身をアプリケーションから削除するタスク。
+///
+/// ディレクトリ監視の購読を解除する等。
+/// 接続が切断された際にゴミが残らないようにするため。
+/// 内部タスクであり、クライアントからは呼び出せない。
+///
+/// # Fields
+/// * `watch_manager` - WatchManager インスタンス
 pub struct RemoveClientTask<T: WatchManagerTrait> {
     watch_manager: Arc<Mutex<T>>,
 }
 
 impl<T: WatchManagerTrait> RemoveClientTask<T> {
+    /// 新しい RemoveClientTask インスタンスを生成する。
+    ///
+    /// # Arguments
+    /// * `watch_manager` - WatchManager インスタンス
     pub fn new(watch_manager: Arc<Mutex<T>>) -> Self {
         Self { watch_manager }
     }

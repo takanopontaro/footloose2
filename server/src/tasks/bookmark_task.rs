@@ -11,11 +11,19 @@ use serde_json::{json, Value};
 use std::sync::Arc;
 use tokio::sync::mpsc;
 
+/// ブックマークを管理するタスク。
+///
+/// # Fields
+/// * `bookmark_manager` - BookmarkManager インスタンス
 pub struct BookmarkTask {
     bookmark_manager: Arc<BookmarkManager>,
 }
 
 impl BookmarkTask {
+    /// 新しい BookmarkTask インスタンスを生成する。
+    ///
+    /// # Arguments
+    /// * `bookmark_manager` - BookmarkManager インスタンス
     pub fn new(bookmark_manager: Arc<BookmarkManager>) -> Self {
         Self { bookmark_manager }
     }

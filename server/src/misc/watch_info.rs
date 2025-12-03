@@ -13,6 +13,14 @@ use tokio::{
     time::sleep,
 };
 
+/// ディレクトリ監視構造体や購読者を扱う構造体。
+///
+/// # Fields
+/// * `watch` - ディレクトリ監視構造体
+/// * `subs` - 変更通知を受け取る購読者のリスト
+/// * `handle` - バックグラウンド監視タスクのハンドル
+/// * `tx` - 監視制御メッセージの送信チャネル
+///   WatchManager との通信用。
 pub struct WatchInfo {
     pub watch: Watch,
     pub subs: Vec<Arc<dyn SenderTrait>>,
@@ -21,6 +29,12 @@ pub struct WatchInfo {
 }
 
 impl WatchInfo {
+    /// 新しい WatchInfo インスタンスを作成し、監視を開始する。
+    ///
+    /// # Arguments
+    /// * `path` - 監視するディレクトリのパス
+    /// * `tx` - 監視制御メッセージの送信チャネル
+    /// * `ls` - ディレクトリ情報を取得する構造体
     pub async fn new(
         path: &str,
         tx: mpsc::Sender<WatchControl>,
@@ -40,6 +54,12 @@ impl WatchInfo {
         Ok(ins)
     }
 
+    /// ディレクトリの変更をバックグラウンドで監視するタスクを spawn する。
+    ///
+    /// 変更のチェックは 500 ミリ秒ごとに行われる。
+    ///
+    /// # Arguments
+    /// * `ins` - このインスタンス
     async fn spawn(&self, ins: &Arc<Mutex<Self>>) -> JoinHandle<()> {
         let ins_ = ins.clone();
         tokio::spawn(async move {
@@ -51,14 +71,17 @@ impl WatchInfo {
         })
     }
 
+    /// ディレクトリの変更をチェックして購読者に通知する。
     async fn process(&mut self) {
         match self.watch.check_updates() {
+            // 変更があった場合、最新のディレクトリ情報を取得して全購読者に通知する。
             Ok(true) => {
                 let data = self.data();
                 for sub in self.subs.iter() {
                     let _ = sub.dir_update(&data).await;
                 }
             }
+            // エラーが発生した場合、監視を中止して全購読者にエラーを通知する。
             Err(err) => {
                 self.abort().await;
                 let p = &self.watch.path;
@@ -67,14 +90,22 @@ impl WatchInfo {
                     let _ = sub.watch_error(&err, p).await;
                 }
             }
-            _ => {}
+            _ => {} // 変更がなかった場合。
         }
     }
 
+    /// ディレクトリ情報を JSON 形式で取得する。
+    ///
+    /// # Returns
+    /// ディレクトリ情報
     pub fn data(&self) -> Value {
         self.watch.data()
     }
 
+    /// 監視を中止する。
+    ///
+    /// バックグラウンドタスクを中止し、WatchManager に通知する。
+    /// その際エラーが発生した場合は続行不可能と判断しプロセスを終了する。
     async fn abort(&self) {
         self.handle.as_ref().unwrap().abort();
         let ctrl = WatchControl {
@@ -87,12 +118,22 @@ impl WatchInfo {
         }
     }
 
+    /// 購読者を追加する。
+    ///
+    /// # Arguments
+    /// * `sub` - 追加する購読者
     pub fn add_subscriber(&mut self, sub: Arc<dyn SenderTrait>) {
         if !self.subs.contains(&sub) {
             self.subs.push(sub);
         }
     }
 
+    /// 購読者を削除する。
+    ///
+    /// 削除した結果、購読者がゼロになった場合は監視を中止する。
+    ///
+    /// # Arguments
+    /// * `sub` - 削除する購読者
     pub async fn remove_subscriber(&mut self, sub: &Arc<dyn SenderTrait>) {
         self.subs.retain(|s| s != sub);
         if self.subs.is_empty() {

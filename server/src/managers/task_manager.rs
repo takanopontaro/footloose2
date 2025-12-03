@@ -9,6 +9,21 @@ use anyhow::{bail, Result};
 use std::{collections::HashMap, sync::Arc};
 use tokio::sync::{mpsc, Mutex};
 
+/// タスクの登録と実行を管理する構造体。
+///
+/// # Fields
+/// * `tasks` - 通常タスクのマップ
+///   key: コマンド名、value: タスク
+/// * `internal_tasks` - 内部タスクのマップ
+///   key: コマンド名、value: タスク
+/// * `disposers` - ProgressTask の中断処理関数のマップ
+///   key: ProgressTask のプロセス ID、value: 中断処理関数
+/// * `disposer_map` - ProgressTask のプロセス ID リストのマップ
+///   key: 送信者 ID、value: プロセス ID のリスト
+///   クライアントごとに発行される送信者 ID をキーにして、
+///   そのクライアントに紐づくすべての ProgressTask のプロセス ID を保持する。
+///   クライアントが切断した時に一気にタスクを中止するために使用する。
+/// * `tx` - タスク制御メッセージの送信チャネル
 pub struct TaskManager {
     tasks: HashMap<String, Box<dyn TaskBase>>,
     internal_tasks: HashMap<String, Box<dyn InternalTaskBase>>,
@@ -18,6 +33,9 @@ pub struct TaskManager {
 }
 
 impl TaskManager {
+    /// 新しい TaskManager を作成する。
+    ///
+    /// シングルトンとして使用される。
     pub fn new() -> Self {
         let (tx, mut rx) = mpsc::channel::<TaskControl>(10);
         let disposers =
@@ -26,12 +44,18 @@ impl TaskManager {
             Arc::new(Mutex::new(HashMap::<String, Vec<String>>::new()));
         let disposers_ = disposers.clone();
         let disposer_map_ = disposer_map.clone();
+
+        // 非同期タスクで、タスク制御用メッセージを待ち受ける。
         tokio::spawn(async move {
             while let Some(TaskControl { pid, status }) = rx.recv().await {
+                // 中断処理関数を取得しつつ、マップから削除する。
                 let dispose = disposers_.lock().await.remove(&pid).unwrap();
+                // 中止の場合は中断処理関数を実行する。
+                // それ以外の場合はすでにタスクは終わってるはずなため何もしない。
                 if status == TaskStatus::Abort {
                     dispose().await;
                 }
+                // disposer_map からも該当する pid を削除する。
                 for (_, pids) in disposer_map_.lock().await.iter_mut() {
                     if pids.contains(&pid) {
                         pids.retain(|v| v != &pid);
@@ -39,6 +63,7 @@ impl TaskManager {
                 }
             }
         });
+
         Self {
             tasks: HashMap::new(),
             internal_tasks: HashMap::new(),
@@ -48,10 +73,22 @@ impl TaskManager {
         }
     }
 
+    /// タスクを登録する。
+    ///
+    /// # Arguments
+    /// * `name` - コマンド名
+    ///   クライアントとはこの名前を使ってやり取りする。
+    /// * `task` - 登録するタスク
     pub fn register(&mut self, name: &str, task: impl TaskBase + 'static) {
         self.tasks.insert(name.to_owned(), Box::new(task));
     }
 
+    /// 内部タスクを登録する。
+    ///
+    /// # Arguments
+    /// * `name` - コマンド名
+    ///   クライアントとはこの名前を使ってやり取りする。
+    /// * `task` - 登録する内部タスク
     pub fn register_internal(
         &mut self,
         name: &str,
@@ -60,17 +97,31 @@ impl TaskManager {
         self.internal_tasks.insert(name.to_owned(), Box::new(task));
     }
 
+    /// コマンドを実行する (エラーハンドリングあり)。
+    ///
+    /// # Arguments
+    /// * `cmd` - 実行するコマンド
+    /// * `arg` - タスク引数
     pub async fn run(&self, cmd: &Command, arg: &Arc<TaskArg>) -> Result<()> {
         let Err(err) = self.try_run(cmd, arg).await else {
             return Ok(());
         };
+        // 送信エラーの場合はクライアントに何も送れないため何もしない。
         if let Some(SenderError::Send) = err.downcast_ref::<SenderError>() {
             bail!("");
         }
+        // クライアントにエラーレスポンスを返す。
         arg.sender.error(&cmd.id, &err).await?;
         Ok(())
     }
 
+    /// コマンドを実行する (エラーハンドリングなし)。
+    ///
+    /// 実行結果に応じてクライアントに適切なメッセージを送信する。
+    ///
+    /// # Arguments
+    /// * `cmd` - 実行するコマンド
+    /// * `arg` - タスク引数
     async fn try_run(&self, cmd: &Command, arg: &Arc<TaskArg>) -> Result<()> {
         let task = self.find_task(cmd)?;
         match task.run(cmd, arg, self.tx.clone()).await {
@@ -79,6 +130,7 @@ impl TaskManager {
                 Ok(())
             }
             TaskResult::Data(res) => {
+                // ステータスが未設定の場合は `SUCCESS` とする。
                 let status = res.status.unwrap_or("SUCCESS".to_owned());
                 arg.sender.data(&cmd.id, &status, &res.data).await?;
                 Ok(())
@@ -101,6 +153,19 @@ impl TaskManager {
         }
     }
 
+    /// コマンドに対応するタスクを返す。
+    ///
+    /// # Arguments
+    /// * `cmd` - 対象コマンド
+    ///
+    /// # Returns
+    /// 見つかったタスク
+    ///
+    /// # Errors
+    /// - `CommandError::NotFound`:
+    ///   タスクが見つからない。
+    /// - `CommandError::Args`:
+    ///   コマンド引数が不正である。
     fn find_task(&self, cmd: &Command) -> Result<&dyn TaskBase> {
         let Some(task) = self.tasks.get(&cmd.name) else {
             bail!(CommandError::NotFound);
@@ -111,6 +176,13 @@ impl TaskManager {
         Ok(task.as_ref())
     }
 
+    /// 内部タスクを実行する。
+    ///
+    /// エラーが発生した場合は続行不可能と判断しプロセスを終了する。
+    ///
+    /// # Arguments
+    /// * `name` - コマンド名
+    /// * `arg` - タスク引数
     pub async fn run_internal(&self, name: &str, arg: &Arc<TaskArg>) {
         let task = self.internal_tasks.get(name).unwrap();
         if let Err(err) = task.run(arg).await {
@@ -119,11 +191,18 @@ impl TaskManager {
         }
     }
 
+    /// そのクライアントの ProgressTask をすべて中止する。
+    ///
+    /// クライアントが切断された際にゴミが残らないようにするため。
+    ///
+    /// # Arguments
+    /// * `sender_id` - 送信者 ID
     pub async fn drop_all_disposers(&self, sender_id: &str) {
         let Some(pids) = self.disposer_map.lock().await.remove(sender_id)
         else {
             return;
         };
+        // 自身にタスク制御用メッセージ (中止) を送る。
         for pid in pids {
             let ctrl = TaskControl {
                 pid,
@@ -234,9 +313,7 @@ mod tests {
         manager.drop_all_disposers(sender_id).await;
         sleep(10).await;
         assert!(!manager.disposers.lock().await.contains_key(pid));
-        assert!(
-            !manager.disposer_map.lock().await.contains_key(sender_id)
-        );
+        assert!(!manager.disposer_map.lock().await.contains_key(sender_id));
         Ok(())
     }
 }

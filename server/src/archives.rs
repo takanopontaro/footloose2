@@ -1,3 +1,5 @@
+//! アーカイブファイル (zip, tar, tgz/tar.gz) を提供するモジュール。
+
 mod tar;
 mod tar_entry;
 mod tgz;

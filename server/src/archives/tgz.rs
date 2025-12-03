@@ -9,12 +9,25 @@ use std::{
     io::{BufReader, Result},
 };
 
+/// Tgz (tar.gz) アーカイブを扱う構造体。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
+/// * `archive` - tar::Archive インスタンス (gzip)
 pub struct Tgz {
     time_style: String,
     archive: tar::Archive<GzDecoder<BufReader<File>>>,
 }
 
 impl Tgz {
+    /// 新しい Tgz インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `path` - Tgz ファイルのパス
+    /// * `time_style` - 日時のフォーマット文字列
+    ///
+    /// # Returns
+    /// 初期化された Tgz インスタンス
     pub fn new(path: &str, time_style: &str) -> anyhow::Result<Self> {
         let file = File::open(path)?;
         let reader = BufReader::new(file);

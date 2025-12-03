@@ -5,12 +5,25 @@ use crate::{
 
 use std::{fs::File, io::Result};
 
+/// Tar アーカイブを扱う構造体。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
+/// * `archive` - tar::Archive インスタンス
 pub struct Tar {
     time_style: String,
     archive: tar::Archive<File>,
 }
 
 impl Tar {
+    /// 新しい Tar インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `path` - Tar ファイルのパス
+    /// * `time_style` - 日時のフォーマット文字列
+    ///
+    /// # Returns
+    /// 初期化された Tar インスタンス
     pub fn new(path: &str, time_style: &str) -> anyhow::Result<Self> {
         let file = File::open(path)?;
         let archive = tar::Archive::new(file);

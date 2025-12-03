@@ -1,3 +1,5 @@
+//! タスクの実装を提供するモジュール。
+
 mod abort_progress_task;
 mod bookmark_task;
 mod change_dir_task;

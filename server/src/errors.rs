@@ -1,3 +1,5 @@
+//! 各種エラーを提供するモジュール。
+
 mod bookmark_error;
 mod command_error;
 mod sender_error;

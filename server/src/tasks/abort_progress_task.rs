@@ -10,9 +10,11 @@ use serde_json::{json, Value};
 use std::sync::Arc;
 use tokio::sync::mpsc;
 
+/// ProgressTask を中断するタスク。
 pub struct AbortProgressTask;
 
 impl AbortProgressTask {
+    /// 新しい AbortProgressTask インスタンスを生成する。
     pub fn new() -> Self {
         Self
     }
@@ -46,6 +48,7 @@ impl TaskBase for AbortProgressTask {
             pid: pid.to_owned(),
             status: TaskStatus::Abort,
         };
+        // 中断のタスク制御メッセージを TaskManager に送信する。
         let res = match tx.send(ctrl).await {
             Ok(_) => TaskResult::success(),
             Err(err) => TaskResult::error(err.into()),

@@ -1,3 +1,5 @@
+//! トレイトを提供するモジュール。
+
 mod archive;
 mod archive_entry;
 mod error;

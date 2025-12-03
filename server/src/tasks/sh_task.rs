@@ -11,18 +11,39 @@ use serde_json::{json, Value};
 use std::{process::Command as StdCommand, sync::Arc};
 use tokio::sync::mpsc;
 
+/// シェルコマンドを実行するタスク。
 pub struct ShTask;
 
 impl ShTask {
+    /// 新しい ShTask インスタンスを生成する。
     pub fn new() -> Self {
         Self
     }
 
+    /// コマンドからタスク設定を取得する。
+    ///
+    /// # Arguments
+    /// * `cmd` - 対象コマンド
     fn config(&self, cmd: &Command) -> ShTaskConfig {
         let c = cmd.arg("config").unwrap().clone();
         serde_json::from_value::<ShTaskConfig>(c).unwrap()
     }
 
+    /// シェルコマンドを実行する。
+    ///
+    /// `cwd` をカレントディレクトリとして実行される。
+    ///
+    /// # Arguments
+    /// * `cmd_str` - 実行するコマンド文字列
+    /// * `srcs` - ソースパスの配列
+    ///   呼び出し元で `cwd` を基準とした相対パスに変換済み。
+    /// * `dest` - 展開先ディレクトリ
+    ///   呼び出し元で `cwd` を基準とした相対パスに変換済み。
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// 成功： stdout (改行区切り)
+    /// 失敗： stderr
     fn exec_shcmd(
         &self,
         cmd_str: &str,
@@ -31,22 +52,33 @@ impl ShTask {
         cwd: &str,
     ) -> Result<String> {
         let mut cmd_str = cmd_str.to_owned();
+
+        // コマンド文字列内の `%s` をソースパスに置換する。
+        // パスは `"` でクォートされ、複数の場合はスペースで連結される。
+        // 例： `foo %s` -> `foo "path/to/src1" "path/to/src2"`
         if let Some(srcs) = srcs {
             let srcs = quote_paths(&srcs);
             cmd_str = cmd_str.replace("%s", &srcs);
         }
+
+        // コマンド文字列内の `%d` を展開先のディレクトリパスに置換する。
+        // パスは `"` でクォートされる。
+        // 例： `foo %d` -> `foo "path/to/dest"`
         if let Some(dest) = dest {
             let dest = quote_paths(&[dest]);
             cmd_str = cmd_str.replace("%d", &dest);
         }
+
         let output = StdCommand::new("sh")
             .current_dir(cwd)
             .arg("-c")
             .arg(cmd_str)
             .output()?;
+
         if !output.status.success() {
             bail!(String::from_utf8_lossy(&output.stderr).to_string());
         }
+
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
         Ok(stdout.lines().collect::<Vec<_>>().join("\n"))
     }
@@ -91,7 +123,7 @@ impl TaskBase for ShTask {
         let srcs = cmd.arg_as_path_array("sources", &cmd.cwd);
         let dest = cmd.arg_as_path("destination", &cmd.cwd);
         let config = self.config(cmd);
-
+        // `cwd` を基準とした相対パスに変換しておく。
         let srcs = srcs.map(|s| relativize_paths(&s, &cmd.cwd));
         let dest = dest.map(|d| relativize_path(&d, &cmd.cwd));
         let res = match self.exec_shcmd(&config.cmd, srcs, dest, &cmd.cwd) {

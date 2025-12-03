@@ -1,3 +1,5 @@
+//! ヘルパー関数を提供するモジュール。
+
 use crate::models::Entry;
 
 use anyhow::Result;
@@ -11,10 +13,21 @@ use std::{
 };
 use unicode_normalization::UnicodeNormalization as _;
 
+/// バイト列を文字列にデコードする。
+///
+/// 結果は Unicode 正規化 (NFC) される。
+///
+/// # Arguments
+/// * `raw` - デコード対象のバイト列
+///
+/// # Returns
+/// Unicode 正規化 (NFC) されたデコード文字列
 pub fn decode_string(raw: &[u8]) -> String {
+    // まず UTF-8 を試す。
     if let Ok(s) = std::str::from_utf8(raw) {
         return s.nfc().to_string();
     }
+    // UTF-8 でなければ文字コードを自動判定してデコードする。
     let mut detector = EncodingDetector::new();
     detector.feed(raw, true);
     let encoding = detector.guess(None, true);
@@ -22,6 +35,14 @@ pub fn decode_string(raw: &[u8]) -> String {
     decoded.into_owned()
 }
 
+/// ファイルサイズを ls コマンド風の文字列に変換する。
+///
+/// # Arguments
+/// * `bytes` - ファイルサイズ
+///
+/// # Returns
+/// ls 風のサイズ文字列
+/// 例： `1.5K`, `2.3M`
 pub fn ls_style_size(bytes: u64) -> String {
     const UNITS: [&str; 5] = ["B", "K", "M", "G", "T"];
     let mut size = bytes as f64;
@@ -30,6 +51,8 @@ pub fn ls_style_size(bytes: u64) -> String {
         size /= 1024.0;
         unit += 1;
     }
+    // 1024 バイト未満はそのまま、
+    // それ以上は適切な単位を付与して小数第一位までを返す。
     if unit == 0 {
         format!("{}", size as u64)
     } else {
@@ -37,6 +60,16 @@ pub fn ls_style_size(bytes: u64) -> String {
     }
 }
 
+/// UNIX ファイルモードをパーミッション文字列に変換する。
+///
+/// 先頭一文字目のファイルタイプは含まない。
+///
+/// # Arguments
+/// * `mode` - ファイルモード
+///
+/// # Returns
+/// UNIX 形式のパーミッション文字列
+/// 例： `rwxr-xr-x`
 pub fn perm_string(mode: u32) -> String {
     let mut res = "".to_owned();
     let perms = [
@@ -56,6 +89,16 @@ pub fn perm_string(mode: u32) -> String {
     res
 }
 
+/// メタデータからパーミッション文字列を生成する。
+///
+/// 先頭一文字目はファイルタイプを表す。
+///
+/// # Arguments
+/// * `meta` - ファイルのメタデータ
+///
+/// # Returns
+/// `ls -l` 形式のパーミッション文字列
+/// 例： `drwxr-xr-x`
 pub fn perm_string_from_meta(meta: &Metadata) -> String {
     let first = if meta.is_symlink() {
         'l'
@@ -69,7 +112,18 @@ pub fn perm_string_from_meta(meta: &Metadata) -> String {
     format!("{}{}", first, perm)
 }
 
+/// 親ディレクトリを表すエントリを作成する。
+///
+/// 名前は常に `..` となる。
+///
+/// # Arguments
+/// * `path` - 対象エントリのパス
+/// * `time_style` - 日時のフォーマット文字列
+///
+/// # Returns
+/// 親ディレクトリを表すエントリ
 pub fn parent_entry(path: &str, time_style: &str) -> Result<Entry> {
+    // 親のパスを取得する。自身がルートディレクトリの場合、親はルート自身となる。
     let p = Path::new(path).parent().unwrap_or_else(|| Path::new("/"));
     let meta = fs::metadata(p)?;
     let dt = Local.timestamp_opt(meta.ctime(), 0).unwrap();
@@ -83,6 +137,16 @@ pub fn parent_entry(path: &str, time_style: &str) -> Result<Entry> {
     Ok(ent)
 }
 
+/// 絶対パスを正規化する。
+///
+/// 具体的には `.` と `..` を解決する。
+/// 解決した結果、ルートを超えた場合は `/` が返る。
+///
+/// # Arguments
+/// * `path` - 正規化する絶対パス
+///
+/// # Returns
+/// 正規化されたパス
 pub fn normalize_path(path: &str) -> String {
     let mut components = vec![];
     for part in path.split('/') {
@@ -97,8 +161,18 @@ pub fn normalize_path(path: &str) -> String {
     format!("/{}", components.join("/"))
 }
 
-// . は正規化するが .. はしない
-// cwd が空の場合は何もしない
+/// 相対パスを絶対パスに変換する。
+///
+/// `.` は正規化するが `..` はそのまま残す。
+/// チルダ `~` はホームディレクトリに展開する。
+/// `cwd` が空の場合はそのまま返す (チルダは展開する)。
+///
+/// # Arguments
+/// * `path` - 変換するパス
+/// * `cwd` - 基準となるディレクトリ
+///
+/// # Returns
+/// 変換された絶対パス
 pub fn absolutize_path(path: &str, cwd: &str) -> String {
     let t = tilde(path).to_string();
     let p = Path::new(&t);
@@ -113,10 +187,30 @@ pub fn absolutize_path(path: &str, cwd: &str) -> String {
         .to_string()
 }
 
+/// 複数のパスを絶対パスに変換する。
+///
+/// # Arguments
+/// * `paths` - 変換するパスの配列
+/// * `cwd` - 基準となるディレクトリ
+///
+/// # Returns
+/// 絶対パスの配列
 pub fn _absolutize_paths(paths: &[String], cwd: &str) -> Vec<String> {
     paths.iter().map(|p| absolutize_path(p, cwd)).collect()
 }
 
+/// 絶対パスを相対パスに変換する。
+///
+/// チルダ `~` はホームディレクトリに展開する。
+/// `cwd` が空または相対パスの場合はそのまま返す (チルダは展開する)。
+///
+/// # Arguments
+/// * `path` - 変換するパス
+/// * `cwd` - 基準となるディレクトリ
+///
+/// # Returns
+/// `cwd` からの相対パス
+/// `cwd` と同じなら `.` を返す。
 pub fn relativize_path(path: &str, cwd: &str) -> String {
     let t = tilde(path).to_string();
     let p = Path::new(&t);
@@ -132,18 +226,38 @@ pub fn relativize_path(path: &str, cwd: &str) -> String {
     }
 }
 
+/// 複数のパスを相対パスに変換する。
+///
+/// # Arguments
+/// * `paths` - 変換するパスの配列
+/// * `cwd` - 基準となるディレクトリ
+///
+/// # Returns
+/// 相対パスの配列
 pub fn relativize_paths(paths: &[String], cwd: &str) -> Vec<String> {
     paths.iter().map(|p| relativize_path(p, cwd)).collect()
 }
 
+/// パスをクォートしてスペース区切りの文字列に変換する。
+///
+/// シェルコマンドでの使用を想定している。
+/// 特殊文字は適切にエスケープされる。
+///
+/// # Arguments
+/// * `paths` - クォートするパスの配列
+///
+/// # Returns
+/// スペース区切りのクォート済みパス文字列
 pub fn quote_paths(paths: &[String]) -> String {
     paths
         .iter()
+        // クォートと特殊文字のエスケープを同時に行う。
         .map(|s| serde_json::to_string(s).unwrap())
         .collect::<Vec<String>>()
         .join(" ")
 }
 
+/// アプリケーションロゴを表示する (ANSI Regular)。
 pub fn _logo_ansi_regular() {
     let logo = r"
 
@@ -159,6 +273,7 @@ pub fn _logo_ansi_regular() {
     print!("{logo}");
 }
 
+/// アプリケーションロゴを表示する (ANSI Shadow)。
 pub fn _logo_ansi_shadow() {
     let logo = r"
 
@@ -175,6 +290,7 @@ pub fn _logo_ansi_shadow() {
     print!("{logo}");
 }
 
+/// アプリケーションロゴを表示する (Standard)。
 pub fn logo_standard() {
     let logo = r"
   _____           _   _                        ____
@@ -189,6 +305,7 @@ pub fn logo_standard() {
     print!("{logo}");
 }
 
+/// アプリケーションロゴを表示する (Big)。
 pub fn _logo_big() {
     let logo = r"
   ______          _   _                        ___

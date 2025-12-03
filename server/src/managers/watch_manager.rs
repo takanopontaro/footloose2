@@ -12,9 +12,23 @@ use serde_json::Value;
 use std::{collections::HashMap, sync::Arc};
 use tokio::sync::{mpsc, Mutex};
 
+/// WatchManager の振る舞いを定義するトレイト。
+///
+/// # Description
+/// ディレクトリ監視機能を提供し、ファイルシステムの変更を
+/// 購読者に通知する機能を定義する。
 #[cfg_attr(test, automock)]
 #[async_trait]
 pub trait WatchManagerTrait: Send + Sync {
+    /// ディレクトリの監視を開始すると同時に、最新のディレクトリ情報を返す。
+    ///
+    /// # Arguments
+    /// * `frame_key` - フレームのキー
+    /// * `new_path` - 監視するパス
+    /// * `arg` - タスク引数
+    ///
+    /// # Returns
+    /// 最新のディレクトリ情報
     async fn watch(
         &mut self,
         frame_key: &str,
@@ -22,6 +36,12 @@ pub trait WatchManagerTrait: Send + Sync {
         arg: &Arc<TaskArg>,
     ) -> Result<Value>;
 
+    /// 現在監視しているすべてのパスから自身を登録解除する。
+    ///
+    /// クライアントが切断された際にゴミが残らないようにするため。
+    ///
+    /// # Arguments
+    /// * `arg` - タスク引数
     async fn remove_subscriber(&self, arg: &Arc<TaskArg>);
 }
 
@@ -35,20 +55,25 @@ impl WatchManagerTrait for WatchManager {
     ) -> Result<Value> {
         self.unwatch(frame_key, new_path, arg).await;
         arg.frame_set.lock().await.update_path(frame_key, new_path);
+        // 他のクライアントがすでに監視中であれば、自身を購読者として追加する。
+        // そうでなければ新たに監視を作成する。
         match self.watches.get_mut(new_path) {
             Some(info) => info.lock().await.add_subscriber(arg.sender.clone()),
             None => self.create_watch(new_path, &arg.sender).await?,
         }
+        // 最新のディレクトリ情報を取得する。
         let data = self.watches[new_path].lock().await.data();
         Ok(data)
     }
 
     async fn remove_subscriber(&self, arg: &Arc<TaskArg>) {
+        // 現在監視しているパスをすべて取得する。
         let (path0, path1) = {
             let frame_set = arg.frame_set.lock().await;
             let (a, b) = frame_set.both_paths();
             (a.to_owned(), b.to_owned())
         };
+        // それぞれに対して自身を登録解除する。
         for path in [path0, path1] {
             if let Some(info) = self.watches.get(&path) {
                 info.lock().await.remove_subscriber(&arg.sender).await;
@@ -57,6 +82,13 @@ impl WatchManagerTrait for WatchManager {
     }
 }
 
+/// ディレクトリ監視を管理する構造体。
+///
+/// # Fields
+/// * `ls` - ディレクトリ情報を取得する Ls オブジェクト
+/// * `watches` - WatchInfo のマップ
+///   key: ディレクトリのパス、value: WatchInfo
+/// * `tx` - 監視制御用メッセージの送信チャネル
 pub struct WatchManager {
     ls: Arc<Ls>,
     watches: HashMap<String, Arc<Mutex<WatchInfo>>>,
@@ -64,6 +96,12 @@ pub struct WatchManager {
 }
 
 impl WatchManager {
+    /// 新しい WatchManager を作成する。
+    ///
+    /// シングルトンとして使用される。
+    ///
+    /// # Arguments
+    /// * `time_style` - 日時のフォーマット文字列
     pub fn new(time_style: &str) -> Arc<Mutex<Self>> {
         let (tx, mut rx) = mpsc::channel::<WatchControl>(10);
         let ins = Arc::new(Mutex::new(Self {
@@ -72,6 +110,7 @@ impl WatchManager {
             tx,
         }));
         let ins_ = ins.clone();
+        // 非同期タスクで、監視制御用メッセージを待ち受ける。
         tokio::spawn(async move {
             while let Some(WatchControl { path, status }) = rx.recv().await {
                 if status == WatchStatus::Abort {
@@ -82,12 +121,20 @@ impl WatchManager {
         ins
     }
 
+    /// ディレクトリの監視を解除する。
+    ///
+    /// # Arguments
+    /// * `frame_key` - フレームのキー
+    /// * `new_path` - 監視するパス
+    /// * `arg` - タスク引数
     pub async fn unwatch(
         &self,
         frame_key: &str,
         new_path: &str,
         arg: &Arc<TaskArg>,
     ) {
+        // 新しいパスの監視を開始するにあたって、監視不要になる古いパスを取得する。
+        // ない場合 (まだ他のフレームが監視している等) は何もせず return する。
         let path = {
             let set = arg.frame_set.lock().await;
             let Some(path) = set.path_to_be_unused(frame_key, new_path) else {
@@ -95,11 +142,21 @@ impl WatchManager {
             };
             path.to_owned()
         };
+        // 古いパスから自身を登録解除する。
         if let Some(info) = self.watches.get(&path) {
             info.lock().await.remove_subscriber(&arg.sender).await;
         }
     }
 
+    /// 新しい監視を作成する。
+    ///
+    /// # Arguments
+    /// * `path` - 監視するディレクトリのパス
+    /// * `sender` - 送信者オブジェクト
+    ///
+    /// # Errors
+    /// - `WatchError::Watch`:
+    ///   監視の作成に失敗した。
     async fn create_watch(
         &mut self,
         path: &str,
@@ -107,6 +164,7 @@ impl WatchManager {
     ) -> Result<()> {
         let tx = self.tx.clone();
         let ls = self.ls.clone();
+        // 監視の作成に失敗した場合はエラーを throw する。
         let info = WatchInfo::new(path, tx, ls).await.map_err(|err| {
             WatchError::Watch(err.to_string(), path.to_owned())
         })?;

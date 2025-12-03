@@ -11,11 +11,19 @@ use serde_json::{json, Value};
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex};
 
+/// ディレクトリを変更するタスク。
+///
+/// # Fields
+/// * `watch_manager` - WatchManager インスタンス
 pub struct ChangeDirTask<T: WatchManagerTrait> {
     watch_manager: Arc<Mutex<T>>,
 }
 
 impl<T: WatchManagerTrait> ChangeDirTask<T> {
+    /// 新しい ChangeDirTask インスタンスを生成する。
+    ///
+    /// # Arguments
+    /// * `watch_manager` - WatchManager インスタンス
     pub fn new(watch_manager: Arc<Mutex<T>>) -> Self {
         Self { watch_manager }
     }

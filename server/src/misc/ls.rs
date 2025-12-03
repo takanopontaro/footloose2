@@ -14,21 +14,43 @@ use std::{
 };
 use unicode_normalization::UnicodeNormalization as _;
 
+/// ディレクトリ情報の取得機能を提供する構造体。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
 pub struct Ls {
     time_style: String,
 }
 
 impl Ls {
+    /// 新しい Ls インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `time_style` - 日時のフォーマット文字列
     pub fn new(time_style: &str) -> Self {
         Self {
             time_style: time_style.to_owned(),
         }
     }
 
+    /// パスを NFC 正規化された文字列に変換する。
+    ///
+    /// # Arguments
+    /// * `path` - 正規化するパス
+    ///
+    /// # Returns
+    /// NFC 正規化されたパス文字列
     fn to_nfc_string(&self, path: &Path) -> String {
         path.to_string_lossy().nfc().collect::<String>()
     }
 
+    /// パス以外デフォルト値のエントリを作成する。
+    ///
+    /// # Arguments
+    /// * `path` - エントリのパス
+    ///
+    /// # Returns
+    /// デフォルト値で初期化された Entry インスタンス
     fn entry_skeleton(&self, path: &OsStr) -> Entry {
         Entry {
             perm: "----------".to_owned(),
@@ -39,6 +61,18 @@ impl Ls {
         }
     }
 
+    /// シンボリックリンクの実体パスを取得する。
+    ///
+    /// 種類に応じて以下の接頭辞が付く。
+    /// `e:`=エラー, `d:`=ディレクトリ, `f:`=ファイル
+    /// 例： `d:/path/to/directory`
+    ///
+    /// # Arguments
+    /// * `path` - リンクのパス
+    ///
+    /// # Returns
+    /// リンクの実体パス
+    /// 解決できなかった場合は空文字を返す。
     fn resolve_symlink(&self, path: &Path) -> String {
         let Ok(path) = fs::read_link(path) else {
             return "".to_owned();
@@ -59,6 +93,14 @@ impl Ls {
         "".to_owned()
     }
 
+    /// ディレクトリのエントリ一覧を取得する。
+    ///
+    /// ファイル名でソートされる。
+    /// 最初のエントリは必ず親ディレクトリ `..` になる。
+    /// ルートであっても `..` エントリは含まれる。
+    ///
+    /// # Arguments
+    /// * `path` - ディレクトリのパス
     pub fn entries(&self, path: &str) -> Result<Vec<Entry>> {
         let mut res = vec![];
         let ent = parent_entry(path, &self.time_style)?;
@@ -83,6 +125,13 @@ impl Ls {
         Ok(res)
     }
 
+    /// ディレクトリの署名を生成する。
+    ///
+    /// ここで言う署名とは、各エントリの変更時刻を連結した文字列。
+    /// ディレクトリの内容が変更されたか否かを調べるために使用される。
+    ///
+    /// # Arguments
+    /// * `path` - ディレクトリのパス
     pub fn signature(&self, path: &str) -> Result<String> {
         let mut sig = String::new();
         for entry in fs::read_dir(path)?.flatten() {

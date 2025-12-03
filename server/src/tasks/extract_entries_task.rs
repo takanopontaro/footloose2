@@ -19,13 +19,24 @@ use std::{
 };
 use tokio::sync::mpsc;
 
+/// アーカイブからエントリをコピーするタスク。
 pub struct ExtractEntriesTask;
 
 impl ExtractEntriesTask {
+    /// 新しい ExtractEntriesTask インスタンスを生成する。
     pub fn new() -> Self {
         Self {}
     }
 
+    /// バイト列をパス文字列にデコードする。
+    ///
+    /// 記述を統一するため、相対パスの場合は `./` は削除する。
+    ///
+    /// # Arguments
+    /// * `raw` - デコードするバイト列
+    ///
+    /// # Returns
+    /// デコードされたパス文字列
     fn decode_path(&self, raw: &[u8]) -> String {
         let s = decode_string(raw);
         if s.starts_with("./") {
@@ -34,36 +45,67 @@ impl ExtractEntriesTask {
         s
     }
 
+    /// 指定したパスがソースパスにマッチするか否かを確認する。
+    ///
+    /// 要するに、そのパスがコピーの対象かどうかを判断する。
+    ///
+    /// # Arguments
+    /// * `raw` - パスのバイト列
+    /// * `srcs` - コピーするパスの配列
     fn is_match(&self, raw: &[u8], srcs: &[String]) -> bool {
+        // ソースパスはスラッシュ始まりなため、それに合わせる。
         let path = format!("/{}", self.decode_path(raw));
+        // 以下の場合、マッチしているとみなす。
+        // - ソースパスと完全一致している
+        // - ソースパスから始まっている (＝ソースパスの下層にある)
         srcs.iter()
             .any(|s| s == &path || path.starts_with(&format!("{s}/")))
     }
 
-    // archive: /Users/takanopontaro/Desktop/archive.zip
-    // path: rust/util/ascii/tests/expected/ascii.txt
-    // path: rust/util/ascii/tests/expected/foo/
-    // cwd: /Users/takanopontaro/Desktop/archive.zip/rust/util/ascii
-    // -> tests/expected/ascii.txt
-    // archive: /Users/takanopontaro/Desktop/archive.zip
-    // path: rust
-    // cwd: /Users/takanopontaro/Desktop/archive.zip
-    // -> rust
+    /// アーカイブ内のパスをカレントディレクトリからの相対パスに変換する。
+    ///
+    /// 得られたパスはコピー先のパスとして使用される。
+    ///
+    /// # Arguments
+    /// * `archive` - アーカイブファイルのパス
+    /// * `path` - アーカイブ内のパス
+    /// * `cwd` - 基準となるディレクトリ
     fn relative_path(
         &self,
         archive: &str,
         path: &str,
         cwd: &str,
     ) -> Option<String> {
+        // アーカイブ内基準のカレントディレクトリを取得する。
+        // archive: /Users/xxxx/Desktop/archive.zip
+        // cwd: /Users/xxxx/Desktop/archive.zip/rust/util/ascii
+        // -> rust/util/ascii
         let root = cwd
             .strip_prefix(archive)
             .map(|r| r.strip_prefix("/").unwrap_or(r))?;
+
+        // 対象エントリの相対パスを取得する。
+        // root: rust/util/ascii
+        // path: rust/util/ascii/tests/expected/ascii.txt
+        // -> tests/expected/ascii.txt
         let path = path
             .strip_prefix(root)
             .map(|r| r.strip_prefix("/").unwrap_or(r))?;
+
         Some(path.to_owned())
     }
 
+    /// 仮想ディレクトリ内のエントリを、実ディレクトリにコピーする。
+    ///
+    /// # Arguments
+    /// * `entry` - コピーするエントリのリーダー
+    /// * `archive` - アーカイブファイルのパス
+    /// * `raw` - コピーするエントリのパスのバイト列
+    /// * `dest` - 展開先ディレクトリ
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// スキップされた場合はそのパス、それ以外は空文字列
     fn extract_entries<R: Read>(
         &self,
         entry: &mut R,
@@ -77,21 +119,39 @@ impl ExtractEntriesTask {
             bail!("Invalid path: {path}");
         };
         let dst = Path::new(dest).join(&path);
+        // ディレクトリパスなら、すべての階層のディレクトリを作成して抜ける。
         if path.ends_with('/') {
             create_dir_all(&dst)?;
             return Ok("".to_owned());
         }
+        // ファイルパスなら、親ディレクトリをすべて作成しておく。
+        // dest: /Users/xxxx/Desktop
+        // dst: /Users/xxxx/Desktop/tests/expected/ascii.txt
+        // -> /Users/xxxx/Desktop/tests/expected まで作成。
         if let Some(p) = dst.parent() {
             create_dir_all(p)?;
         }
+        // すでに存在する場合は上書きせずにそのパスを返す。
+        // これはスキップされたパスを意味する。
         if dst.exists() {
             return Ok(dst.to_string_lossy().to_string());
         }
+        // ファイルを書き出す。(＝コピー)
         let mut out = File::create(dst)?;
         copy(entry, &mut out)?;
         Ok("".to_owned())
     }
 
+    /// zip アーカイブからエントリをコピーする。
+    ///
+    /// # Arguments
+    /// * `archive` - アーカイブファイルのパス
+    /// * `srcs` - コピーするパスの配列
+    /// * `dest` - 展開先ディレクトリ
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// スキップされたパスの配列
     fn copy_zip_entries(
         &self,
         archive: &str,
@@ -120,6 +180,17 @@ impl ExtractEntriesTask {
         Ok(skipped)
     }
 
+    /// tar/tgz アーカイブからエントリをコピーする処理の共通ロジック部分。
+    ///
+    /// # Arguments
+    /// * `archive` - アーカイブファイルのパス
+    /// * `tar` - tar インスタンス
+    /// * `srcs` - コピーするパスの配列
+    /// * `dest` - 展開先ディレクトリ
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// スキップされたパスの配列
     fn copy_tarball_entries<R: Read>(
         &self,
         archive: &str,
@@ -152,6 +223,16 @@ impl ExtractEntriesTask {
         Ok(skipped)
     }
 
+    /// tar アーカイブからエントリをコピーする。
+    ///
+    /// # Arguments
+    /// * `archive` - アーカイブファイルのパス
+    /// * `srcs` - コピーするパスの配列
+    /// * `dest` - 展開先ディレクトリ
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// スキップされたパスの配列
     fn copy_tar_entries(
         &self,
         archive: &str,
@@ -166,6 +247,16 @@ impl ExtractEntriesTask {
         Ok(skipped)
     }
 
+    /// tgz アーカイブからエントリをコピーする。
+    ///
+    /// # Arguments
+    /// * `archive` - アーカイブファイルのパス
+    /// * `srcs` - コピーするパスの配列
+    /// * `dest` - 展開先ディレクトリ
+    /// * `cwd` - 基準となるディレクトリ
+    ///
+    /// # Returns
+    /// スキップされたパスの配列
     fn copy_tgz_entries(
         &self,
         archive: &str,
@@ -228,7 +319,10 @@ impl TaskBase for ExtractEntriesTask {
         let archive = cmd.arg_as_path("archive", &cmd.cwd).unwrap();
         let srcs = cmd.arg_as_path_array("sources", &cmd.cwd).unwrap();
         let dest = cmd.arg_as_path("destination", &cmd.cwd).unwrap();
-        // ["/path/to/archive.zip/a/b"] -> ["/a/b"]
+
+        // 以下のように整形する。
+        // ["/Users/xxxx/Desktop/archive.zip/rust/util/main.rs"]
+        // -> ["/rust/util/main.rs"]
         let Some(srcs) = srcs
             .into_iter()
             .map(|s| s.strip_prefix(&archive).map(str::to_owned))
@@ -237,6 +331,7 @@ impl TaskBase for ExtractEntriesTask {
             let err = VirtualDirError::Args;
             return Ok(TaskResult::error(err.into()));
         };
+
         let res = match kind {
             ArchiveKind::Zip => {
                 self.copy_zip_entries(&archive, &srcs, &dest, &cmd.cwd)
@@ -248,6 +343,9 @@ impl TaskBase for ExtractEntriesTask {
                 self.copy_tgz_entries(&archive, &srcs, &dest, &cmd.cwd)
             }
         };
+
+        // 処理結果に応じて TaskResult を返す。
+        // スキップされたエントリがある場合はそれを data として返す。
         let res = match res {
             Ok(skipped) if skipped.is_empty() => TaskResult::success(),
             Ok(skipped) => {

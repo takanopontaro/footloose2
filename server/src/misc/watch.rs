@@ -4,6 +4,13 @@ use anyhow::Result;
 use serde_json::{json, Value};
 use std::sync::Arc;
 
+/// ディレクトリの監視情報を扱う構造体。
+///
+/// # Fields
+/// * `ls` - ディレクトリ情報を取得する構造体
+/// * `signature` - ディレクトリの変更検出用の署名
+/// * `path` - 監視中のディレクトリパス
+/// * `entries` - ディレクトリ内のエントリ一覧
 pub struct Watch {
     ls: Arc<Ls>,
     signature: String,
@@ -12,6 +19,11 @@ pub struct Watch {
 }
 
 impl Watch {
+    /// 新しい Watch インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `path` - 監視するディレクトリのパス
+    /// * `ls` - ディレクトリ情報を取得する構造体
     pub fn new(path: &str, ls: Arc<Ls>) -> Result<Self> {
         Ok(Self {
             signature: ls.signature(path)?,
@@ -21,6 +33,10 @@ impl Watch {
         })
     }
 
+    /// ディレクトリの変更をチェックする。
+    ///
+    /// # Returns
+    /// 変更あり：true、なし：false
     pub fn check_updates(&mut self) -> Result<bool> {
         let sig = self.ls.signature(&self.path)?;
         if self.signature != sig {
@@ -31,6 +47,10 @@ impl Watch {
         Ok(false)
     }
 
+    /// ディレクトリ情報を JSON 形式で取得する。
+    ///
+    /// # Returns
+    /// ディレクトリ情報
     pub fn data(&self) -> Value {
         json!({ "path": self.path, "entries": self.entries })
     }

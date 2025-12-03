@@ -9,6 +9,14 @@ use std::{
 };
 use zip::ZipArchive;
 
+/// ZipEntry のイテレータ。
+///
+/// tar::Archive と違い ZipArchive にはイテレータがないため自作する。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
+/// * `archive` - ZipArchive の可変参照
+/// * `index` - 現在のインデックス
 struct ZipEntryIter<'a> {
     time_style: &'a str,
     archive: &'a mut ZipArchive<BufReader<File>>,
@@ -33,12 +41,25 @@ impl<'a> Iterator for ZipEntryIter<'a> {
     }
 }
 
+/// Zip アーカイブを扱う構造体。
+///
+/// # Fields
+/// * `time_style` - 日時のフォーマット文字列
+/// * `archive` - ZipArchive インスタンス
 pub struct Zip {
     time_style: String,
     archive: ZipArchive<BufReader<File>>,
 }
 
 impl Zip {
+    /// 新しい Zip インスタンスを作成する。
+    ///
+    /// # Arguments
+    /// * `path` - Zip ファイルのパス
+    /// * `time_style` - 日時のフォーマット文字列
+    ///
+    /// # Returns
+    /// 初期化された Zip インスタンス
     pub fn new(path: &str, time_style: &str) -> anyhow::Result<Self> {
         let file = File::open(path)?;
         let reader = BufReader::new(file);

@@ -1,9 +1,17 @@
+/// ふたつのフレームのパス情報を扱う構造体。
+///
+/// # Fields
+/// * `a` - フレーム A のパス
+/// * `b` - フレーム B のパス
 pub struct FrameSet {
     a: String,
     b: String,
 }
 
 impl FrameSet {
+    /// 新しい FrameSet を作成する。
+    ///
+    /// 初期値は空文字列。
     pub fn new() -> Self {
         Self {
             a: "".to_owned(),
@@ -11,6 +19,13 @@ impl FrameSet {
         }
     }
 
+    /// 指定されたフレームのパスを取得する。
+    ///
+    /// # Arguments
+    /// * `key` - フレームキー
+    ///
+    /// # Panics
+    /// `key` が `a`, `b` 以外の場合はパニックする。
     pub fn path(&self, key: &str) -> &str {
         match key {
             "a" => &self.a,
@@ -19,6 +34,13 @@ impl FrameSet {
         }
     }
 
+    /// 指定されたフレームの、反対側のフレームのパスを取得する。
+    ///
+    /// # Arguments
+    /// * `key` - フレームキー
+    ///
+    /// # Panics
+    /// `key` が `a`, `b` 以外の場合はパニックする。
     pub fn other_path(&self, key: &str) -> &str {
         match key {
             "a" => &self.b,
@@ -27,10 +49,23 @@ impl FrameSet {
         }
     }
 
+    /// 両方のフレームのパスを取得する。
+    ///
+    /// # Returns
+    /// (フレーム A のパス, フレーム B のパス) のタプル
     pub fn both_paths(&self) -> (&str, &str) {
         (&self.a, &self.b)
     }
 
+    /// 新しいパスを設定することで使用されなくなる古いパスを取得する。
+    ///
+    /// # Arguments
+    /// * `key` - フレームキー
+    /// * `new_path` - 新しく設定されるパス
+    ///
+    /// # Returns
+    /// 使用されなくなるパス
+    /// 古いパスがもう一方のフレームでまだ使用されている場合は None を返す。
     pub fn path_to_be_unused(&self, key: &str, new_path: &str) -> Option<&str> {
         let cur_path = self.path(key);
         let other_path = self.other_path(key);
@@ -40,6 +75,14 @@ impl FrameSet {
         Some(cur_path)
     }
 
+    /// 指定したフレームのパスを更新する。
+    ///
+    /// # Arguments
+    /// * `key` - フレームキー
+    /// * `path` - 新しいパス
+    ///
+    /// # Panics
+    /// `key` が `a`, `b` 以外の場合はパニックする。
     pub fn update_path(&mut self, key: &str, path: &str) {
         let path = path.to_owned();
         match key {
