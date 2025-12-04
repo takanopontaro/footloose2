@@ -549,7 +549,7 @@ export type ShortcutsConfig = Partial<
  * @param mime - MIME
  *   取れない場合は null。
  * @param path - エントリのパス
- * @return アプリ名または null
+ * @returns アプリ名または null
  *
  * @example
  * ```ts

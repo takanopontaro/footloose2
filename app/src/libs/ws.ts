@@ -27,7 +27,7 @@ const LISTENER_STATUS = {
  * WebSocket レスポンスがリスナー型か否かを返す型ガード。
  *
  * @param resp - レスポンス
- * @return リスナー型のレスポンスか否か
+ * @returns リスナー型のレスポンスか否か
  */
 function isListenerResp(resp: WsResponse): resp is WsListenerResponse {
   const values = Object.values(LISTENER_STATUS) as readonly string[];
@@ -60,7 +60,7 @@ class WsClass {
    * 初期化する。
    *
    * @param ws - WebSocket のインスタンス
-   * @return 自分自身のインスタンス
+   * @returns 自分自身のインスタンス
    */
   init(ws: WebSocket): WsClass {
     this.#ws = ws;

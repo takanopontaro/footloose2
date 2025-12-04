@@ -15,7 +15,7 @@ import type { SymlinkInfo } from '@modules/DataFrame/types';
  * @param frame - 対象フレーム
  * @param allowParent - `..` を含むか否か
  *   false の時は `..` がカレントエントリであっても空文字を返す。
- * @return カレントエントリの name または空文字
+ * @returns カレントエントリの name または空文字
  */
 function getActiveEntryName(
   frame = readState($activeFrame),
@@ -42,7 +42,7 @@ function getActiveEntryName(
  * @param allowParent - `..` を含むか否か
  *   false の時は `..` がカレントエントリであっても空文字を返す。
  *   選択行が無い場合のみ有効。
- * @return 選択行の name 配列または空配列
+ * @returns 選択行の name 配列または空配列
  */
 function getTargetEntryNames(
   frame = readState($activeFrame),
@@ -74,7 +74,7 @@ function is(
  *
  * @param name - エントリの name
  * @param frame - 対象フレーム
- * @return ディレクトリか否か
+ * @returns ディレクトリか否か
  */
 function isDir(name: string, frame = readState($activeFrame)): boolean {
   return is(name, 'd', frame);
@@ -85,7 +85,7 @@ function isDir(name: string, frame = readState($activeFrame)): boolean {
  *
  * @param name - エントリの name
  * @param frame - 対象フレーム
- * @return ファイルか否か
+ * @returns ファイルか否か
  */
 function isFile(name: string, frame = readState($activeFrame)): boolean {
   return is(name, '-', frame);
@@ -96,7 +96,7 @@ function isFile(name: string, frame = readState($activeFrame)): boolean {
  *
  * @param name - エントリの name
  * @param frame - 対象フレーム
- * @return シンボリックリンクか否か
+ * @returns シンボリックリンクか否か
  */
 function isSymlink(name: string, frame = readState($activeFrame)): boolean {
   return is(name, 'l', frame);
@@ -107,7 +107,7 @@ function isSymlink(name: string, frame = readState($activeFrame)): boolean {
  *
  * @param name - エントリの name
  * @param frame - 対象フレーム
- * @return SymlinkInfo または null (以下のような場合)
+ * @returns SymlinkInfo または null (以下のような場合)
  *   - シンボリックリンクではない。
  *   - 情報取得時にエラーが起きた。
  */

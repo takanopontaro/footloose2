@@ -13,7 +13,7 @@ import type { Entry } from '@modules/DataFrame/types';
  * @param entry - 対象エントリ
  * @param frame - 対象フレーム
  * @param className - img 要素に付与するクラス名
- * @return img 要素または null
+ * @returns img 要素または null
  */
 export const useThumbnail = (
   entry: Entry,

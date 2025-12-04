@@ -7,7 +7,7 @@ import { $prevSessionDir } from '@modules/App/state';
  * 前回の最終ディレクトリが localStorage に保存されているため、
  * それを取り出して返す。
  *
- * @return ディレクトリパスの配列 [frameA, frameB]
+ * @returns ディレクトリパスの配列 [frameA, frameB]
  */
 export const useInitialDir = (): [string, string] => {
   const dirPathA = useAtomValue($prevSessionDir('a'));

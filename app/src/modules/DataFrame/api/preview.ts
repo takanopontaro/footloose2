@@ -8,7 +8,7 @@ import type { Direction } from '@modules/App/types';
  * iframe 要素か否かを返す型ガード。
  *
  * @param el - 要素または null
- * @return iframe か否か
+ * @returns iframe か否か
  */
 function isIframe(el: HTMLElement | null): el is HTMLIFrameElement {
   return el instanceof HTMLIFrameElement;
@@ -18,7 +18,7 @@ function isIframe(el: HTMLElement | null): el is HTMLIFrameElement {
  * video 要素か否かを返す型ガード。
  *
  * @param el - 要素または null
- * @return video か否か
+ * @returns video か否か
  */
 function isVideo(el: HTMLElement | null): el is HTMLVideoElement {
   return el instanceof HTMLVideoElement;
@@ -104,7 +104,7 @@ function scrollToEdgePreviewArea(
  * 無ければ null を返す。
  *
  * @param frame - 対象フレーム
- * @return video または null
+ * @returns video または null
  */
 function getVideoElementPreviewArea(
   frame = readState($activeFrame),

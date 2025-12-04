@@ -25,7 +25,7 @@ import type { CursorDirection } from '@modules/DataFrame/types';
  *   上に 1、右に 3 といった上下左右に対する移動量。
  * @param direction - 移動方向
  * @param frame - 対象フレーム
- * @return インデックスとしての移動量
+ * @returns インデックスとしての移動量
  */
 function calcDelta(
   step: number,

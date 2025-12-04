@@ -21,7 +21,7 @@ type ActionsConfig = Omit<ShortcutCommand, 'cmd'> & {
  * 元の設定と組み合わせて返す。
  *
  * @param shortcutCommandList - ShortcutCommand のリスト
- * @return コマンドの関数本体を含む設定のリスト
+ * @returns コマンドの関数本体を含む設定のリスト
  */
 function getActionsConfigList(
   shortcutCommandList: ShortcutCommand[],
@@ -43,7 +43,7 @@ function getActionsConfigList(
  *
  * @param value - 判定する値
  * @param curValues - 集合
- * @return 含まれるか否か
+ * @returns 含まれるか否か
  */
 function match<T>(value: string, curValues: T[]): boolean {
   if (value.startsWith('!')) {
@@ -57,7 +57,7 @@ function match<T>(value: string, curValues: T[]): boolean {
  * 現在のモードやタグに基づいた、適切なコマンドを取得する関数を返す。
  *
  * @param shortcutCommandList - ShortcutCommand のリスト
- * @return コマンド取得関数
+ * @returns コマンド取得関数
  */
 function makeGetAvailableActions(
   shortcutCommandList: ShortcutCommand[],

@@ -33,7 +33,7 @@ import type { VirtualDirKind } from '@modules/DataFrame/types';
  * 出た場合、エラーコード E006002 のレスポンスが WebSocket サーバーから返ってくる。
  *
  * @param resp - サーバーからのレスポンス
- * @return 仮想ディレクトリの外に出たか否か
+ * @returns 仮想ディレクトリの外に出たか否か
  */
 function isOutsideRoot(resp: WsResponse): boolean {
   return isErrorResp(resp) && resp.data.code === 'E006002';
@@ -45,7 +45,7 @@ function isOutsideRoot(resp: WsResponse): boolean {
  * ステータスコード SKIPPED のレスポンスが WebSocket サーバーから返ってくる。
  *
  * @param resp - サーバーからのレスポンス
- * @return コピーがスキップされたか否か
+ * @returns コピーがスキップされたか否か
  */
 function isCopySkipped(resp: WsResponse): resp is WsVcpSkippedResponse {
   return resp.status === 'SKIPPED';
@@ -56,7 +56,7 @@ function isCopySkipped(resp: WsResponse): resp is WsVcpSkippedResponse {
  * 対応している形式は zip, tar, tgz (tar.gz) のみっつ。
  *
  * @param path - アーカイブのパス
- * @return 仮想ディレクトリの種類。未対応形式の場合は undefined。
+ * @returns 仮想ディレクトリの種類。未対応形式の場合は undefined。
  */
 function getVirtualDirKindFromExt(path: string): VirtualDirKind | undefined {
   const matches = path.match(/\.(zip|tar|tgz|tar\.gz)$/);

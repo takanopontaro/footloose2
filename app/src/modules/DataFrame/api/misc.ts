@@ -49,7 +49,7 @@ function clearEntryFilter(frame = readState($activeFrame)): void {
  * そのエントリを開くのに適切なアプリ名を返す。
  *
  * @param path - エントリのパス
- * @return アプリ名または null
+ * @returns アプリ名または null
  */
 function getApp(path: string): null | string {
   const type = mime.getType(path);

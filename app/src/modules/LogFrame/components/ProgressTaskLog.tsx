@@ -14,7 +14,7 @@ import type {
  * そのログデータが ProgressTask のものか否かを返す型ガード。
  *
  * @param data - ログデータ
- * @return ProgressTask のものか否か
+ * @returns ProgressTask のものか否か
  */
 function isProgressTaskLog(data: LogData): data is ProgressTaskLogData {
   return data.level === 'progress';

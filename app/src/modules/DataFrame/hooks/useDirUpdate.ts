@@ -24,7 +24,7 @@ import type { Entry } from '@modules/DataFrame/types';
  * @param newRawEntryNames - 新エントリ一覧の name 集合
  * @param filteredEntryNames - filter-out 後のエントリ一覧の name 集合
  * @param prevActiveEntryName - 旧カレントエントリの name
- * @return 新カレントエントリの name
+ * @returns 新カレントエントリの name
  */
 function getFallbackActiveEntryName(
   oldRawEntries: Entry[],
@@ -53,7 +53,7 @@ function getFallbackActiveEntryName(
  *
  * @param filteredEntryNames - filter-out 後のエントリ一覧の name 集合
  * @param selectedEntryNames - 選択行の name 一覧
- * @return 新選択行の name 一覧
+ * @returns 新選択行の name 一覧
  */
 function getFallbackSelectedEntryNames(
   filteredEntryNames: Set<string>,

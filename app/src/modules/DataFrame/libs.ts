@@ -21,7 +21,7 @@ import type { CursorDirection, SortCriterion } from '@modules/DataFrame/types';
  * 対になるフレームを返す。
  *
  * @param frame - 対象フレーム
- * @return 対になるフレーム
+ * @returns 対になるフレーム
  */
 function getOtherFrame(frame: Frame): Frame {
   return frame === 'a' ? 'b' : 'a';
@@ -34,7 +34,7 @@ function getOtherFrame(frame: Frame): Frame {
  *
  * @param newCurDir - 新しいカレントディレクトリ
  * @param frame - 対象フレーム
- * @return 直前にいたディレクトリ名または null
+ * @returns 直前にいたディレクトリ名または null
  */
 function getPrevDirName(newCurDir: string, frame: Frame): null | string {
   const prevCurDir = readState($currentDir(frame));
@@ -60,7 +60,7 @@ function getPrevDirName(newCurDir: string, frame: Frame): null | string {
  *
  * @param totalEntries - エントリの総数
  * @param colCount - グリッドの列数
- * @return グリッドの総セル数
+ * @returns グリッドの総セル数
  */
 function calcTotalCells(totalEntries: number, colCount: number): number {
   const mod = totalEntries % colCount;
@@ -86,7 +86,7 @@ function calcTotalCells(totalEntries: number, colCount: number): number {
  * @param frame - 対象フレーム
  * @param delta - 移動量
  * @param direction - 移動方向
- * @return 新しいインデックス
+ * @returns 新しいインデックス
  */
 function calcGridIndex(
   frame: Frame,
@@ -153,7 +153,7 @@ function calcGridIndex(
  * @param frame - 対象フレーム
  * @param delta - 移動量
  * @param direction - 移動方向
- * @return 新しいインデックス
+ * @returns 新しいインデックス
  */
 function cycleGridIndex(
   frame: Frame,
@@ -189,7 +189,7 @@ function cycleGridIndex(
  * ソート基準の表示文字列を返す。
  *
  * @param sort - ソート基準
- * @return 表示文字列
+ * @returns 表示文字列
  */
 function getSortDisplay(sort: SortCriterion): string {
   return `${sort.field}:${sort.order}`;
@@ -199,7 +199,7 @@ function getSortDisplay(sort: SortCriterion): string {
  * WebSocket のレスポンスが汎用エラーかどうかを返す型ガード。
  *
  * @param resp - WebSocket のレスポンス
- * @return 汎用エラーかどうか
+ * @returns 汎用エラーかどうか
  */
 function isErrorResp(resp: WsResponse): resp is WsErrorResponse {
   return resp.status === 'ERROR';
@@ -210,7 +210,7 @@ function isErrorResp(resp: WsResponse): resp is WsErrorResponse {
  * リクエスト時の引数の間違いなどに起因する。
  *
  * @param resp - WebSocket のレスポンス
- * @return コマンドエラーかどうか
+ * @returns コマンドエラーかどうか
  */
 function isCommandErrorResp(resp: WsResponse): resp is WsCommandErrorResponse {
   return resp.status === 'COMMAND_ERROR';
@@ -242,7 +242,7 @@ function wsSend<R extends WsResponse>(
  *
  * @param resp - WebSocket のレスポンス
  * @param frame - 対象フレーム
- * @return エラーレスポンスかどうか
+ * @returns エラーレスポンスかどうか
  */
 function handleWsSendError(
   resp: WsResponse,

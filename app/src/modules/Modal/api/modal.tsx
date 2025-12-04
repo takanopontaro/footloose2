@@ -84,7 +84,7 @@ function clearListModalFilterQuery(): void {
  * PromptModal を表示する。
  *
  * @param defaultValue - テキストフィールドの初期値
- * @return ユーザー入力値 (キャンセル時は空文字) の Promise
+ * @returns ユーザー入力値 (キャンセル時は空文字) の Promise
  */
 function showPromptModal(defaultValue: string): Promise<string> {
   return new Promise((resolve) => {
@@ -139,7 +139,7 @@ function focusElementPromptModal(direction: Direction): void {
  * ConfirmModal を表示する。
  *
  * @param message - モーダルに表示する文章
- * @return ユーザー選択値 ('ok' または '') の Promise
+ * @returns ユーザー選択値 ('ok' または '') の Promise
  */
 function showConfirmModal(message: string): Promise<string> {
   return new Promise((resolve) => {

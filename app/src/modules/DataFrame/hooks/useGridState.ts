@@ -25,7 +25,7 @@ type ReturnValue = {
  *
  * @param frame - 対象フレーム
  * @param gridRef - グリッドの ref
- * @return グリッドの表示領域の状態
+ * @returns グリッドの表示領域の状態
  */
 export const useGridState = (
   frame: Frame,

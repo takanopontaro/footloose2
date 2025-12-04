@@ -13,7 +13,7 @@ import type { Entry, PreviewInfo } from '@modules/DataFrame/types';
  * @param entry - 対象エントリ
  * @param frame - 対象フレーム
  * @param className - プレビュー要素に付与するクラス名
- * @return プレビュー情報
+ * @returns プレビュー情報
  */
 export const usePreview = (
   entry: Entry | null,

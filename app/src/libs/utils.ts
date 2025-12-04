@@ -13,7 +13,7 @@ const { get: readState, set: writeState } = store;
  *
  * @param a - 比較対象のオブジェクト
  * @param b - 比較対象のオブジェクト
- * @return 同じか否か
+ * @returns 同じか否か
  */
 function shallowEqualObject(
   a: Record<string, unknown>,
@@ -40,7 +40,7 @@ function shallowEqualObject(
  *
  * @param a - 比較対象の配列
  * @param b - 比較対象の配列
- * @return 同じか否か
+ * @returns 同じか否か
  */
 function shallowEqualArray(a: unknown[], b: unknown[]): boolean {
   if (a === b) {
@@ -59,7 +59,7 @@ function shallowEqualArray(a: unknown[], b: unknown[]): boolean {
  *
  * @param container - 対象のコンテナ要素
  * @param direction - 移動方向
- * @return フォーカス可能な要素または null
+ * @returns フォーカス可能な要素または null
  */
 function getFocusableEl(
   container: HTMLElement,
@@ -103,7 +103,7 @@ function getFocusableEl(
  * そのプロパティが未設定の場合は空文字を返す。
  *
  * @param name - カスタムプロパティの名前
- * @return カスタムプロパティの値または空文字
+ * @returns カスタムプロパティの値または空文字
  */
 function getCssVariable(name: string): string {
   const root = document.documentElement;
@@ -117,7 +117,7 @@ function getCssVariable(name: string): string {
  * @param curIndex - 現在のインデックス
  * @param delta - 移動量
  * @param totalItems - アイテムの総数
- * @return 循環後のインデックス
+ * @returns 循環後のインデックス
  */
 function cycleIndex(
   curIndex: number,

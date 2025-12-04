@@ -23,7 +23,7 @@ import type { Frame } from '@modules/App/types';
  * ちなみに $activeEntryIndex は全エントリに対するインデックスである。
  *
  * @param frame - 対象フレーム
- * @return カレントエントリのインデックス
+ * @returns カレントエントリのインデックス
  */
 function getRenderedEntryIndex(frame: Frame): number {
   const activeEntryName = readState($activeEntryName(frame));

@@ -21,7 +21,7 @@ const sizeUnits = new Map([
  * 例： `1.5M` -> 1572864
  *
  * @param size - エントリの size
- * @return バイト数
+ * @returns バイト数
  */
 function sizeToBytes(size: string): number {
   if (size === '0') {
@@ -58,7 +58,7 @@ type DerivedEntries = Map<
  * @param b - エントリ B
  * @param field - 比較するフィールド
  * @param derivedEntries - 派生エントリ群
- * @return 比較結果
+ * @returns 比較結果
  */
 function compareFields(
   a: Entry,

@@ -35,7 +35,7 @@ type DirStats = {
  * エントリ一覧の統計情報を取得する。
  *
  * @param entries - エントリ一覧
- * @return 統計情報
+ * @returns 統計情報
  */
 function getDirStats(entries: Entry[]): DirStats {
   const stats: DirStats = { dirs: 0, files: 0, links: 0 };

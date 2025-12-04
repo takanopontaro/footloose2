@@ -11,7 +11,7 @@ import type { Frame } from '@modules/App/types';
  *
  * @param frame - 対象フレーム
  * @param initialDir - 初期ディレクトリ
- * @return カレントディレクトリ
+ * @returns カレントディレクトリ
  */
 export const useCurrentDir = (frame: Frame, initialDir: string): string => {
   const [currentDir, setCurrentDir] = useAtom($currentDir(frame));
