@@ -106,7 +106,7 @@ impl ExtractEntriesTask {
     ///
     /// # Returns
     /// スキップされた場合はそのパス、それ以外は空文字列
-    fn extract_entries<R: Read>(
+    fn extract_entry<R: Read>(
         &self,
         entry: &mut R,
         archive: &str,
@@ -172,7 +172,7 @@ impl ExtractEntriesTask {
             }
             let mut entry = zip.by_index(i)?;
             let res =
-                self.extract_entries(&mut entry, archive, &raw, dest, cwd)?;
+                self.extract_entry(&mut entry, archive, &raw, dest, cwd)?;
             if !res.is_empty() {
                 skipped.push(res);
             }
@@ -215,7 +215,7 @@ impl ExtractEntriesTask {
                 continue;
             }
             let res =
-                self.extract_entries(&mut entry, archive, &raw, dest, cwd)?;
+                self.extract_entry(&mut entry, archive, &raw, dest, cwd)?;
             if !res.is_empty() {
                 skipped.push(res);
             }
