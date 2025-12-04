@@ -172,8 +172,16 @@ impl ProgressTask {
             intv.tick().await;
 
             // stdout を読んで count を加算しつつ、定期的に進捗率を送信する。
+            // 確実に進捗率を送信するため `biased;` を指定する。
+            // これにより、ready なブロックが複数あった場合、
+            // 先に書かれている方が処理されるようになる (デフォルトはランダム)。
             loop {
                 tokio::select! {
+                    biased;
+                    _ = intv.tick() => {
+                        let num = ((count + 1) as f32 / total as f32) * 100.0;
+                        let _ = sender_.progress(&pid_, num as usize).await;
+                    }
                     res = stdout.read_until(b'\n', &mut buf) => {
                         buf.clear(); // 使わないのでクリアする。
                         count += 1;
@@ -194,10 +202,6 @@ impl ProgressTask {
                                 }
                             }
                         }
-                    }
-                    _ = intv.tick() => {
-                        let num = ((count + 1) as f32 / total as f32) * 100.0;
-                        let _ = sender_.progress(&pid_, num as usize).await;
                     }
                 }
             }
