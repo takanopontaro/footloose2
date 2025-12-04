@@ -184,6 +184,14 @@ impl ProgressTask {
                                 let _ = sender_
                                     .progress_error(&pid_, &err.into())
                                     .await;
+                                // プログラムによっては延々エラーを吐き続けることも
+                                // あり得るのでリミットを設ける。
+                                // - total 回以上処理する必要はない。
+                                // - total 算出に失敗している場合 (usize::MAX) は
+                                //   エラーが起きたらあきらめてさっさと抜ける。
+                                if count >= total || total == usize::MAX {
+                                    break;
+                                }
                             }
                         }
                     }
