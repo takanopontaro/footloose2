@@ -51,7 +51,7 @@ impl Command {
         if !jsonschema::is_valid(&schema, &instance) {
             bail!("");
         }
-        Ok(serde_json::from_str::<Self>(str)?)
+        Ok(serde_json::from_value(instance)?)
     }
 
     /// コマンドの JSON Schema を定義する。
