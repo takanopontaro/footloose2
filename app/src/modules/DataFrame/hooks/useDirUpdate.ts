@@ -99,7 +99,7 @@ export const useDirUpdate = (frame: Frame): void => {
         }
 
         // コールバック引数の set, get は即時反映なため、
-        // $filteredEntries には既に newRawEntries が反映されている。
+        // $filteredEntries にはすでに newRawEntries が反映されている。
         const filteredEntries = get($filteredEntries(frame));
         const filteredEntryNames = new Set(filteredEntries.map((e) => e.name));
         const selectedEntryNames = get($selectedEntryNames(frame));

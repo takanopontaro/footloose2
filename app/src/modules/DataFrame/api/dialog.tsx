@@ -138,7 +138,7 @@ function navigate(
       writeState($historyCopy(frame), copy);
 
       // 履歴のインデックスを調整する。
-      // 移動に成功する前提で、既に $historyIndex は更新されている (curIndex)。
+      // 移動に成功する前提で、すでに $historyIndex は更新されている (curIndex)。
       // しかし失敗して履歴が削除されたため、インデックスの調整が必要になる。
       // ひとつ前のインデックス (prevHistoryIndex) と curIndex を比較して、
       // 適切なインデックスを設定する。
