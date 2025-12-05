@@ -59,7 +59,8 @@
   },
   "scripts": {
     "build": "vite build && tsc -p tsconfig.app.dts.json && cp -r src/config.ts src/config dist",
-    "dev": "pnpm build && SERVER_PORT=3000 concurrently -k -n server,vite \"footloose2-server -p 3000 -b tmp/bookmark.json -s public/app.css -c src/config.ts -r dist\" \"vite\""
+    "dev": "pnpm build && SERVER_PORT=3000 concurrently -k -n vite,server \"vite\" \"cd ../server && cargo run -- -p 3000 -b ../app/tmp/bookmark.json -s ../app/public/app.css -c ../app/src/config.ts -r ../app/dist\"",
+    "dev:use-bin": "pnpm build && SERVER_PORT=3000 concurrently -k -n vite,server \"vite\" \"footloose2-server -p 3000 -b tmp/bookmark.json -s public/app.css -c src/config.ts -r dist\""
   },
   "type": "module"
 }
