@@ -413,6 +413,7 @@ const shortcuts: ShortcutsConfig = {
     'shift+ctrl+b': [
       {
         cmd: 'BookmarkCurrentDir',
+        modes: ['!virtual-dir'],
       },
     ],
     'plus': [
@@ -438,61 +439,73 @@ const shortcuts: ShortcutsConfig = {
     'shift+m': [
       {
         cmd: 'MoveEntries',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+d': [
       {
         cmd: 'RemoveEntries',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+r': [
       {
         cmd: 'RenameEntry',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+k': [
       {
         cmd: 'CreateDir',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+t': [
       {
         cmd: 'CreateFile',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+o': [
       {
         cmd: 'OpenWith',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+z': [
       {
         cmd: 'ZipEntries',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+u': [
       {
         cmd: 'UnzipArchives',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+ctrl+z': [
       {
         cmd: 'TarEntries',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+ctrl+u': [
       {
         cmd: 'UntarArchives',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+ctrl+meta+z': [
       {
         cmd: 'TgzEntries',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+ctrl+meta+u': [
       {
         cmd: 'UntgzArchives',
+        modes: ['!virtual-dir'],
       },
     ],
     'shift+0': [
