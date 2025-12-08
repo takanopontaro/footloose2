@@ -320,6 +320,12 @@ impl TaskBase for ExtractEntriesTask {
         let srcs = cmd.arg_as_path_array("sources", &cmd.cwd).unwrap();
         let dest = cmd.arg_as_path("destination", &cmd.cwd).unwrap();
 
+        // 展開先ディレクトリが存在しない場合はエラーを返す。
+        if !Path::new(&dest).is_dir() {
+            let err = VirtualDirError::Args;
+            return Ok(TaskResult::error(err.into()));
+        }
+
         // srcs を以下のように整形する。
         // ["/Users/xxxx/Desktop/archive.zip/rust/util/main.rs"]
         // -> ["/rust/util/main.rs"]
