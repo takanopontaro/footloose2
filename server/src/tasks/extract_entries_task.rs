@@ -320,7 +320,7 @@ impl TaskBase for ExtractEntriesTask {
         let srcs = cmd.arg_as_path_array("sources", &cmd.cwd).unwrap();
         let dest = cmd.arg_as_path("destination", &cmd.cwd).unwrap();
 
-        // 以下のように整形する。
+        // srcs を以下のように整形する。
         // ["/Users/xxxx/Desktop/archive.zip/rust/util/main.rs"]
         // -> ["/rust/util/main.rs"]
         let Some(srcs) = srcs
