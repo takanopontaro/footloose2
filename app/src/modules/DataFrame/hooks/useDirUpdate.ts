@@ -8,6 +8,7 @@ import {
   $filteredEntries,
   $rawEntries,
   $selectedEntryNames,
+  $sortedEntries,
 } from '@modules/DataFrame/state';
 
 import type { Frame, WsDirUpdateResponse } from '@modules/App/types';
@@ -17,28 +18,22 @@ import type { Entry } from '@modules/DataFrame/types';
  * カレントだったエントリが削除された場合の、新しいカレントエントリを返す。
  * 新カレントは、可能な限りひとつ前のエントリとする。
  * それも削除されていれば更にひとつ前…と繰り返し、無ければ `..` とする。
- * newRawEntries に対象エントリがあっても、
- * filter-out されている場合はカレントにはできないため、次の候補を探す。
+ * 存在していても filter-out されている場合はカレントにはできないため、次の候補を探す。
  *
- * @param oldRawEntries - 旧エントリ一覧
+ * @param oldSortedEntries - 旧エントリ一覧
  *   他の引数と同じように name 集合にしたいところだが、index を使いたいため配列で受け取る。
- * @param newRawEntryNames - 新エントリ一覧の name 集合
  * @param filteredEntryNames - filter-out 後のエントリ一覧の name 集合
  * @param prevActiveEntryName - 旧カレントエントリの name
  * @returns 新カレントエントリの name
  */
 function getFallbackActiveEntryName(
-  oldRawEntries: Entry[],
-  newRawEntryNames: Set<string>,
+  oldSortedEntries: Entry[],
   filteredEntryNames: Set<string>,
   prevActiveEntryName: string,
 ): string {
-  let index = oldRawEntries.findIndex((e) => e.name === prevActiveEntryName);
+  let index = oldSortedEntries.findIndex((e) => e.name === prevActiveEntryName);
   while (index > 0) {
-    const { name } = oldRawEntries[--index];
-    if (!newRawEntryNames.has(name)) {
-      continue;
-    }
+    const { name } = oldSortedEntries[--index];
     if (filteredEntryNames.has(name)) {
       return name;
     }
@@ -84,16 +79,28 @@ export const useDirUpdate = (frame: Frame): void => {
         }
 
         const activeEntryName = get($activeEntryName(frame));
-        const oldRawEntries = get($rawEntries(frame));
-        const oldRawEntryNames = new Set(oldRawEntries.map((e) => e.name));
-        const newRawEntryNames = new Set(newRawEntries.map((e) => e.name));
 
+        // 更新前のエントリ一覧と name 集合を取得する。
+        const oldSortedEntries = get($sortedEntries(frame));
+        const oldSortedEntryNames = new Set(
+          oldSortedEntries.map((e) => e.name),
+        );
+
+        // エントリ一覧を更新する。
         set($rawEntries(frame), newRawEntries);
+
+        // 更新後のエントリ一覧と name 集合を取得する。
+        // コールバック引数の set, get は即時反映なため、
+        // $sortedEntries にはすでに newRawEntries が反映されている。
+        const newSortedEntries = get($sortedEntries(frame));
+        const newSortedEntryNames = new Set(
+          newSortedEntries.map((e) => e.name),
+        );
 
         // カレントだったエントリが削除されたか否か。
         const isDeleted =
-          oldRawEntryNames.has(activeEntryName) &&
-          !newRawEntryNames.has(activeEntryName);
+          oldSortedEntryNames.has(activeEntryName) &&
+          !newSortedEntryNames.has(activeEntryName);
 
         if (!isDeleted) {
           return;
@@ -115,8 +122,7 @@ export const useDirUpdate = (frame: Frame): void => {
 
         // カレントだったエントリが削除された場合の、新しいカレントエントリ。
         const entryName = getFallbackActiveEntryName(
-          oldRawEntries,
-          newRawEntryNames,
+          oldSortedEntries,
           filteredEntryNames,
           activeEntryName,
         );
