@@ -21,6 +21,7 @@ import type { Entry } from '@modules/DataFrame/types';
  * filter-out されている場合はカレントにはできないため、次の候補を探す。
  *
  * @param oldRawEntries - 旧エントリ一覧
+ *   他の引数と同じように name 集合にしたいところだが、index を使いたいため配列で受け取る。
  * @param newRawEntryNames - 新エントリ一覧の name 集合
  * @param filteredEntryNames - filter-out 後のエントリ一覧の name 集合
  * @param prevActiveEntryName - 旧カレントエントリの name
