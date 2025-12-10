@@ -1,5 +1,5 @@
 import { readState } from '@libs/utils';
-import { $activeFrame } from '@modules/App/state';
+import { $activeFrame, $config } from '@modules/App/state';
 import { getTargetEntryNames } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
@@ -34,6 +34,8 @@ async function runProgressTask(
 ): Promise<void> {
   const targetNames = getTargetEntryNames(frame);
   if (targetNames.length === 0) {
+    const { messages } = readState($config);
+    writeLog(`${frame}: ${messages[0]}`, 'info');
     return;
   }
 
