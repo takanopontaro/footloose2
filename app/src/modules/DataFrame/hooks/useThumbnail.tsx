@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai';
 import mime from 'mime';
 import { useMemo } from 'react';
+import { FallbackImage } from '@modules/DataFrame/components';
 import { $currentDir } from '@modules/DataFrame/state';
 
 import type { ReactNode } from 'react';
@@ -32,7 +33,7 @@ export const useThumbnail = (
     const src = `/preview${curDir}/${entry.name}`;
     const type = mime.getType(src);
     if (type !== null && type.startsWith('image/')) {
-      return <img alt="" className={className} src={src} />;
+      return <FallbackImage className={className} src={src} />;
     }
     return null;
   }, [className, curDir, entry]);
