@@ -327,7 +327,11 @@ const commands: CommandsConfig = [
   {
     name: 'ZipEntries',
     async action(api, combo) {
-      const input = await api.showPromptModal('archive.zip');
+      const names = api.getTargetEntryNames();
+      if (names.length === 0) {
+        return;
+      }
+      const input = await api.showPromptModal(`${names[0]}.zip`);
       if (input === '') {
         return;
       }
@@ -355,7 +359,11 @@ const commands: CommandsConfig = [
   {
     name: 'TarEntries',
     async action(api, combo) {
-      const input = await api.showPromptModal('archive.tar');
+      const names = api.getTargetEntryNames();
+      if (names.length === 0) {
+        return;
+      }
+      const input = await api.showPromptModal(`${names[0]}.tar`);
       if (input === '') {
         return;
       }
@@ -383,7 +391,11 @@ const commands: CommandsConfig = [
   {
     name: 'TgzEntries',
     async action(api, combo) {
-      const input = await api.showPromptModal('archive.tgz');
+      const names = api.getTargetEntryNames();
+      if (names.length === 0) {
+        return;
+      }
+      const input = await api.showPromptModal(`${names[0]}.tgz`);
       if (input === '') {
         return;
       }
