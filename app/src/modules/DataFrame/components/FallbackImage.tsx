@@ -26,8 +26,11 @@ type Props = {
  * ギャラリーモードで表示するサムネイル画像コンポーネント。
  * 読込失敗時はフォールバックとして 1px 透過 PNG を表示する。
  * (virtual-dir モード中に gallery モードにした時など)
+ * フォールバック時に一瞬プレースホルダが見えるのを防ぐため、
+ * visibility を制御する。
  */
 const FallbackImageComponent: FC<Props> = ({ className, src }) => {
+  const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
 
   return (
@@ -35,7 +38,9 @@ const FallbackImageComponent: FC<Props> = ({ className, src }) => {
       alt=""
       className={className}
       src={error ? PNG1PX : src}
+      style={{ visibility: visible ? 'visible' : 'hidden' }}
       onError={() => setError(true)}
+      onLoad={() => setVisible(true)}
     />
   );
 };
