@@ -23,8 +23,7 @@ function getActiveEntryName(
 ): string {
   const name = readState($activeEntryName(frame));
   const entries = readState($filteredEntries(frame));
-  const entryNames = new Set(entries.map((e) => e.name));
-  if (name === '' || !entryNames.has(name)) {
+  if (name === '' || !entries.some((e) => e.name === name)) {
     return '';
   }
   if (!allowParent && name === '..') {

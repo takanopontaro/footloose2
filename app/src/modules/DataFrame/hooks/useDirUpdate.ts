@@ -80,27 +80,21 @@ export const useDirUpdate = (frame: Frame): void => {
 
         const activeEntryName = get($activeEntryName(frame));
 
-        // 更新前のエントリ一覧と name 集合を取得する。
+        // 更新前のエントリ一覧を取得する。
         const oldSortedEntries = get($sortedEntries(frame));
-        const oldSortedEntryNames = new Set(
-          oldSortedEntries.map((e) => e.name),
-        );
 
         // エントリ一覧を更新する。
         set($rawEntries(frame), newRawEntries);
 
-        // 更新後のエントリ一覧と name 集合を取得する。
+        // 更新後のエントリ一覧を取得する。
         // コールバック引数の set, get は即時反映なため、
         // $sortedEntries にはすでに newRawEntries が反映されている。
         const newSortedEntries = get($sortedEntries(frame));
-        const newSortedEntryNames = new Set(
-          newSortedEntries.map((e) => e.name),
-        );
 
         // カレントだったエントリが削除されたか否か。
         const isDeleted =
-          oldSortedEntryNames.has(activeEntryName) &&
-          !newSortedEntryNames.has(activeEntryName);
+          oldSortedEntries.some((e) => e.name === activeEntryName) &&
+          !newSortedEntries.some((e) => e.name === activeEntryName);
 
         if (!isDeleted) {
           return;
