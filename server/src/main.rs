@@ -26,6 +26,7 @@ use base64::{engine::general_purpose, Engine as _};
 use clap::Parser;
 use futures::stream::StreamExt as _;
 use helpers::logo_standard;
+use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
 use misc::{Command, FrameSet, Sender};
 use models::TaskArg;
@@ -360,6 +361,7 @@ async fn process_file(path: &Path) -> Result<Response<Body>> {
 async fn process_text(path: &Path) -> Result<Response<Body>> {
     let bytes = tokio::fs::read(path).await?;
     let text = decode_string(&bytes);
+    let text = encode_quoted_attribute(&text);
     let html = HTML_TEMPLATE.replace("<!---->", &text);
     Ok(ok_200(html))
 }
