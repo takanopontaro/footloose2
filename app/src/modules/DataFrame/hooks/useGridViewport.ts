@@ -1,5 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useLayoutEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { debounce } from '@libs/utils';
 import {
   $activeEntryIndex,
   $gridColumnCount,
@@ -38,8 +39,8 @@ export const useGridViewport = (
   const activeEntryIndexRef = useRef(activeEntryIndex);
   activeEntryIndexRef.current = activeEntryIndex;
 
-  // $maxVisibleRowCount の更新を行う。
-  useLayoutEffect(() => {
+  // グリッドを考慮して $maxVisibleRowCount を設定する。
+  const updateMaxVisibleRowCount = useCallback(() => {
     if (!gridRef.current) {
       return;
     }
@@ -50,6 +51,20 @@ export const useGridViewport = (
     const maxRowCount = Math.ceil(offsetHeight / rowH);
     setMaxRowCount(maxRowCount);
   }, [gridColumnCount, gridRef, isGalleryMode, rowHeight, setMaxRowCount]);
+
+  // $maxVisibleRowCount の更新を行う。
+  useLayoutEffect(() => {
+    updateMaxVisibleRowCount();
+  }, [updateMaxVisibleRowCount]);
+
+  // ウィンドウのリサイズ時、$maxVisibleRowCount を更新する。
+  useEffect(() => {
+    const fn = debounce(updateMaxVisibleRowCount, 200);
+    window.addEventListener('resize', fn);
+    return () => {
+      window.removeEventListener('resize', fn);
+    };
+  }, [updateMaxVisibleRowCount]);
 
   // $firstVisibleEntryIndex の更新を行う。
   // 列数が変わった時 (gallery モード切替時) や
