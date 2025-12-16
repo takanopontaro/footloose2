@@ -127,6 +127,27 @@ function cycleIndex(
   return (((curIndex + delta) % totalItems) + totalItems) % totalItems;
 }
 
+/**
+ * 指定された関数を debounce する。
+ *
+ * @param fn - 対象の関数
+ * @param delay - 実行までの待ち時間 (ミリ秒)
+ */
+function debounce<T extends (...args: unknown[]) => unknown>(
+  fn: T,
+  delay: number,
+) {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
 export {
   readState,
   writeState,
@@ -135,4 +156,5 @@ export {
   getFocusableEl,
   getCssVariable,
   cycleIndex,
+  debounce,
 };
