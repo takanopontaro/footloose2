@@ -62,6 +62,7 @@ export const useGridViewport = (
     const fn = debounce(updateMaxVisibleRowCount, 200);
     window.addEventListener('resize', fn);
     return () => {
+      fn.cancel();
       window.removeEventListener('resize', fn);
     };
   }, [updateMaxVisibleRowCount]);
