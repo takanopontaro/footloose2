@@ -3,7 +3,19 @@
   --cell-padding: 1px;
   --cell-horizontal-spacing: 2px;
   --row-height: 15px;
-  --grid-column-count: 4;
+  --grid-column-count: 5;
+}
+
+@media (max-width: 780px) {
+  :root {
+    --grid-column-count: 3;
+  }
+}
+
+@media (min-width: 781px) and (max-width: 1240px) {
+  :root {
+    --grid-column-count: 4;
+  }
 }
 
 @media (prefers-color-scheme: light) {
