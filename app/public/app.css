@@ -1,8 +1,7 @@
 :root {
-  --frame-focus-width: 1px;
-  --cell-padding: 1px;
-  --cell-horizontal-spacing: 2px;
+  /* リスト表示時の一行の高さ */
   --row-height: 15px;
+  /* gallery モード時のグリッドの列数 */
   --grid-column-count: 5;
 }
 
@@ -20,14 +19,24 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background-color: #fff;
+    --background-color: #ddd;
     --text-color: #213547;
-    --frame-border-color: #ccc;
+    --text-shadow-color: #fff;
+    --frame-border-color: #000;
     --frame-focus-color: #f00;
-    --row-focus-color: rgb(255 0 0 / 0.3);
-    --row-focus-inactive-color: rgb(255 255 255 / 0.2);
-    --row-selected-color: rgb(0 255 0 / 0.2);
-    --row-blended-color: rgb(255 255 0 / 0.2);
+    --row-focus-color: rgb(255 0 0 / 0.2);
+    --row-focus-inactive-color: rgb(0 0 0 / 0.1);
+    --row-selected-color: rgb(0 255 0 / 0.3);
+    --row-blended-color: rgb(255 255 0 / 0.3);
+    --dir-color: #ff8c00;
+    --symlink-color: #00bfff;
+    --exec-color: #32cd32;
+    --input-text-color: #213547;
+    --input-background-color: #ccc;
+    --input-focus-color: #bbb;
+    --btn-text-color: #213547;
+    --btn-background-color: #ccc;
+    --btn-focus-color: #bbb;
     --log-info-color: #4caf50;
     --log-warn-color: #ffc107;
     --log-error-color: #ff4c4c;
@@ -42,12 +51,22 @@
   :root {
     --background-color: #242424;
     --text-color: #fff;
+    --text-shadow-color: #000;
     --frame-border-color: #666;
     --frame-focus-color: #ff0;
     --row-focus-color: rgb(255 0 0 / 0.3);
     --row-focus-inactive-color: rgb(255 255 255 / 0.2);
     --row-selected-color: rgb(0 255 0 / 0.2);
     --row-blended-color: rgb(255 255 0 / 0.2);
+    --dir-color: #ff8c00;
+    --symlink-color: #00bfff;
+    --exec-color: #32cd32;
+    --input-text-color: #fff;
+    --input-background-color: #333;
+    --input-focus-color: #555;
+    --btn-text-color: #fff;
+    --btn-background-color: #333;
+    --btn-focus-color: #555;
     --log-info-color: #4caf50;
     --log-warn-color: #ffc107;
     --log-error-color: #ff4c4c;
@@ -98,7 +117,7 @@
 .logFrame {
   position: relative;
   min-height: 0;
-  border: transparent solid var(--frame-focus-width);
+  border: transparent solid 1px;
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: monospace;
@@ -121,7 +140,7 @@
 }
 
 .logFrame_log {
-  padding: var(--cell-padding);
+  padding: 1px;
   word-break: break-all;
 
   &[data-level='none'] {
@@ -206,6 +225,7 @@
   border: 0;
   appearance: none;
   background: none;
+  color: var(--text-color);
   cursor: pointer;
 
   &::before,
@@ -232,7 +252,7 @@
 .dataFrame {
   position: relative;
   display: grid;
-  border: transparent solid var(--frame-focus-width);
+  border: transparent solid 1px;
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: monospace;
@@ -289,20 +309,20 @@
   display: grid;
   width: 100%;
   height: var(--row-height);
-  gap: 0 var(--cell-horizontal-spacing);
+  gap: 0 2px;
   grid-template-columns: 86px 1fr 54px 141px;
   grid-template-rows: 1fr;
 
   &[data-perm^='d'] {
-    color: #ff8c00;
+    color: var(--dir-color);
   }
 
   &[data-perm^='l'] {
-    color: #00bfff;
+    color: var(--symlink-color);
   }
 
   &[data-perm^='-'][data-perm*='x'] {
-    color: #32cd32;
+    color: var(--exec-color);
   }
 
   &[aria-current='true'] {
@@ -324,7 +344,7 @@
 
 .entryGrid_td {
   min-width: 0; /* ellipsis を機能させるために必要 */
-  padding: var(--cell-padding);
+  padding: 1px;
 
   &[data-column='thumbnail'] {
     display: none;
@@ -431,7 +451,7 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         overflow-wrap: anywhere;
-        text-shadow: 1px 1px 2px #000;
+        text-shadow: 1px 1px 2px var(--text-shadow-color);
         white-space: normal;
         word-break: break-all;
       }
@@ -455,15 +475,16 @@
 .entryFilter_input {
   display: block;
   width: 100%;
-  padding: var(--cell-padding);
+  padding: 1px;
   border: 0;
   appearance: none;
-  background: #333;
+  background: var(--input-background-color);
+  color: var(--input-text-color);
   font-size: 1.2rem;
 
   &:focus-visible {
     border-radius: 0;
-    background-color: #555;
+    background-color: var(--input-focus-color);
     outline: none;
   }
 }
@@ -472,7 +493,7 @@
   overflow: hidden;
   height: 1em;
   box-sizing: content-box;
-  padding: var(--cell-padding);
+  padding: 1px;
   grid-row: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -482,7 +503,7 @@
   display: flex;
   overflow: hidden;
   align-items: center;
-  padding: var(--cell-padding);
+  padding: 1px;
   gap: 10px;
   grid-row: 4;
   white-space: nowrap;
@@ -540,15 +561,15 @@
   display: none;
 
   &[data-perm^='d'] {
-    color: #ff8c00;
+    color: var(--dir-color);
   }
 
   &[data-perm^='l'] {
-    color: #00bfff;
+    color: var(--symlink-color);
   }
 
   &[data-perm^='-'][data-perm*='x'] {
-    color: #32cd32;
+    color: var(--exec-color);
   }
 
   .dataFrame-active[data-mode~='preview'] & {
@@ -652,15 +673,16 @@
 .dialog_input {
   display: block;
   width: 100%;
-  padding: var(--cell-padding);
+  padding: 1px;
   border: 0;
   appearance: none;
-  background: #333;
+  background: var(--input-background-color);
+  color: var(--input-text-color);
   font-size: 1.2rem;
 
   &:focus-visible {
     border-radius: 0;
-    background-color: #555;
+    background-color: var(--input-focus-color);
     outline: none;
   }
 }
@@ -680,6 +702,7 @@
   border: 0;
   appearance: none;
   background: none;
+  color: var(--text-color);
   text-align: left;
 
   &[aria-current='true'] {
@@ -698,15 +721,16 @@
 .dialog_promptInput {
   display: block;
   width: 100%;
-  padding: var(--cell-padding);
+  padding: 1px;
   border: 0;
   appearance: none;
-  background: #333;
+  background: var(--input-background-color);
+  color: var(--input-text-color);
   font-size: 1.2rem;
 
   &:focus-visible {
     border-radius: 0;
-    background-color: #555;
+    background-color: var(--input-focus-color);
     outline: none;
   }
 }
@@ -723,12 +747,13 @@
   padding: 5px 10px;
   border: 0;
   appearance: none;
-  background: #333;
+  background: var(--btn-background-color);
+  color: var(--btn-text-color);
   font-size: 1.2rem;
 
   &:focus-visible {
     border-radius: 0;
-    background-color: #555;
+    background-color: var(--btn-focus-color);
     outline: none;
   }
 }
@@ -761,12 +786,13 @@
   padding: 5px 10px;
   border: 0;
   appearance: none;
-  background: #333;
+  background: var(--btn-background-color);
+  color: var(--btn-text-color);
   font-size: 1.2rem;
 
   &:focus-visible {
     border-radius: 0;
-    background-color: #555;
+    background-color: var(--btn-focus-color);
     outline: none;
   }
 }
@@ -779,7 +805,7 @@
   content: 'OK';
 }
 
-/* .previewWindow: class on server-generated iframe HTML (not React) */
+/* サーバーから返されるプレビュー用 HTML に付いているクラス */
 .previewWindow {
   height: 100%;
   color-scheme: light dark;
@@ -794,10 +820,6 @@
 }
 
 .previewWindow_main {
-  /* overflow: auto;
-  height: 100%;
-  padding: 0;
-  margin: 0; */
   font-family: monospace;
   font-size: 1.3rem;
   line-height: 1.3;
