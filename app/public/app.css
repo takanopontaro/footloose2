@@ -1,8 +1,84 @@
 :root {
   /* リスト表示時の一行の高さ */
   --row-height: 15px;
+
   /* gallery モード時のグリッドの列数 */
   --grid-column-count: 5;
+
+  /* 背景色 */
+  --background-color: #242424;
+
+  /* 文字色 */
+  --text-color: #fff;
+
+  /* 文字シャドウ (gallery モード時のエントリ名に使用される) */
+  --text-shadow-color: #000;
+
+  /* フレームの枠線 */
+  --frame-border-color: #666;
+
+  /* カレントフレームの枠線 */
+  --frame-focus-color: #ff0;
+
+  /* カレントエントリの背景色 */
+  --row-focus-color: rgb(255 0 0 / 0.3);
+
+  /* もう一方のフレームのカレントエントリ背景色 */
+  --row-focus-inactive-color: rgb(255 255 255 / 0.2);
+
+  /* 選択済みエントリの背景色 */
+  --row-selected-color: rgb(0 255 0 / 0.2);
+
+  /* 選択済みエントリがカレントになった時の背景色 */
+  --row-blended-color: rgb(255 255 0 / 0.2);
+
+  /* ディレクトリ */
+  --dir-color: #ff8c00;
+
+  /* シンボリックリンク */
+  --symlink-color: #00bfff;
+
+  /* 実行可能エントリ */
+  --exec-color: #32cd32;
+
+  /* テキストフィールドの文字色 */
+  --input-text-color: #fff;
+
+  /* テキストフィールドの背景色 */
+  --input-background-color: #333;
+
+  /* フォーカスのあるテキストフィールドの背景色 */
+  --input-focus-color: #555;
+
+  /* ボタンの文字色 */
+  --btn-text-color: #fff;
+
+  /* ボタンの背景色 */
+  --btn-background-color: #333;
+
+  /* フォーカスのあるボタンの背景色 */
+  --btn-focus-color: #555;
+
+  /* ログレベル `info` */
+  --log-info-color: #4caf50;
+
+  /* ログレベル `warn` */
+  --log-warn-color: #ffc107;
+
+  /* ログレベル `error` */
+  --log-error-color: #ff4c4c;
+
+  /* プログレスバーの背景色 */
+  --progress-track-color: #999;
+
+  /* プログレスバーの色 (進行中) */
+  --progress-bar-progress-color: #ffc107;
+
+  /* プログレスバーの色 (完了) */
+  --progress-bar-end-color: #4caf50;
+
+  /* プログレスバーの色 (エラー) */
+  --progress-bar-error-color: #ff4c4c;
 }
 
 @media (max-width: 780px) {
@@ -14,66 +90,6 @@
 @media (min-width: 781px) and (max-width: 1240px) {
   :root {
     --grid-column-count: 4;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background-color: #ddd;
-    --text-color: #213547;
-    --text-shadow-color: #fff;
-    --frame-border-color: #000;
-    --frame-focus-color: #f00;
-    --row-focus-color: rgb(255 0 0 / 0.2);
-    --row-focus-inactive-color: rgb(0 0 0 / 0.1);
-    --row-selected-color: rgb(0 255 0 / 0.3);
-    --row-blended-color: rgb(255 255 0 / 0.3);
-    --dir-color: #ff8c00;
-    --symlink-color: #00bfff;
-    --exec-color: #32cd32;
-    --input-text-color: #213547;
-    --input-background-color: #ccc;
-    --input-focus-color: #bbb;
-    --btn-text-color: #213547;
-    --btn-background-color: #ccc;
-    --btn-focus-color: #bbb;
-    --log-info-color: #4caf50;
-    --log-warn-color: #ffc107;
-    --log-error-color: #ff4c4c;
-    --progress-track-color: #999;
-    --progress-bar-progress-color: #ffc107;
-    --progress-bar-end-color: #4caf50;
-    --progress-bar-error-color: #ff4c4c;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-color: #242424;
-    --text-color: #fff;
-    --text-shadow-color: #000;
-    --frame-border-color: #666;
-    --frame-focus-color: #ff0;
-    --row-focus-color: rgb(255 0 0 / 0.3);
-    --row-focus-inactive-color: rgb(255 255 255 / 0.2);
-    --row-selected-color: rgb(0 255 0 / 0.2);
-    --row-blended-color: rgb(255 255 0 / 0.2);
-    --dir-color: #ff8c00;
-    --symlink-color: #00bfff;
-    --exec-color: #32cd32;
-    --input-text-color: #fff;
-    --input-background-color: #333;
-    --input-focus-color: #555;
-    --btn-text-color: #fff;
-    --btn-background-color: #333;
-    --btn-focus-color: #555;
-    --log-info-color: #4caf50;
-    --log-warn-color: #ffc107;
-    --log-error-color: #ff4c4c;
-    --progress-track-color: #999;
-    --progress-bar-progress-color: #ffc107;
-    --progress-bar-end-color: #4caf50;
-    --progress-bar-error-color: #ff4c4c;
   }
 }
 
@@ -105,6 +121,7 @@
   height: 100%;
 }
 
+/* アプリケーション全体 */
 .app {
   display: grid;
   width: 100%;
@@ -113,6 +130,8 @@
   grid-template-columns: 1fr 1px 1fr;
   grid-template-rows: 80% 1px auto;
 }
+
+/* ログフレーム */
 
 .logFrame {
   position: relative;
@@ -163,6 +182,8 @@
     /*  */
   }
 }
+
+/* ログフレームに表示されるプログレスバー */
 
 .progressTaskLog {
   display: flex;
@@ -249,6 +270,8 @@
   }
 }
 
+/* エントリ一覧が表示されるフレーム */
+
 .dataFrame {
   position: relative;
   display: grid;
@@ -276,6 +299,8 @@
     outline: none;
   }
 }
+
+/* エントリ一覧 */
 
 .entryGrid {
   overflow: hidden;
@@ -360,6 +385,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* gallery モード */
 
 .dataFrame[data-mode~='gallery'] {
   .entryGrid_tbody {
@@ -468,6 +495,8 @@
   }
 }
 
+/* エントリフィルタ */
+
 .entryFilter {
   grid-row: 3;
 }
@@ -489,6 +518,8 @@
   }
 }
 
+/* カレントディレクトリ表示部 */
+
 .curDir {
   overflow: hidden;
   height: 1em;
@@ -498,6 +529,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ディレクトリ情報表示部 */
 
 .dirInfo {
   display: flex;
@@ -556,6 +589,8 @@
 .dirInfo_sort:empty {
   display: none;
 }
+
+/* プレビューエリア */
 
 .preview {
   display: none;
@@ -637,6 +672,8 @@
   }
 }
 
+/* モーダルダイアログ */
+
 .dialog {
   max-width: 95%;
   max-height: 95%;
@@ -687,6 +724,8 @@
   }
 }
 
+/* 選択モーダル */
+
 .dialog_list {
   margin-top: 5px;
 
@@ -713,6 +752,8 @@
     }
   }
 }
+
+/* 入力モーダル */
 
 .dialog_prompt {
   /*  */
@@ -766,6 +807,8 @@
   content: 'OK';
 }
 
+/* 確認モーダル */
+
 .dialog_confirm {
   /*  */
 }
@@ -805,7 +848,8 @@
   content: 'OK';
 }
 
-/* サーバーから返されるプレビュー用 HTML に付いているクラス */
+/* サーバーから返されるプレビュー用 HTML */
+
 .previewWindow {
   height: 100%;
   color-scheme: light dark;
