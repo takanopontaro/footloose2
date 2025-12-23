@@ -97,6 +97,7 @@ impl ChangeVirtualDirTask {
             size: ls_style_size(0),
             time: "--/--/-- --:--:--".to_owned(),
             link: String::new(),
+            is_virtual: true,
         }
     }
 
@@ -115,7 +116,7 @@ impl ChangeVirtualDirTask {
         cwd: &str,
         filter: &Option<Regex>,
     ) -> Result<Vec<Entry>> {
-        let mut parent_ent = parent_entry(archive, &self.time_style)?;
+        let mut parent_ent = parent_entry(archive, &self.time_style, true)?;
         let mut cwd = cwd.to_owned();
         if !cwd.is_empty() {
             // 以下のように整形する。

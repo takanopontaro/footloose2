@@ -58,6 +58,7 @@ impl Ls {
             time: "--/--/-- --:--:--".to_owned(),
             name: self.to_nfc_string(Path::new(path)),
             link: "".to_owned(),
+            is_virtual: false,
         }
     }
 
@@ -103,7 +104,7 @@ impl Ls {
     /// * `path` - ディレクトリのパス
     pub fn entries(&self, path: &str) -> Result<Vec<Entry>> {
         let mut res = vec![];
-        let ent = parent_entry(path, &self.time_style)?;
+        let ent = parent_entry(path, &self.time_style, false)?;
         res.push(ent);
         let mut entries: Vec<_> = fs::read_dir(path)?.flatten().collect();
         entries.sort_by_key(|e| e.file_name());

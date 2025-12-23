@@ -43,6 +43,7 @@ pub trait ArchiveEntry {
             size: ls_style_size(self.size()),
             time: self.time(),
             link: String::new(),
+            is_virtual: true,
         }
     }
 

@@ -119,10 +119,15 @@ pub fn perm_string_from_meta(meta: &Metadata) -> String {
 /// # Arguments
 /// * `path` - 対象エントリのパス
 /// * `time_style` - 日時のフォーマット文字列
+/// * `is_virtual` - 仮想ディレクトリ内のエントリか否か
 ///
 /// # Returns
 /// 親ディレクトリを表すエントリ
-pub fn parent_entry(path: &str, time_style: &str) -> Result<Entry> {
+pub fn parent_entry(
+    path: &str,
+    time_style: &str,
+    is_virtual: bool,
+) -> Result<Entry> {
     // 親のパスを取得する。自身がルートディレクトリの場合、親はルート自身となる。
     let p = Path::new(path).parent().unwrap_or_else(|| Path::new("/"));
     let meta = fs::metadata(p)?;
@@ -133,6 +138,7 @@ pub fn parent_entry(path: &str, time_style: &str) -> Result<Entry> {
         time: dt.format(time_style).to_string(),
         name: "..".to_owned(),
         link: "".to_owned(),
+        is_virtual,
     };
     Ok(ent)
 }
@@ -399,15 +405,15 @@ mod tests {
         let path = setup_resources("").await?;
         let time_style = "%Y/%m/%d %H:%M:%S";
         let p = format!("{path}/test1/test1.txt");
-        let ent = parent_entry(&p, time_style).unwrap();
+        let ent = parent_entry(&p, time_style, false).unwrap();
         assert_eq!(ent.perm, "drwxrw-rw-");
         assert_eq!(ent.name, "..");
         let p = format!("{path}/test2/test2.txt");
-        let ent = parent_entry(&p, time_style).unwrap();
+        let ent = parent_entry(&p, time_style, false).unwrap();
         assert_eq!(ent.perm, "drwxrwxrwx");
         assert_eq!(ent.name, "..");
         let p = "/".to_owned();
-        let ent = parent_entry(&p, time_style).unwrap();
+        let ent = parent_entry(&p, time_style, false).unwrap();
         assert_eq!(ent.name, "..");
         teardown_resources(&path).await?;
         Ok(())

@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 /// * `name` - エントリ名
 /// * `link` - シンボリックリンクの実体パス
 ///   リンクでない場合は空文字列。
+/// * `is_virtual` - 仮想ディレクトリ内のエントリか否か
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Entry {
     pub perm: String,
@@ -16,4 +17,5 @@ pub struct Entry {
     pub time: String,
     pub name: String,
     pub link: String,
+    pub is_virtual: bool,
 }
