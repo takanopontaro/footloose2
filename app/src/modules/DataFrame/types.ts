@@ -5,6 +5,10 @@ import type { ReactNode, RefObject } from 'react';
  */
 export type Entry = {
   /**
+   * 仮想ディレクトリ内のエントリか否か。
+   */
+  is_virtual: boolean;
+  /**
    * シンボリックリンクの実体パス。
    * 種別を表す接頭辞とパスが結合された文字列。
    * 接頭辞は、SymlinkInfo 型の type プロパティに対応している。
