@@ -1,7 +1,9 @@
 import { readState } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
+import { EntryModel } from '@modules/DataFrame/models';
 import {
   $activeEntryName,
+  $currentDir,
   $filteredEntries,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
@@ -33,6 +35,32 @@ function getActiveEntryName(
 }
 
 /**
+ * カレントエントリを返す。
+ * filter-out されている場合は null を返す。
+ *
+ * @param frame - 対象フレーム
+ * @param allowParent - `..` を含むか否か
+ *   false の時は `..` がカレントエントリであっても null を返す。
+ * @returns カレントエントリまたは null
+ */
+function getActiveEntry(
+  frame = readState($activeFrame),
+  allowParent = false,
+): EntryModel | null {
+  const name = getActiveEntryName(frame, allowParent);
+  if (!name) {
+    return null;
+  }
+  const entries = readState($filteredEntries(frame));
+  const entry = entries.find((e) => e.name === name);
+  if (!entry) {
+    throw new Error('unreachable');
+  }
+  const curDir = readState($currentDir(frame));
+  return new EntryModel(entry, curDir);
+}
+
+/**
  * 選択行の name 配列を返す (`..` を含む)。
  * 未選択ならカレントエントリの name を返す。
  * カレントエントリが filter-out されている場合は空文字を返す。
@@ -53,6 +81,33 @@ function getTargetEntryNames(
   }
   const name = getActiveEntryName(frame, allowParent);
   return name === '' ? [] : [name];
+}
+
+/**
+ * 選択行のエントリ配列を返す (`..` を含む)。
+ * 未選択ならカレントエントリを返す。
+ * カレントエントリが filter-out されている場合は空配列を返す。
+ *
+ * @param frame - 対象フレーム
+ * @param allowParent - `..` を含むか否か
+ *   false の時は `..` がカレントエントリであっても空配列を返す。
+ *   選択行が無い場合のみ有効。
+ * @returns 選択行のエントリ配列または空配列
+ */
+function getTargetEntries(
+  frame = readState($activeFrame),
+  allowParent = false,
+): EntryModel[] {
+  const targetNames = getTargetEntryNames(frame, allowParent);
+  if (targetNames.length === 0) {
+    return [];
+  }
+  const names = new Set(targetNames); // 高速化のため Set に変換する。
+  const curDir = readState($currentDir(frame));
+  const entries = readState($filteredEntries(frame));
+  return entries
+    .filter((e) => names.has(e.name))
+    .map((entry) => new EntryModel(entry, curDir));
 }
 
 /**
@@ -131,7 +186,9 @@ function getSymlinkInfo(
 
 export {
   getActiveEntryName,
+  getActiveEntry,
   getTargetEntryNames,
+  getTargetEntries,
   isDir,
   isFile,
   isSymlink,
