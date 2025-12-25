@@ -2,6 +2,20 @@ import type { ReactNode, RefObject } from 'react';
 import type { EntryModel } from '@modules/DataFrame/models';
 
 /**
+ * 各フレームのカレントディレクトリを表すオブジェクト。
+ */
+export type CurrentDir = {
+  /**
+   * 自身が仮想ディレクトリか否か。
+   */
+  is_virtual: boolean;
+  /**
+   * 自身のパス。
+   */
+  path: string;
+};
+
+/**
  * エントリ。
  */
 export type Entry = {
