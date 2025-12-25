@@ -172,13 +172,13 @@ export type ProgressTaskArgsGenerator = (
    */
   targets: EntryModel[],
   /**
-   * ソースディレクトリのパス。
+   * ソースディレクトリ。
    */
-  srcDir: string,
+  srcDir: CurrentDir,
   /**
-   * 出力先ディレクトリのパス。
+   * 出力先ディレクトリ。
    */
-  destDir: string,
+  destDir: CurrentDir,
 ) => ProgressTaskArgs | Promise<ProgressTaskArgs>;
 
 /**
@@ -213,13 +213,13 @@ export type ShTaskArgsGenerator = (
    */
   targets: EntryModel[],
   /**
-   * ソースディレクトリのパス。
+   * ソースディレクトリ。
    */
-  srcDir: string,
+  srcDir: CurrentDir,
   /**
-   * 出力先ディレクトリのパス。
+   * 出力先ディレクトリ。
    */
-  destDir: string,
+  destDir: CurrentDir,
 ) => Promise<ShTaskArgs> | ShTaskArgs;
 
 /**

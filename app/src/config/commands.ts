@@ -245,7 +245,7 @@ const commands: CommandsConfig = [
         cmd: 'cp -rvn %s %d',
         total: 'find %s | wc -l',
         src: entries.map((e) => e.name),
-        dest: destDir,
+        dest: destDir.path,
       }));
     },
   },
@@ -257,7 +257,7 @@ const commands: CommandsConfig = [
         cmd: 'mv -vn %s -t %d',
         total: 'node -e "console.log(process.argv.length - 1)" %s',
         src: entries.map((e) => e.name),
-        dest: destDir,
+        dest: destDir.path,
       }));
     },
   },
@@ -289,7 +289,7 @@ const commands: CommandsConfig = [
           log: `rename: ${target} -> ${input}`,
           cmd: 'mv -n %s %d',
           src: [target],
-          dest: `${srcDir}/${input}`,
+          dest: `${srcDir.path}/${input}`,
         };
       });
     },
@@ -304,7 +304,7 @@ const commands: CommandsConfig = [
       await api.runShTask((targetNames, srcDir, destDir) => ({
         log: `mkdir: ${input}`,
         cmd: 'mkdir %d',
-        dest: `${srcDir}/${input}`,
+        dest: `${srcDir.path}/${input}`,
       }));
     },
   },
@@ -318,7 +318,7 @@ const commands: CommandsConfig = [
       await api.runShTask((targetNames, srcDir, destDir) => ({
         log: `touch: ${input}`,
         cmd: 'touch %d',
-        dest: `${srcDir}/${input}`,
+        dest: `${srcDir.path}/${input}`,
       }));
     },
   },
@@ -340,7 +340,7 @@ const commands: CommandsConfig = [
         cmd: 'zip -r %d %s',
         total: 'find %s | wc -l',
         src: entries.map((e) => e.name),
-        dest: `${destDir}/${input}`,
+        dest: `${destDir.path}/${input}`,
       }));
     },
   },
@@ -352,7 +352,7 @@ const commands: CommandsConfig = [
         cmd: 'unzip -n %s -d %d',
         total: 'zipinfo -1 %s | LC_ALL=C grep -v "/$" | wc -l',
         src: [entries[0].name],
-        dest: destDir,
+        dest: destDir.path,
       }));
     },
   },
@@ -372,7 +372,7 @@ const commands: CommandsConfig = [
         cmd: 'tar cvf %d %s',
         total: 'find %s | wc -l',
         src: entries.map((e) => e.name),
-        dest: `${destDir}/${input}`,
+        dest: `${destDir.path}/${input}`,
       }));
     },
   },
@@ -384,7 +384,7 @@ const commands: CommandsConfig = [
         cmd: 'tar xvkf %s -C %d',
         total: 'tar -tf %s | LC_ALL=C grep -v "/$" | wc -l',
         src: [entries[0].name],
-        dest: destDir,
+        dest: destDir.path,
       }));
     },
   },
@@ -404,7 +404,7 @@ const commands: CommandsConfig = [
         cmd: 'tar cvfz %d %s',
         total: 'find %s | wc -l',
         src: entries.map((e) => e.name),
-        dest: `${destDir}/${input}`,
+        dest: `${destDir.path}/${input}`,
       }));
     },
   },
@@ -416,7 +416,7 @@ const commands: CommandsConfig = [
         cmd: 'tar xvkfz %s -C %d',
         total: 'tar -ztf %s | LC_ALL=C grep -v "/$" | wc -l',
         src: [entries[0].name],
-        dest: destDir,
+        dest: destDir.path,
       }));
     },
   },

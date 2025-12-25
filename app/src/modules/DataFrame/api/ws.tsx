@@ -1,5 +1,5 @@
 import { readState } from '@libs/utils';
-import { $activeFrame, $config } from '@modules/App/state';
+import { $activeFrame, $config, $modes } from '@modules/App/state';
 import { getTargetEntries } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
@@ -11,14 +11,28 @@ import { writeLog } from '@modules/LogFrame/api';
 import { ProgressTaskLog } from '@modules/LogFrame/components';
 
 import type {
+  Frame,
   WsDataResponse,
   WsProgressTaskResponse,
   WsSuccessResponse,
 } from '@modules/App/types';
 import type {
+  CurrentDir,
   ProgressTaskArgsGenerator,
   ShTaskArgsGenerator,
 } from '@modules/DataFrame/types';
+
+/**
+ * CurrentDir オブジェクトを生成する。
+ *
+ * @param frame - 対象フレーム
+ * @returns CurrentDir オブジェクト
+ */
+function createCurrentDir(frame: Frame): CurrentDir {
+  const curDir = readState($currentDir(frame));
+  const modes = readState($modes(frame));
+  return { is_virtual: modes.includes('virtual-dir'), path: curDir };
+}
 
 /**
  * ProgressTask を実行する。
@@ -39,8 +53,8 @@ async function runProgressTask(
     return;
   }
 
-  const srcDir = readState($currentDir(frame));
-  const destDir = readState($currentDir(getOtherFrame(frame)));
+  const srcDir = createCurrentDir(frame);
+  const destDir = createCurrentDir(getOtherFrame(frame));
 
   const args = await generator(entries, srcDir, destDir);
   if (!args) {
@@ -101,8 +115,8 @@ async function runShTask(
   // length のチェックはしない。
   const entries = getTargetEntries(frame);
 
-  const srcDir = readState($currentDir(frame));
-  const destDir = readState($currentDir(getOtherFrame(frame)));
+  const srcDir = createCurrentDir(frame);
+  const destDir = createCurrentDir(getOtherFrame(frame));
 
   const args = await generator(entries, srcDir, destDir);
   if (!args) {
