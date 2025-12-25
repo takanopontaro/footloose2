@@ -111,7 +111,7 @@ async function runShTask(
   generator: ShTaskArgsGenerator,
   frame = readState($activeFrame),
 ): Promise<void> {
-  // ShTask は対象エントリの有る無しにかかわらず実行できるため、
+  // ShTask は対象エントリの有る無しにかかわらず実行できるべきなので、
   // length のチェックはしない。
   const entries = getTargetEntries(frame);
 
