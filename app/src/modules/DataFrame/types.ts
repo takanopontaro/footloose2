@@ -1,4 +1,5 @@
 import type { ReactNode, RefObject } from 'react';
+import type { EntryModel } from '@modules/DataFrame/models';
 
 /**
  * エントリ。
@@ -152,10 +153,10 @@ export type ProgressTaskArgs = {
  */
 export type ProgressTaskArgsGenerator = (
   /**
-   * 対象エントリ名の一覧。
+   * 対象エントリの一覧。
    * 選択行があればそれらを、なければカレントエントリが使われる。
    */
-  targetNames: string[],
+  targets: EntryModel[],
   /**
    * ソースディレクトリのパス。
    */
@@ -193,10 +194,10 @@ export type ShTaskArgs = {
  */
 export type ShTaskArgsGenerator = (
   /**
-   * 対象エントリ名の一覧。
+   * 対象エントリの一覧。
    * 選択行があればそれらを、なければカレントエントリが使われる。
    */
-  targetNames: string[],
+  targets: EntryModel[],
   /**
    * ソースディレクトリのパス。
    */

@@ -1,6 +1,6 @@
 import { readState } from '@libs/utils';
 import { $activeFrame, $config } from '@modules/App/state';
-import { getTargetEntryNames } from '@modules/DataFrame/api';
+import { getTargetEntries } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
   handleWsSendError,
@@ -32,8 +32,8 @@ async function runProgressTask(
   generator: ProgressTaskArgsGenerator,
   frame = readState($activeFrame),
 ): Promise<void> {
-  const targetNames = getTargetEntryNames(frame);
-  if (targetNames.length === 0) {
+  const entries = getTargetEntries(frame);
+  if (entries.length === 0) {
     const { messages } = readState($config);
     writeLog(`${frame}: ${messages[0]}`, 'info');
     return;
@@ -42,7 +42,7 @@ async function runProgressTask(
   const srcDir = readState($currentDir(frame));
   const destDir = readState($currentDir(getOtherFrame(frame)));
 
-  const args = await generator(targetNames, srcDir, destDir);
+  const args = await generator(entries, srcDir, destDir);
   if (!args) {
     return;
   }
@@ -99,12 +99,12 @@ async function runShTask(
 ): Promise<void> {
   // ShTask は対象エントリの有る無しにかかわらず実行できるため、
   // length のチェックはしない。
-  const targetNames = getTargetEntryNames(frame);
+  const entries = getTargetEntries(frame);
 
   const srcDir = readState($currentDir(frame));
   const destDir = readState($currentDir(getOtherFrame(frame)));
 
-  const args = await generator(targetNames, srcDir, destDir);
+  const args = await generator(entries, srcDir, destDir);
   if (!args) {
     return;
   }
