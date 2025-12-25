@@ -301,7 +301,7 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runShTask((targetNames, srcDir, destDir) => ({
+      await api.runShTask((entries, srcDir, destDir) => ({
         log: `mkdir: ${input}`,
         cmd: 'mkdir %d',
         dest: `${srcDir.path}/${input}`,
@@ -315,7 +315,7 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runShTask((targetNames, srcDir, destDir) => ({
+      await api.runShTask((entries, srcDir, destDir) => ({
         log: `touch: ${input}`,
         cmd: 'touch %d',
         dest: `${srcDir.path}/${input}`,
