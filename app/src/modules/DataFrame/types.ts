@@ -179,7 +179,7 @@ export type ProgressTaskArgsGenerator = (
    * 出力先ディレクトリ。
    */
   destDir: CurrentDir,
-) => ProgressTaskArgs | Promise<ProgressTaskArgs> | null;
+) => ProgressTaskArgs | Promise<ProgressTaskArgs | null> | null;
 
 /**
  * ShTask の引数を表す構造体。
@@ -220,7 +220,7 @@ export type ShTaskArgsGenerator = (
    * 出力先ディレクトリ。
    */
   destDir: CurrentDir,
-) => Promise<ShTaskArgs> | ShTaskArgs | null;
+) => Promise<ShTaskArgs | null> | ShTaskArgs | null;
 
 /**
  * プレビュー情報。
