@@ -160,7 +160,7 @@ export type ProgressTaskArgs = {
    * 処理対象エントリの総数を算出するシェルコマンド。
    */
   total: string;
-} | null;
+};
 
 /**
  * ProgressTask に渡す引数を生成する関数。
@@ -179,7 +179,7 @@ export type ProgressTaskArgsGenerator = (
    * 出力先ディレクトリ。
    */
   destDir: CurrentDir,
-) => ProgressTaskArgs | Promise<ProgressTaskArgs>;
+) => ProgressTaskArgs | Promise<ProgressTaskArgs> | null;
 
 /**
  * ShTask の引数を表す構造体。
@@ -201,7 +201,7 @@ export type ShTaskArgs = {
    * 対象エントリ名の一覧。
    */
   src?: string[];
-} | null;
+};
 
 /**
  * ShTask に渡す引数を生成する関数。
@@ -220,7 +220,7 @@ export type ShTaskArgsGenerator = (
    * 出力先ディレクトリ。
    */
   destDir: CurrentDir,
-) => Promise<ShTaskArgs> | ShTaskArgs;
+) => Promise<ShTaskArgs> | ShTaskArgs | null;
 
 /**
  * プレビュー情報。
