@@ -240,25 +240,35 @@ const commands: CommandsConfig = [
   {
     name: 'CopyEntries',
     async action(api, combo) {
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'copy entries',
-        cmd: 'cp -rvn %s %d',
-        total: 'find %s | wc -l',
-        src: entries.map((e) => e.name),
-        dest: destDir.path,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'copy entries',
+          cmd: 'cp -rvn %s %d',
+          total: 'find %s | wc -l',
+          src: entries.map((e) => e.name),
+          dest: destDir.path,
+        };
+      });
     },
   },
   {
     name: 'MoveEntries',
     async action(api, combo) {
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'move entries',
-        cmd: 'mv -vn %s -t %d',
-        total: 'node -e "console.log(process.argv.length - 1)" %s',
-        src: entries.map((e) => e.name),
-        dest: destDir.path,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'move entries',
+          cmd: 'mv -vn %s -t %d',
+          total: 'node -e "console.log(process.argv.length - 1)" %s',
+          src: entries.map((e) => e.name),
+          dest: destDir.path,
+        };
+      });
     },
   },
   {
@@ -268,18 +278,26 @@ const commands: CommandsConfig = [
       if (res === '') {
         return;
       }
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'remove entries',
-        cmd: 'rm -vr %s',
-        total: 'find %s | wc -l',
-        src: entries.map((e) => e.name),
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (srcDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'remove entries',
+          cmd: 'rm -vr %s',
+          total: 'find %s | wc -l',
+          src: entries.map((e) => e.name),
+        };
+      });
     },
   },
   {
     name: 'RenameEntry',
     async action(api, combo) {
       await api.runShTask(async (entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual) {
+          return null;
+        }
         const target = entries[0].name;
         const input = await api.showPromptModal(target);
         if (input === '' || input === target) {
@@ -301,11 +319,16 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runShTask((entries, srcDir, destDir) => ({
-        log: `mkdir: ${input}`,
-        cmd: 'mkdir %d',
-        dest: `${srcDir.path}/${input}`,
-      }));
+      await api.runShTask((entries, srcDir, destDir) => {
+        if (srcDir.is_virtual) {
+          return null;
+        }
+        return {
+          log: `mkdir: ${input}`,
+          cmd: 'mkdir %d',
+          dest: `${srcDir.path}/${input}`,
+        };
+      });
     },
   },
   {
@@ -315,11 +338,16 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runShTask((entries, srcDir, destDir) => ({
-        log: `touch: ${input}`,
-        cmd: 'touch %d',
-        dest: `${srcDir.path}/${input}`,
-      }));
+      await api.runShTask((entries, srcDir, destDir) => {
+        if (srcDir.is_virtual) {
+          return null;
+        }
+        return {
+          log: `touch: ${input}`,
+          cmd: 'touch %d',
+          dest: `${srcDir.path}/${input}`,
+        };
+      });
     },
   },
 
@@ -335,25 +363,35 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'zip entries',
-        cmd: 'zip -r %d %s',
-        total: 'find %s | wc -l',
-        src: entries.map((e) => e.name),
-        dest: `${destDir.path}/${input}`,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'zip entries',
+          cmd: 'zip -r %d %s',
+          total: 'find %s | wc -l',
+          src: entries.map((e) => e.name),
+          dest: `${destDir.path}/${input}`,
+        };
+      });
     },
   },
   {
     name: 'UnzipArchives',
     async action(api, combo) {
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'unzip archives',
-        cmd: 'unzip -n %s -d %d',
-        total: 'zipinfo -1 %s | LC_ALL=C grep -v "/$" | wc -l',
-        src: [entries[0].name],
-        dest: destDir.path,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'unzip archives',
+          cmd: 'unzip -n %s -d %d',
+          total: 'zipinfo -1 %s | LC_ALL=C grep -v "/$" | wc -l',
+          src: [entries[0].name],
+          dest: destDir.path,
+        };
+      });
     },
   },
   {
@@ -367,25 +405,35 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'tar entries',
-        cmd: 'tar cvf %d %s',
-        total: 'find %s | wc -l',
-        src: entries.map((e) => e.name),
-        dest: `${destDir.path}/${input}`,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'tar entries',
+          cmd: 'tar cvf %d %s',
+          total: 'find %s | wc -l',
+          src: entries.map((e) => e.name),
+          dest: `${destDir.path}/${input}`,
+        };
+      });
     },
   },
   {
     name: 'UntarArchives',
     async action(api, combo) {
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'untar archives',
-        cmd: 'tar xvkf %s -C %d',
-        total: 'tar -tf %s | LC_ALL=C grep -v "/$" | wc -l',
-        src: [entries[0].name],
-        dest: destDir.path,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'untar archives',
+          cmd: 'tar xvkf %s -C %d',
+          total: 'tar -tf %s | LC_ALL=C grep -v "/$" | wc -l',
+          src: [entries[0].name],
+          dest: destDir.path,
+        };
+      });
     },
   },
   {
@@ -399,25 +447,35 @@ const commands: CommandsConfig = [
       if (input === '') {
         return;
       }
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'tgz entries',
-        cmd: 'tar cvfz %d %s',
-        total: 'find %s | wc -l',
-        src: entries.map((e) => e.name),
-        dest: `${destDir.path}/${input}`,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'tgz entries',
+          cmd: 'tar cvfz %d %s',
+          total: 'find %s | wc -l',
+          src: entries.map((e) => e.name),
+          dest: `${destDir.path}/${input}`,
+        };
+      });
     },
   },
   {
     name: 'UntgzArchives',
     async action(api, combo) {
-      await api.runProgressTask((entries, srcDir, destDir) => ({
-        label: 'untgz archives',
-        cmd: 'tar xvkfz %s -C %d',
-        total: 'tar -ztf %s | LC_ALL=C grep -v "/$" | wc -l',
-        src: [entries[0].name],
-        dest: destDir.path,
-      }));
+      await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+          return null;
+        }
+        return {
+          label: 'untgz archives',
+          cmd: 'tar xvkfz %s -C %d',
+          total: 'tar -ztf %s | LC_ALL=C grep -v "/$" | wc -l',
+          src: [entries[0].name],
+          dest: destDir.path,
+        };
+      });
     },
   },
 
