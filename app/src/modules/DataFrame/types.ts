@@ -154,8 +154,9 @@ export type ProgressTaskArgs = {
   label: string;
   /**
    * 対象エントリ名の一覧。
+   * 空配列は不可。
    */
-  src: string[];
+  src?: string[];
   /**
    * 処理対象エントリの総数を算出するシェルコマンド。
    */

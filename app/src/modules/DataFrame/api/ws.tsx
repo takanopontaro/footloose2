@@ -47,12 +47,6 @@ async function runProgressTask(
   frame = readState($activeFrame),
 ): Promise<void> {
   const entries = getTargetEntries(frame);
-  if (entries.length === 0) {
-    const { messages } = readState($config);
-    writeLog(`${frame}: ${messages[0]}`, 'info');
-    return;
-  }
-
   const srcDir = createCurrentDir(frame);
   const destDir = createCurrentDir(getOtherFrame(frame));
 
