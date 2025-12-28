@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 ///   リンクでない場合は空文字列。
 /// * `is_virtual` - 仮想ディレクトリ内のエントリか否か
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Entry {
     pub perm: String,
     pub size: String,
