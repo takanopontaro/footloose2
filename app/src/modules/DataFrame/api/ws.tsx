@@ -1,5 +1,5 @@
 import { readState } from '@libs/utils';
-import { $activeFrame, $config, $modes } from '@modules/App/state';
+import { $activeFrame, $modes } from '@modules/App/state';
 import { getTargetEntries } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
