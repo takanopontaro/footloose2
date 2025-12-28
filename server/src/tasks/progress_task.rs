@@ -68,7 +68,7 @@ impl ProgressTask {
         // パスは `"` でクォートされ、複数の場合はスペースで連結される。
         // 例： `foo %s` -> `foo "path/to/src1" "path/to/src2"`
         if let Some(srcs) = srcs {
-            let srcs = quote_paths(&srcs);
+            let srcs = quote_paths(srcs);
             cmd_str = cmd_str.replace("%s", &srcs);
         }
 
