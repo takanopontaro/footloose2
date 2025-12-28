@@ -58,15 +58,19 @@ impl ProgressTask {
     fn exec_count_shcmd(
         &self,
         cmd_str: &str,
-        srcs: &[String],
+        srcs: &Option<Vec<String>>,
         dest: &Option<String>,
         cwd: &str,
     ) -> Result<usize> {
+        let mut cmd_str = cmd_str.to_owned();
+
         // コマンド文字列内の `%s` をソースパスに置換する。
         // パスは `"` でクォートされ、複数の場合はスペースで連結される。
         // 例： `foo %s` -> `foo "path/to/src1" "path/to/src2"`
-        let srcs = quote_paths(srcs);
-        let mut cmd_str = cmd_str.replace("%s", &srcs);
+        if let Some(srcs) = srcs {
+            let srcs = quote_paths(&srcs);
+            cmd_str = cmd_str.replace("%s", &srcs);
+        }
 
         // コマンド文字列内の `%d` を展開先のディレクトリパスに置換する。
         // パスは `"` でクォートされる。
@@ -108,15 +112,19 @@ impl ProgressTask {
     fn exec_shcmd(
         &self,
         cmd_str: &str,
-        srcs: Vec<String>,
+        srcs: Option<Vec<String>>,
         dest: Option<String>,
         cwd: &str,
     ) -> Result<(Child, BufReader<ChildStdout>, BufReader<ChildStderr>)> {
+        let mut cmd_str = cmd_str.to_owned();
+
         // コマンド文字列内の `%s` をソースパスに置換する。
         // パスは `"` でクォートされ、複数の場合はスペースで連結される。
         // 例： `foo %s` -> `foo "path/to/src1" "path/to/src2"`
-        let srcs = quote_paths(&srcs);
-        let mut cmd_str = cmd_str.replace("%s", &srcs);
+        if let Some(srcs) = srcs {
+            let srcs = quote_paths(&srcs);
+            cmd_str = cmd_str.replace("%s", &srcs);
+        }
 
         // コマンド文字列内の `%d` を展開先のディレクトリパスに置換する。
         // パスは `"` でクォートされる。
@@ -253,13 +261,7 @@ impl ProgressTask {
 #[async_trait]
 impl TaskBase for ProgressTask {
     fn validate(&self, cmd: &Command) -> bool {
-        if !self.is_valid_args(&cmd.args) {
-            return false;
-        }
-        if cmd.arg_as_path_array("sources", &cmd.cwd).is_none() {
-            return false;
-        }
-        true
+        self.is_valid_args(&cmd.args)
     }
 
     fn schema(&self) -> Value {
@@ -282,7 +284,7 @@ impl TaskBase for ProgressTask {
                     "additionalProperties": false,
                 }
             },
-            "required": ["sources", "config"],
+            "required": ["config"],
             "additionalProperties": false,
         })
     }
@@ -293,14 +295,15 @@ impl TaskBase for ProgressTask {
         arg: &Arc<TaskArg>,
         tx: mpsc::Sender<TaskControl>,
     ) -> Result<TaskResult> {
-        let srcs = cmd.arg_as_path_array("sources", &cmd.cwd).unwrap();
+        let srcs = cmd.arg_as_path_array("sources", &cmd.cwd);
         let dest = cmd.arg_as_path("destination", &cmd.cwd);
         let config = self.config(cmd);
         // 総数を算出する。エラー時は便宜上 usize::MAX とする。
         let total = self
             .exec_count_shcmd(&config.total, &srcs, &dest, &cmd.cwd)
             .unwrap_or(usize::MAX);
-        let srcs = relativize_paths(&srcs, &cmd.cwd);
+        // `cwd` を基準とした相対パスに変換しておく。
+        let srcs = srcs.map(|s| relativize_paths(&s, &cmd.cwd));
         let dest = dest.map(|d| relativize_path(&d, &cmd.cwd));
         let (child, stdout, stderr) =
             self.exec_shcmd(&config.cmd, srcs, dest, &cmd.cwd)?;

@@ -22,16 +22,16 @@
         "cmd": "command",
         "total": "xxxx"
       }
-    }
-  ],
-  "invalid": [
+    },
     {
       "destination": "👟/test3",
       "config": {
         "cmd": "command",
         "total": "xxxx"
       }
-    },
+    }
+  ],
+  "invalid": [
     {
       "sources": "/test1",
       "destination": "👟/test3",
