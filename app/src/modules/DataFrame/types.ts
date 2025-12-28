@@ -200,6 +200,7 @@ export type ShTaskArgs = {
   log: string;
   /**
    * 対象エントリ名の一覧。
+   * 空配列は不可。
    */
   src?: string[];
 };
