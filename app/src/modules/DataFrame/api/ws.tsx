@@ -31,7 +31,7 @@ import type {
 function createCurrentDir(frame: Frame): CurrentDir {
   const curDir = readState($currentDir(frame));
   const modes = readState($modes(frame));
-  return { is_virtual: modes.includes('virtual-dir'), path: curDir };
+  return { isVirtual: modes.includes('virtual-dir'), path: curDir };
 }
 
 /**

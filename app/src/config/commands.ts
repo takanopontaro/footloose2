@@ -241,7 +241,7 @@ const commands: CommandsConfig = [
     name: 'CopyEntries',
     async action(api, combo) {
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (srcDir.is_virtual || destDir.is_virtual) {
+        if (srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -258,7 +258,7 @@ const commands: CommandsConfig = [
     name: 'MoveEntries',
     async action(api, combo) {
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (srcDir.is_virtual || destDir.is_virtual) {
+        if (srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -279,7 +279,7 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (srcDir.is_virtual) {
+        if (srcDir.isVirtual) {
           return null;
         }
         return {
@@ -295,7 +295,7 @@ const commands: CommandsConfig = [
     name: 'RenameEntry',
     async action(api, combo) {
       await api.runShTask(async (entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual) {
           return null;
         }
         const target = entries[0].name;
@@ -320,7 +320,7 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runShTask((entries, srcDir, destDir) => {
-        if (srcDir.is_virtual) {
+        if (srcDir.isVirtual) {
           return null;
         }
         return {
@@ -339,7 +339,7 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runShTask((entries, srcDir, destDir) => {
-        if (srcDir.is_virtual) {
+        if (srcDir.isVirtual) {
           return null;
         }
         return {
@@ -364,7 +364,7 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -381,7 +381,7 @@ const commands: CommandsConfig = [
     name: 'UnzipArchives',
     async action(api, combo) {
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -406,7 +406,7 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -423,7 +423,7 @@ const commands: CommandsConfig = [
     name: 'UntarArchives',
     async action(api, combo) {
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -448,7 +448,7 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {
@@ -465,7 +465,7 @@ const commands: CommandsConfig = [
     name: 'UntgzArchives',
     async action(api, combo) {
       await api.runProgressTask((entries, srcDir, destDir) => {
-        if (entries.length === 0 || srcDir.is_virtual || destDir.is_virtual) {
+        if (entries.length === 0 || srcDir.isVirtual || destDir.isVirtual) {
           return null;
         }
         return {

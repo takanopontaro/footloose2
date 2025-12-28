@@ -16,8 +16,8 @@ export class EntryModel {
   /**
    * 仮想ディレクトリ内のエントリか否か。
    */
-  get is_virtual(): Entry['is_virtual'] {
-    return this.entry.is_virtual;
+  get isVirtual(): Entry['isVirtual'] {
+    return this.entry.isVirtual;
   }
 
   /**
@@ -77,30 +77,23 @@ export class EntryModel {
   }
 
   /**
-   * 仮想エントリか否かを判定する。
-   */
-  isVirtual(): boolean {
-    return this.is_virtual;
-  }
-
-  /**
    * 仮想ディレクトリか否かを判定する。
    */
   isVirtualDir(): boolean {
-    return this.is_virtual && this.isDir();
+    return this.isVirtual && this.isDir();
   }
 
   /**
    * 仮想ファイルか否かを判定する。
    */
   isVirtualFile(): boolean {
-    return this.is_virtual && this.isFile();
+    return this.isVirtual && this.isFile();
   }
 
   /**
    * 仮想シンボリックリンクか否かを判定する。
    */
   isVirtualSymlink(): boolean {
-    return this.is_virtual && this.isSymlink();
+    return this.isVirtual && this.isSymlink();
   }
 }

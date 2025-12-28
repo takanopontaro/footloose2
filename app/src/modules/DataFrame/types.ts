@@ -8,7 +8,7 @@ export type CurrentDir = {
   /**
    * 自身が仮想ディレクトリか否か。
    */
-  is_virtual: boolean;
+  isVirtual: boolean;
   /**
    * 自身のパス。
    */
@@ -22,7 +22,7 @@ export type Entry = {
   /**
    * 仮想ディレクトリ内のエントリか否か。
    */
-  is_virtual: boolean;
+  isVirtual: boolean;
   /**
    * シンボリックリンクの実体パス。
    * 種別を表す接頭辞とパスが結合された文字列。
