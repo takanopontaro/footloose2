@@ -275,7 +275,7 @@ const commands: CommandsConfig = [
     name: 'RemoveEntries',
     async action(api, combo) {
       const res = await api.showConfirmModal(messages[6]);
-      if (res === '') {
+      if (!res) {
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {

@@ -139,13 +139,13 @@ function focusElementPromptModal(direction: Direction): void {
  * ConfirmModal を表示する。
  *
  * @param message - モーダルに表示する文章
- * @returns ユーザー選択値 ('ok' または '') の Promise
+ * @returns ユーザー選択値 (OK:true / Cancel:false) の Promise
  */
-function showConfirmModal(message: string): Promise<string> {
+function showConfirmModal(message: string): Promise<boolean> {
   return new Promise((resolve) => {
     writeState($confirmModalAction, {
-      primary: () => resolve('ok'),
-      cancel: () => resolve(''),
+      primary: () => resolve(true),
+      cancel: () => resolve(false),
     });
     writeState($modal, <ConfirmModal message={message} />);
   });
