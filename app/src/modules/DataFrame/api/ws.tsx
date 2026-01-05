@@ -1,38 +1,23 @@
 import { readState } from '@libs/utils';
-import { $activeFrame, $modes } from '@modules/App/state';
-import { getTargetEntries } from '@modules/DataFrame/api';
+import { $activeFrame } from '@modules/App/state';
+import { getCurrentDir, getTargetEntries } from '@modules/DataFrame/api';
 import {
   getOtherFrame,
   handleWsSendError,
   wsSend,
 } from '@modules/DataFrame/libs';
-import { $currentDir } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 import { ProgressTaskLog } from '@modules/LogFrame/components';
 
 import type {
-  Frame,
   WsDataResponse,
   WsProgressTaskResponse,
   WsSuccessResponse,
 } from '@modules/App/types';
 import type {
-  CurrentDir,
   ProgressTaskArgsGenerator,
   ShTaskArgsGenerator,
 } from '@modules/DataFrame/types';
-
-/**
- * CurrentDir オブジェクトを生成する。
- *
- * @param frame - 対象フレーム
- * @returns CurrentDir オブジェクト
- */
-function createCurrentDir(frame: Frame): CurrentDir {
-  const curDir = readState($currentDir(frame));
-  const modes = readState($modes(frame));
-  return { isVirtual: modes.includes('virtual-dir'), path: curDir };
-}
 
 /**
  * ProgressTask を実行する。
@@ -47,8 +32,8 @@ async function runProgressTask(
   frame = readState($activeFrame),
 ): Promise<void> {
   const entries = getTargetEntries(frame);
-  const srcDir = createCurrentDir(frame);
-  const destDir = createCurrentDir(getOtherFrame(frame));
+  const srcDir = getCurrentDir(frame);
+  const destDir = getCurrentDir(getOtherFrame(frame));
 
   const args = await generator(entries, srcDir, destDir);
   if (!args) {
@@ -106,8 +91,8 @@ async function runShTask(
   frame = readState($activeFrame),
 ): Promise<void> {
   const entries = getTargetEntries(frame);
-  const srcDir = createCurrentDir(frame);
-  const destDir = createCurrentDir(getOtherFrame(frame));
+  const srcDir = getCurrentDir(frame);
+  const destDir = getCurrentDir(getOtherFrame(frame));
 
   const args = await generator(entries, srcDir, destDir);
   if (!args) {

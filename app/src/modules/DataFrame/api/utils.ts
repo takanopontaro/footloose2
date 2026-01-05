@@ -1,5 +1,6 @@
 import { readState } from '@libs/utils';
-import { $activeFrame } from '@modules/App/state';
+import { $activeFrame, $modes } from '@modules/App/state';
+import { getOtherFrame } from '@modules/DataFrame/libs';
 import { EntryModel } from '@modules/DataFrame/models';
 import {
   $activeEntryName,
@@ -8,7 +9,40 @@ import {
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
 
-import type { SymlinkInfo } from '@modules/DataFrame/types';
+import type { Frame } from '@modules/App/types';
+import type { CurrentDir, SymlinkInfo } from '@modules/DataFrame/types';
+
+/**
+ * 指定したフレームの CurrentDir オブジェクトを取得する。
+ *
+ * @param frame - 対象フレーム
+ * @returns CurrentDir オブジェクト
+ */
+function getCurrentDir(frame: Frame): CurrentDir {
+  const curDir = readState($currentDir(frame));
+  const modes = readState($modes(frame));
+  return { isVirtual: modes.includes('virtual-dir'), path: curDir };
+}
+
+/**
+ * ソースディレクトリの情報を取得する。
+ *
+ * @returns CurrentDir オブジェクト
+ */
+function getSourceDir(): CurrentDir {
+  const frame = readState($activeFrame);
+  return getCurrentDir(frame);
+}
+
+/**
+ * 出力先ディレクトリの情報を取得する。
+ *
+ * @returns CurrentDir オブジェクト
+ */
+function getDestinationDir(): CurrentDir {
+  const frame = readState($activeFrame);
+  return getCurrentDir(getOtherFrame(frame));
+}
 
 /**
  * カレントエントリの name を返す。
@@ -185,6 +219,9 @@ function getSymlinkInfo(
 }
 
 export {
+  getCurrentDir,
+  getSourceDir,
+  getDestinationDir,
   getActiveEntryName,
   getActiveEntry,
   getTargetEntryNames,
