@@ -29,7 +29,7 @@ function getCurrentDir(frame: Frame): CurrentDir {
  *
  * @returns CurrentDir オブジェクト
  */
-function getSourceDir(): CurrentDir {
+function getSrcDir(): CurrentDir {
   const frame = readState($activeFrame);
   return getCurrentDir(frame);
 }
@@ -39,7 +39,7 @@ function getSourceDir(): CurrentDir {
  *
  * @returns CurrentDir オブジェクト
  */
-function getDestinationDir(): CurrentDir {
+function getDestDir(): CurrentDir {
   const frame = readState($activeFrame);
   return getCurrentDir(getOtherFrame(frame));
 }
@@ -220,8 +220,8 @@ function getSymlinkInfo(
 
 export {
   getCurrentDir,
-  getSourceDir,
-  getDestinationDir,
+  getSrcDir,
+  getDestDir,
   getActiveEntryName,
   getActiveEntry,
   getTargetEntryNames,
