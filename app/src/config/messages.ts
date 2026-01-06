@@ -19,7 +19,7 @@ const messages: MessagesConfig = [
   'Failed to copy the current path to the clipboard',
   'Could not determine archive type',
   'Already exists',
-  'Not available in virtual directories',
+  'Not supported for virtual directories',
 ];
 
 export { messages };
