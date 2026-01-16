@@ -90,7 +90,7 @@ function showPromptModal(defaultValue: string): Promise<string> {
   return new Promise((resolve) => {
     writeState($promptModalData, defaultValue);
     writeState($promptModalAction, {
-      primary: (data) => resolve(data.trim()),
+      primary: (data) => resolve(data),
       cancel: () => resolve(''),
     });
     writeState($modal, <PromptModal />);
