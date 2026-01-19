@@ -361,7 +361,7 @@ const commands: CommandsConfig = [
   {
     name: 'CreateDir',
     async action(api, combo) {
-      if (!ensureNotVirtualDir(api, 'mkdir', 'src')) {
+      if (!ensureNotVirtualDir(api, 'create directory', 'src')) {
         return;
       }
       const input = await api.showPromptModal('untitled folder');
@@ -380,7 +380,7 @@ const commands: CommandsConfig = [
   {
     name: 'CreateFile',
     async action(api, combo) {
-      if (!ensureNotVirtualDir(api, 'touch', 'src')) {
+      if (!ensureNotVirtualDir(api, 'create file', 'src')) {
         return;
       }
       const input = await api.showPromptModal('untitled');
