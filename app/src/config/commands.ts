@@ -275,6 +275,9 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0) {
+          return null;
+        }
         return {
           label,
           cmd: 'cp -rvn %s %d',
@@ -293,6 +296,9 @@ const commands: CommandsConfig = [
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
+        if (entries.length === 0) {
+          return null;
+        }
         return {
           label,
           cmd: 'mv -vn %s -t %d',
@@ -308,6 +314,10 @@ const commands: CommandsConfig = [
     async action(api, combo) {
       const label = 'remove entries';
       if (!ensureNotVirtualDir(api, label, 'src')) {
+        return;
+      }
+      const names = api.getTargetEntryNames();
+      if (names.length === 0) {
         return;
       }
       const confirmed = await api.showConfirmModal(messages[6]);
@@ -330,19 +340,19 @@ const commands: CommandsConfig = [
       if (!ensureNotVirtualDir(api, 'rename entries', 'src')) {
         return;
       }
-      await api.runShTask(async (entries, srcDir, destDir) => {
-        if (entries.length === 0) {
-          return null;
-        }
-        const target = entries[0].name;
-        const input = await api.showPromptModal(target);
-        if (input === '' || input === target) {
-          return null;
-        }
+      const name = api.getActiveEntryName();
+      if (name === '') {
+        return;
+      }
+      const input = await api.showPromptModal(name);
+      if (input === '' || input === name) {
+        return;
+      }
+      await api.runShTask((entries, srcDir, destDir) => {
         return {
-          log: `rename: ${target} -> ${input}`,
+          log: `rename: ${name} -> ${input}`,
           cmd: 'mv -n %s %d',
-          src: [target],
+          src: [name],
           dest: `${srcDir.path}/${input}`,
         };
       });
