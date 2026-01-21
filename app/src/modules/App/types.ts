@@ -467,6 +467,7 @@ export type CommandsConfig = {
 
 /**
  * ログなどに表示される定型メッセージの設定。
+ * それほど多くないため、ライブラリは導入せず簡易的に済ませる。
  */
 export type MessagesConfig = string[];
 

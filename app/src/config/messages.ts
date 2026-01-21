@@ -1,9 +1,5 @@
 import type { MessagesConfig } from '@modules/App/types';
 
-/**
- * メッセージの一覧。
- * それほど多くないため、ライブラリは導入せず簡易的に済ませる。
- */
 const messages: MessagesConfig = [
   'No target paths',
   'No bookmarks found',
