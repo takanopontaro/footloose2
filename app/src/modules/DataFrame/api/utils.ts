@@ -1,5 +1,5 @@
 import { readState } from '@libs/utils';
-import { $activeFrame, $modes } from '@modules/App/state';
+import { $activeFrame, $config, $modes } from '@modules/App/state';
 import { getOtherFrame } from '@modules/DataFrame/libs';
 import { EntryModel } from '@modules/DataFrame/models';
 import {
@@ -8,6 +8,7 @@ import {
   $filteredEntries,
   $selectedEntryNames,
 } from '@modules/DataFrame/state';
+import { writeLog } from '@modules/LogFrame/api';
 
 import type { Frame } from '@modules/App/types';
 import type { CurrentDir, SymlinkInfo } from '@modules/DataFrame/types';
@@ -218,6 +219,36 @@ function getSymlinkInfo(
   };
 }
 
+/**
+ * ソースディレクトリと出力先ディレクトリが仮想ディレクトリではないことを検証する。
+ * コピーなどのファイル操作は仮想ディレクトリでは行えないため、このチェックが必要になる。
+ * 仮想ディレクトリだった場合はエラーログを表示する。
+ *
+ * @param target - チェック対象
+ *   - `all`: すべて
+ *   - `dest`: 出力先ディレクトリのみ
+ *   - `src`: ソースディレクトリのみ
+ * @param errorLabel - エラーログのラベル
+ *   省略時はログを表示しない。
+ * @returns 仮想ディレクトリではない (true)、である (false)
+ */
+function ensureNotVirtualDir(
+  target: 'all' | 'dest' | 'src',
+  errorLabel?: string,
+): boolean {
+  const shouldCheckSrc = target === 'all' || target === 'src';
+  const shouldCheckDest = target === 'all' || target === 'dest';
+  const hasVirtualDir =
+    (shouldCheckSrc && getSrcDir().isVirtual) ||
+    (shouldCheckDest && getDestDir().isVirtual);
+  if (hasVirtualDir && errorLabel !== undefined) {
+    const { messages } = readState($config);
+    const label = errorLabel ? `${errorLabel}: ` : '';
+    writeLog(label + messages[14], 'error');
+  }
+  return hasVirtualDir ? false : true;
+}
+
 export {
   getCurrentDir,
   getSrcDir,
@@ -230,4 +261,5 @@ export {
   isFile,
   isSymlink,
   getSymlinkInfo,
+  ensureNotVirtualDir,
 };

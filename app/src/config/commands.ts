@@ -2,37 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { messages } from './messages';
 
-import type { Api, CommandsConfig } from '@modules/App/types';
-
-/**
- * ソースディレクトリと出力先ディレクトリが仮想ディレクトリではないことを検証する。
- * コピーなどのファイル操作は仮想ディレクトリでは行えないため、このチェックが必要になる。
- * 仮想ディレクトリだった場合はエラーメッセージを表示する。
- *
- * @param api - API オブジェクト
- * @param label - エラーメッセージのラベル
- * @param target - チェック対象
- *   - `all`: すべて
- *   - `dest`: 出力先ディレクトリのみ
- *   - `src`: ソースディレクトリのみ
- * @returns 仮想ディレクトリではない (true)、である (false)
- */
-function ensureNotVirtualDir(
-  api: Api,
-  label: string,
-  target: 'all' | 'dest' | 'src' = 'all',
-): boolean {
-  const shouldCheckSrc = target === 'all' || target === 'src';
-  const shouldCheckDest = target === 'all' || target === 'dest';
-  if (
-    (shouldCheckSrc && api.getSrcDir().isVirtual) ||
-    (shouldCheckDest && api.getDestDir().isVirtual)
-  ) {
-    api.writeLog(`${label}: ${messages[14]}`, 'error');
-    return false;
-  }
-  return true;
-}
+import type { CommandsConfig } from '@modules/App/types';
 
 const commands: CommandsConfig = [
   {
@@ -271,7 +241,7 @@ const commands: CommandsConfig = [
     name: 'CopyEntries',
     async action(api, combo) {
       const label = 'copy entries';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
@@ -292,7 +262,7 @@ const commands: CommandsConfig = [
     name: 'MoveEntries',
     async action(api, combo) {
       const label = 'move entries';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
@@ -313,7 +283,7 @@ const commands: CommandsConfig = [
     name: 'RemoveEntries',
     async action(api, combo) {
       const label = 'remove entries';
-      if (!ensureNotVirtualDir(api, label, 'src')) {
+      if (!api.ensureNotVirtualDir('src', label)) {
         return;
       }
       const names = api.getTargetEntryNames();
@@ -337,7 +307,7 @@ const commands: CommandsConfig = [
   {
     name: 'RenameEntry',
     async action(api, combo) {
-      if (!ensureNotVirtualDir(api, 'rename entries', 'src')) {
+      if (!api.ensureNotVirtualDir('src', 'rename entries')) {
         return;
       }
       const name = api.getActiveEntryName();
@@ -361,7 +331,7 @@ const commands: CommandsConfig = [
   {
     name: 'CreateDir',
     async action(api, combo) {
-      if (!ensureNotVirtualDir(api, 'create directory', 'src')) {
+      if (!api.ensureNotVirtualDir('src', 'create directory')) {
         return;
       }
       const input = await api.showPromptModal('untitled folder');
@@ -380,7 +350,7 @@ const commands: CommandsConfig = [
   {
     name: 'CreateFile',
     async action(api, combo) {
-      if (!ensureNotVirtualDir(api, 'create file', 'src')) {
+      if (!api.ensureNotVirtualDir('src', 'create file')) {
         return;
       }
       const input = await api.showPromptModal('untitled');
@@ -402,7 +372,7 @@ const commands: CommandsConfig = [
     name: 'ZipEntries',
     async action(api, combo) {
       const label = 'zip entries';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       const names = api.getTargetEntryNames();
@@ -428,7 +398,7 @@ const commands: CommandsConfig = [
     name: 'UnzipArchives',
     async action(api, combo) {
       const label = 'unzip archives';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
@@ -449,7 +419,7 @@ const commands: CommandsConfig = [
     name: 'TarEntries',
     async action(api, combo) {
       const label = 'tar entries';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       const names = api.getTargetEntryNames();
@@ -475,7 +445,7 @@ const commands: CommandsConfig = [
     name: 'UntarArchives',
     async action(api, combo) {
       const label = 'untar archives';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
@@ -496,7 +466,7 @@ const commands: CommandsConfig = [
     name: 'TgzEntries',
     async action(api, combo) {
       const label = 'tgz entries';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       const names = api.getTargetEntryNames();
@@ -522,7 +492,7 @@ const commands: CommandsConfig = [
     name: 'UntgzArchives',
     async action(api, combo) {
       const label = 'untgz archives';
-      if (!ensureNotVirtualDir(api, label)) {
+      if (!api.ensureNotVirtualDir('all', label)) {
         return;
       }
       await api.runProgressTask((entries, srcDir, destDir) => {
@@ -588,7 +558,7 @@ const commands: CommandsConfig = [
   {
     name: 'ExtractSelectedEntries',
     action(api, combo) {
-      if (ensureNotVirtualDir(api, 'extract entries', 'dest')) {
+      if (api.ensureNotVirtualDir('dest', 'extract entries')) {
         api.extractSelectedEntries();
       }
     },
