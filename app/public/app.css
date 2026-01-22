@@ -759,6 +759,15 @@
   /*  */
 }
 
+.dialog_promptMessage {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+
+  &:empty {
+    display: none;
+  }
+}
+
 .dialog_promptInput {
   display: block;
   width: 100%;

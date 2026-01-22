@@ -314,7 +314,7 @@ const commands: CommandsConfig = [
       if (name === '') {
         return;
       }
-      const input = await api.showPromptModal(name);
+      const input = await api.showPromptModal('', name);
       if (input === '' || input === name) {
         return;
       }
@@ -334,7 +334,7 @@ const commands: CommandsConfig = [
       if (!api.ensureNotVirtualDir('src', 'create directory')) {
         return;
       }
-      const input = await api.showPromptModal('untitled folder');
+      const input = await api.showPromptModal('', 'untitled folder');
       if (input === '') {
         return;
       }
@@ -353,7 +353,7 @@ const commands: CommandsConfig = [
       if (!api.ensureNotVirtualDir('src', 'create file')) {
         return;
       }
-      const input = await api.showPromptModal('untitled');
+      const input = await api.showPromptModal('', 'untitled');
       if (input === '') {
         return;
       }
@@ -379,7 +379,7 @@ const commands: CommandsConfig = [
       if (names.length === 0) {
         return;
       }
-      const input = await api.showPromptModal(`${names[0]}.zip`);
+      const input = await api.showPromptModal('', `${names[0]}.zip`);
       if (input === '') {
         return;
       }
@@ -426,7 +426,7 @@ const commands: CommandsConfig = [
       if (names.length === 0) {
         return;
       }
-      const input = await api.showPromptModal(`${names[0]}.tar`);
+      const input = await api.showPromptModal('', `${names[0]}.tar`);
       if (input === '') {
         return;
       }
@@ -473,7 +473,7 @@ const commands: CommandsConfig = [
       if (names.length === 0) {
         return;
       }
-      const input = await api.showPromptModal(`${names[0]}.tgz`);
+      const input = await api.showPromptModal('', `${names[0]}.tgz`);
       if (input === '') {
         return;
       }

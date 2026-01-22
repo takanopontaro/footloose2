@@ -6,9 +6,19 @@ import { $promptModalData } from '@modules/Modal/state';
 import type { FC } from 'react';
 
 /**
+ * PromptModal コンポーネントの props。
+ */
+type Props = {
+  /**
+   * モーダル内に表示する文字列。
+   */
+  message: string;
+};
+
+/**
  * 入力モーダルのコンポーネント。
  */
-const PromptModalComponent: FC = () => {
+const PromptModalComponent: FC<Props> = ({ message }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useAtom($promptModalData);
@@ -34,6 +44,7 @@ const PromptModalComponent: FC = () => {
       onFocus={handleFocus}
     >
       <div className="dialog_prompt">
+        <div className="dialog_promptMessage">{message}</div>
         <input
           ref={inputRef}
           className="mousetrap dialog_promptInput"

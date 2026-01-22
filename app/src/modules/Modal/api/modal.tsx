@@ -83,17 +83,21 @@ function clearListModalFilterQuery(): void {
 /**
  * PromptModal を表示する。
  *
+ * @param message - モーダルに表示する文章
  * @param defaultValue - テキストフィールドの初期値
  * @returns ユーザー入力値 (キャンセル時は空文字) の Promise
  */
-function showPromptModal(defaultValue: string): Promise<string> {
+function showPromptModal(
+  message: string,
+  defaultValue: string,
+): Promise<string> {
   return new Promise((resolve) => {
     writeState($promptModalData, defaultValue);
     writeState($promptModalAction, {
       primary: (data) => resolve(data),
       cancel: () => resolve(''),
     });
-    writeState($modal, <PromptModal />);
+    writeState($modal, <PromptModal message={message} />);
   });
 }
 
