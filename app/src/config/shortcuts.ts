@@ -333,17 +333,17 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'ToggleRowSelection',
       },
     ],
-    'shift+a': [
+    'meta+a': [
       {
         cmd: 'SelectAllRows',
       },
     ],
-    'shift+ctrl+a': [
+    'esc': [
       {
         cmd: 'DeselectAllRows',
       },
     ],
-    'shift+ctrl+meta+a': [
+    'shift+meta+a': [
       {
         cmd: 'InvertAllRowSelections',
       },
@@ -368,27 +368,27 @@ const shortcuts: ShortcutsConfig = {
         modes: ['virtual-dir'],
       },
     ],
-    'shift+p': [
+    'meta+s': [
       {
         cmd: 'SyncDestDirPathWithSrcDirPath',
       },
     ],
-    'shift+ctrl+p': [
+    'shift+meta+s': [
       {
         cmd: 'SyncSrcDirPathWithDestDirPath',
       },
     ],
-    'shift+ctrl+meta+p': [
+    'shift+ctrl+meta+s': [
       {
         cmd: 'SwapDirPaths',
       },
     ],
-    'shift+j': [
+    'meta+j': [
       {
         cmd: 'GoToDir',
       },
     ],
-    'shift+h': [
+    'meta+h': [
       {
         cmd: 'ShowFullHistory',
       },
@@ -405,28 +405,28 @@ const shortcuts: ShortcutsConfig = {
         args: { delta: 1 },
       },
     ],
-    'shift+b': [
+    'meta+b': [
       {
         cmd: 'ShowAllBookmarks',
       },
     ],
-    'shift+ctrl+b': [
+    'shift+meta+b': [
       {
         cmd: 'BookmarkCurrentDir',
         modes: ['!virtual-dir'],
       },
     ],
-    'plus': [
+    'meta+=': [
       {
         cmd: 'CopySrcPathsToClipboard',
       },
     ],
-    '=': [
+    'shift+meta+=': [
       {
         cmd: 'CopySrcDirPathToClipboard',
       },
     ],
-    'shift+c': [
+    'meta+c': [
       {
         cmd: 'CopyEntries',
         modes: ['!virtual-dir'],
@@ -436,129 +436,105 @@ const shortcuts: ShortcutsConfig = {
         modes: ['virtual-dir'],
       },
     ],
-    'shift+m': [
+    'meta+m': [
       {
         cmd: 'MoveEntries',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+d': [
+    'meta+d': [
       {
         cmd: 'RemoveEntries',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+r': [
+    'meta+r': [
       {
         cmd: 'RenameEntry',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+k': [
+    'meta+k': [
       {
         cmd: 'CreateDir',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+t': [
+    'shift+meta+k': [
       {
         cmd: 'CreateFile',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+o': [
+    'meta+o': [
       {
         cmd: 'OpenWith',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+z': [
+    'meta+z': [
       {
         cmd: 'ZipEntries',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+u': [
+    'meta+u': [
       {
         cmd: 'UnzipArchives',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+ctrl+z': [
-      {
-        cmd: 'TarEntries',
-        modes: ['!virtual-dir'],
-      },
-    ],
-    'shift+ctrl+u': [
-      {
-        cmd: 'UntarArchives',
-        modes: ['!virtual-dir'],
-      },
-    ],
-    'shift+ctrl+meta+z': [
-      {
-        cmd: 'TgzEntries',
-        modes: ['!virtual-dir'],
-      },
-    ],
-    'shift+ctrl+meta+u': [
-      {
-        cmd: 'UntgzArchives',
-        modes: ['!virtual-dir'],
-      },
-    ],
-    'shift+0': [
+    'meta+0': [
       {
         cmd: 'ClearSort',
       },
     ],
-    'shift+1': [
+    'meta+1': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'perm' },
       },
     ],
-    'shift+2': [
+    'meta+2': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'name' },
       },
     ],
-    'shift+3': [
+    'meta+3': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'size' },
       },
     ],
-    'shift+4': [
+    'meta+4': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'time' },
       },
     ],
-    '~': [
+    'meta+`': [
       {
         cmd: 'CycleDirPosition',
       },
     ],
-    'shift+g': [
+    'meta+g': [
       {
         cmd: 'EnterGalleryMode',
       },
     ],
-    'shift+ctrl+g': [
+    'shift+meta+g': [
       {
         cmd: 'ExitGalleryMode',
       },
     ],
-    'shift+v': [
+    'meta+p': [
       {
         cmd: 'ShowPreviewArea',
         modes: ['!preview'],
       },
     ],
-    'esc': [
+    'shift+meta+p': [
       {
         cmd: 'HidePreviewArea',
         modes: ['preview'],
