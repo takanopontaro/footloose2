@@ -369,6 +369,30 @@ const commands: CommandsConfig = [
 
   // 圧縮ファイル系
   {
+    name: 'Unarchive',
+    async action(api, combo) {
+      const label = 'unarchive';
+      if (!api.ensureNotVirtualDir('all', label)) {
+        return;
+      }
+      const name = api.getActiveEntryName();
+      if (name === '') {
+        return;
+      }
+      switch (true) {
+        case name.endsWith('.tar'):
+          await api.execCommand('UntarArchives', combo);
+          break;
+        case name.endsWith('.tgz') || name.endsWith('.tar.gz'):
+          await api.execCommand('UntgzArchives', combo);
+          break;
+        default:
+          await api.execCommand('UnzipArchives', combo);
+          break;
+      }
+    },
+  },
+  {
     name: 'ZipEntries',
     async action(api, combo) {
       const label = 'zip entries';

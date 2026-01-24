@@ -480,7 +480,7 @@ const shortcuts: ShortcutsConfig = {
     ],
     'meta+u': [
       {
-        cmd: 'UnzipArchives',
+        cmd: 'Unarchive',
         modes: ['!virtual-dir'],
       },
     ],
