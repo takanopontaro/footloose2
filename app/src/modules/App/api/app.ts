@@ -1,5 +1,11 @@
 import { readState, writeState } from '@libs/utils';
-import { $activeFrame, $inactiveFrame, $scope } from '@modules/App/state';
+import {
+  $activeFrame,
+  $api,
+  $config,
+  $inactiveFrame,
+  $scope,
+} from '@modules/App/state';
 import { $activeEntryName, $filteredEntries } from '@modules/DataFrame/state';
 import {
   $listModalActiveEntryName,
@@ -113,6 +119,27 @@ function focusConfirmModal(): void {
   writeState($scope, 'ConfirmModal');
 }
 
+/**
+ * CommandAction を実行する。
+ *
+ * @param name - コマンド名
+ * @param combo - 押されたショートカットキーの組み合わせ
+ * @param args - コマンド関数に渡される引数
+ * @see CommandAction
+ */
+async function execCommand(
+  name: string,
+  combo: string,
+  args?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+): Promise<void> {
+  const { commands } = readState($config);
+  const action = commands.find((c) => c.name === name)?.action;
+  if (action) {
+    const api = readState($api);
+    await action(api, combo, args);
+  }
+}
+
 export {
   focusDataFrame,
   focusOtherDataFrame,
@@ -124,4 +151,5 @@ export {
   focusListModalEntryFilter,
   focusPromptModal,
   focusConfirmModal,
+  execCommand,
 };
