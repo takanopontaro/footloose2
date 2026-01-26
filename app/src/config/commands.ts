@@ -166,7 +166,7 @@ const commands: CommandsConfig = [
   {
     name: 'GoToDir',
     action(api, combo) {
-      api.goToDir();
+      api.goToDir('');
     },
   },
   {

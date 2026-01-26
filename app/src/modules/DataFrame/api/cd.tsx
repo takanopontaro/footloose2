@@ -95,9 +95,10 @@ function goToParentDir(frame = readState($activeFrame)): void {
 /**
  * 任意のディレクトリに移動する。
  *
+ * @param message - モーダルに表示する文章
  * @param frame - 対象フレーム
  */
-function goToDir(frame = readState($activeFrame)): void {
+function goToDir(message: string, frame = readState($activeFrame)): void {
   const action: PromptModalAction = {
     primary: (data) => {
       data = data.trim();
@@ -111,7 +112,7 @@ function goToDir(frame = readState($activeFrame)): void {
   };
   writeState($promptModalData, RESET);
   writeState($promptModalAction, action);
-  writeState($modal, <PromptModal />);
+  writeState($modal, <PromptModal message={message} />);
 }
 
 /**
