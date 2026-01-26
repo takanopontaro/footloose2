@@ -1,4 +1,9 @@
-import { copyFileSync, readFileSync, writeFileSync } from 'fs';
+import {
+  copyFileSync,
+  createReadStream,
+  readFileSync,
+  writeFileSync,
+} from 'fs';
 import { resolve } from 'path';
 import react from '@vitejs/plugin-react-swc';
 import * as esbuild from 'esbuild';
@@ -8,24 +13,6 @@ import type { PluginOption, UserConfig } from 'vite';
 
 function resolvePath(path: string): string {
   return resolve(__dirname, path);
-}
-
-// migemo 関連のファイルを dist にコピーする。
-function migemo(): PluginOption {
-  return {
-    name: 'migemo',
-    apply: 'build',
-    closeBundle() {
-      copyFileSync(
-        resolvePath('node_modules/jsmigemo/dist/jsmigemo.min.mjs'),
-        resolvePath('dist/jsmigemo.min.mjs'),
-      );
-      copyFileSync(
-        resolvePath('node_modules/jsmigemo/migemo-compact-dict'),
-        resolvePath('dist/migemo-compact-dict'),
-      );
-    },
-  };
 }
 
 // ユーザーが自前の config や css を利用できるようにしたいため、
@@ -72,6 +59,40 @@ function assets(): PluginOption | undefined {
         const jsStrB64 = Buffer.from(code, 'utf-8').toString('base64');
         return html.replace('%css%', cssStr).replace('%js%', jsStrB64);
       },
+    },
+  };
+}
+
+// migemo 辞書ファイルを配信する (開発時)。
+function migemoDict(): PluginOption {
+  return {
+    name: 'migemo-dict',
+    configureServer(server) {
+      server.middlewares.use('/migemo-compact-dict', (_req, res) => {
+        const dictPath = resolvePath(
+          'node_modules/jsmigemo/migemo-compact-dict',
+        );
+        res.setHeader('Content-Type', 'application/octet-stream');
+        createReadStream(dictPath).pipe(res);
+      });
+    },
+  };
+}
+
+// migemo 関連ファイルを dist にコピーする (ビルド時)。
+function migemo(): PluginOption {
+  return {
+    name: 'migemo',
+    apply: 'build',
+    closeBundle() {
+      copyFileSync(
+        resolvePath('node_modules/jsmigemo/dist/jsmigemo.min.mjs'),
+        resolvePath('dist/jsmigemo.min.mjs'),
+      );
+      copyFileSync(
+        resolvePath('node_modules/jsmigemo/migemo-compact-dict'),
+        resolvePath('dist/migemo-compact-dict'),
+      );
     },
   };
 }
@@ -128,9 +149,12 @@ function devConfig(): UserConfig {
         '@config': resolvePath('src/config'),
         '@libs': resolvePath('src/libs'),
         '@modules': resolvePath('src/modules'),
+        '/jsmigemo.min.mjs': resolvePath(
+          'node_modules/jsmigemo/dist/jsmigemo.min.mjs',
+        ),
       },
     },
-    plugins: [react(), migemo(), assets()],
+    plugins: [react(), assets(), migemoDict()],
     build: {
       target: 'esnext',
       outDir: 'dist',
