@@ -11,6 +11,9 @@ import type { Config } from '@modules/App/types';
 /**
  * ルートコンポーネント。
  * Config を受け取り、jotai の store に格納する。
+ *
+ * @param config - アプリケーションの設定
+ * @param migemo - Migemo インスタンス
  */
 function init(config: Config, migemo: Migemo): void {
   store.set($config, config);
