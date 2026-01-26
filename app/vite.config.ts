@@ -63,9 +63,9 @@ function assets(): PluginOption | undefined {
           write: false,
           absWorkingDir: process.cwd(),
           alias: {
-            '@config': resolve(__dirname, 'src/config'),
-            '@libs': resolve(__dirname, 'src/libs'),
-            '@modules': resolve(__dirname, 'src/modules'),
+            '@config': resolvePath('src/config'),
+            '@libs': resolvePath('src/libs'),
+            '@modules': resolvePath('src/modules'),
           },
         });
         const code = result.outputFiles[0].text;
@@ -125,9 +125,9 @@ function devConfig(): UserConfig {
     },
     resolve: {
       alias: {
-        '@config': resolve(__dirname, 'src/config'),
-        '@libs': resolve(__dirname, 'src/libs'),
-        '@modules': resolve(__dirname, 'src/modules'),
+        '@config': resolvePath('src/config'),
+        '@libs': resolvePath('src/libs'),
+        '@modules': resolvePath('src/modules'),
       },
     },
     plugins: [react(), migemo(), assets()],
@@ -150,9 +150,9 @@ function prdConfig(): UserConfig {
     },
     resolve: {
       alias: {
-        '@config': resolve(__dirname, 'src/config'),
-        '@libs': resolve(__dirname, 'src/libs'),
-        '@modules': resolve(__dirname, 'src/modules'),
+        '@config': resolvePath('src/config'),
+        '@libs': resolvePath('src/libs'),
+        '@modules': resolvePath('src/modules'),
       },
     },
     plugins: [react(), migemo(), indexHtml(), packageJson()],
@@ -160,7 +160,7 @@ function prdConfig(): UserConfig {
       target: 'esnext',
       outDir: 'dist',
       lib: {
-        entry: resolve(__dirname, 'src/main.tsx'),
+        entry: resolvePath('src/main.tsx'),
         fileName: () => 'app.js',
         formats: ['es'],
       },
