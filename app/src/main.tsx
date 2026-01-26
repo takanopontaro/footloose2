@@ -5,13 +5,14 @@ import { store } from '@libs/store';
 import { App } from '@modules/App/components/App';
 import { $config } from '@modules/App/state';
 
+import type { Migemo } from 'jsmigemo';
 import type { Config } from '@modules/App/types';
 
 /**
  * ルートコンポーネント。
  * Config を受け取り、jotai の store に格納する。
  */
-function init(config: Config): void {
+function init(config: Config, migemo: Migemo): void {
   store.set($config, config);
 
   const root = document.getElementById('root')!;
