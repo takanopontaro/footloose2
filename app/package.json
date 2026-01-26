@@ -7,7 +7,8 @@
     "@footloose2/app": "./cli.js"
   },
   "dependencies": {
-    "commander": "14.0.0"
+    "commander": "14.0.0",
+    "jsmigemo": "0.4.8"
   },
   "devDependencies": {
     "@eslint/js": "9.34.0",

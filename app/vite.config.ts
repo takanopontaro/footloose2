@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import react from '@vitejs/plugin-react-swc';
 import * as esbuild from 'esbuild';
@@ -8,6 +8,24 @@ import type { PluginOption, UserConfig } from 'vite';
 
 function resolvePath(path: string): string {
   return resolve(__dirname, path);
+}
+
+// migemo 関連のファイルを dist にコピーする。
+function migemo(): PluginOption {
+  return {
+    name: 'migemo',
+    apply: 'build',
+    closeBundle() {
+      copyFileSync(
+        resolvePath('node_modules/jsmigemo/dist/jsmigemo.min.mjs'),
+        resolvePath('dist/jsmigemo.min.mjs'),
+      );
+      copyFileSync(
+        resolvePath('node_modules/jsmigemo/migemo-compact-dict'),
+        resolvePath('dist/migemo-compact-dict'),
+      );
+    },
+  };
 }
 
 // ユーザーが自前の config や css を利用できるようにしたいため、
@@ -112,7 +130,7 @@ function devConfig(): UserConfig {
         '@modules': resolve(__dirname, 'src/modules'),
       },
     },
-    plugins: [react(), assets()],
+    plugins: [react(), migemo(), assets()],
     build: {
       target: 'esnext',
       outDir: 'dist',
@@ -137,7 +155,7 @@ function prdConfig(): UserConfig {
         '@modules': resolve(__dirname, 'src/modules'),
       },
     },
-    plugins: [react(), indexHtml(), packageJson()],
+    plugins: [react(), migemo(), indexHtml(), packageJson()],
     build: {
       target: 'esnext',
       outDir: 'dist',

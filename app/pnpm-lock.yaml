@@ -11,6 +11,9 @@ importers:
       commander:
         specifier: 14.0.0
         version: 14.0.0
+      jsmigemo:
+        specifier: 0.4.8
+        version: 0.4.8
     devDependencies:
       '@eslint/js':
         specifier: 9.34.0
@@ -1461,6 +1464,10 @@ packages:
   jsdoc-type-pratt-parser@4.1.0:
     resolution: {integrity: sha512-Hicd6JK5Njt2QB6XYFS7ok9e37O8AYk3jTcppG4YVQnYjOemymvTcmc7OWsmq/Qqj5TdRFO5/x/tIPmBeRtGHg==}
     engines: {node: '>=12.0.0'}
+
+  jsmigemo@0.4.8:
+    resolution: {integrity: sha512-t9XdYQ9hZgFqChzp17XQHk0u1Vry5g7JFh3pTeG/8BmZG9tQ8SdwxOu/W6w5z9qqwBztbGsH903QbiJ/gRSWlQ==}
+    hasBin: true
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
@@ -3497,6 +3504,8 @@ snapshots:
       argparse: 2.0.1
 
   jsdoc-type-pratt-parser@4.1.0: {}
+
+  jsmigemo@0.4.8: {}
 
   json-buffer@3.0.1: {}
 
