@@ -79,16 +79,12 @@ function migemoDict(): PluginOption {
   };
 }
 
-// migemo 関連ファイルを dist にコピーする (ビルド時)。
+// migemo 辞書ファイルを dist にコピーする (ビルド時)。
 function migemo(): PluginOption {
   return {
     name: 'migemo',
     apply: 'build',
     closeBundle() {
-      copyFileSync(
-        resolvePath('node_modules/jsmigemo/dist/jsmigemo.min.mjs'),
-        resolvePath('dist/jsmigemo.min.mjs'),
-      );
       copyFileSync(
         resolvePath('node_modules/jsmigemo/migemo-compact-dict'),
         resolvePath('dist/migemo-compact-dict'),
@@ -149,9 +145,6 @@ function devConfig(): UserConfig {
         '@config': resolvePath('src/config'),
         '@libs': resolvePath('src/libs'),
         '@modules': resolvePath('src/modules'),
-        '/jsmigemo.min.mjs': resolvePath(
-          'node_modules/jsmigemo/dist/jsmigemo.min.mjs',
-        ),
       },
     },
     plugins: [react(), assets(), migemoDict()],

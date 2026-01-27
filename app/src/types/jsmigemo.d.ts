@@ -1,8 +1,11 @@
 declare module 'jsmigemo' {
-  export interface Migemo {
-    query(input: string): string;
+  export class CompactDictionary {
+    constructor(buffer: ArrayBuffer);
   }
 
-  const migemo: Migemo;
-  export default migemo;
+  export class Migemo {
+    constructor();
+    setDict(dict: CompactDictionary): void;
+    query(input: string): string;
+  }
 }
