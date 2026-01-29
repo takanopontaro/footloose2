@@ -590,8 +590,8 @@
   display: none;
 }
 
-.dirInfo_matchMode::before {
-  content: '/';
+.dirInfo_matchMode {
+  /*  */
 }
 
 /* プレビューエリア */
@@ -708,6 +708,13 @@
 }
 
 .dialog_filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.dialog_matchMode {
   /*  */
 }
 

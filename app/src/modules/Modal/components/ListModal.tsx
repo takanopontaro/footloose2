@@ -7,6 +7,7 @@ import {
   $listModalActiveEntryName,
   $listModalDataset,
   $listModalFilterQuery,
+  $listModalMatchMode,
 } from '@modules/Modal/state';
 
 import type { FC, FocusEvent, FormEvent } from 'react';
@@ -31,6 +32,7 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
   const [filter, setFilter] = useAtom($listModalFilterQuery);
   const currentRowName = useAtomValue($listModalActiveEntryName);
   const dataset = useAtomValue($listModalDataset);
+  const matchMode = useAtomValue($listModalMatchMode);
 
   const { handleClose, handleFocus } = useModal(
     dialogRef,
@@ -92,6 +94,7 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
           onFocus={handleInputFocus}
           onInput={handleInput}
         />
+        <div className="dialog_matchMode">{matchMode}</div>
       </div>
       <div className="dialog_list">
         {dataset.map(({ label, value }) => (
