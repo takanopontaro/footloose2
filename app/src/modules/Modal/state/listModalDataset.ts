@@ -1,6 +1,10 @@
 import { atom } from 'jotai';
 import { RESET, atomWithReset } from 'jotai/utils';
-import { $listModalFilterQuery } from '@modules/Modal/state';
+import { buildRegexStr } from '@modules/DataFrame/libs';
+import {
+  $listModalFilterQuery,
+  $listModalMatchMode,
+} from '@modules/Modal/state';
 
 import type { SetStateAction } from 'jotai';
 import type { ListModalData } from '@modules/Modal/types';
@@ -19,7 +23,9 @@ export const $listModalDataset = atom(
       // パターン入力中の場合を考慮して、
       // 無効な正規表現の場合は catch 句で握りつぶす
       try {
-        const re = new RegExp(filter, 'i');
+        const matchMode = get($listModalMatchMode);
+        const pattern = buildRegexStr(filter, matchMode);
+        const re = new RegExp(pattern, 'i');
         dataset = dataset.filter((v) => re.test(v.label));
       } catch (_e) {
         // 握りつぶす ✊💥
