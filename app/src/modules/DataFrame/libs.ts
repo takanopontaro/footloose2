@@ -1,5 +1,5 @@
 import { cycleIndex, readState } from '@libs/utils';
-import { $ws } from '@modules/App/state';
+import { $migemo, $ws } from '@modules/App/state';
 import {
   $activeEntryIndex,
   $currentDir,
@@ -11,6 +11,7 @@ import { writeLog } from '@modules/LogFrame/api';
 import type { WsSendCallback } from '@libs/ws';
 import type {
   Frame,
+  MatchMode,
   WsCommandErrorResponse,
   WsErrorResponse,
   WsResponse,
@@ -256,6 +257,29 @@ function handleWsSendError(
   return false;
 }
 
+/**
+ * フィルタクエリを正規表現文字列に変換する。
+ * matchMode を readState せず引数にしているのは、
+ * マッチモードが変わるたびに呼び出し元で re-render させたいため。
+ * ここで readState してしまうと、マッチモードが変わってもこの関数が再実行されないので、
+ * 呼び出し元には古い正規表現が渡され続けることになってしまう。
+ *
+ * @param query - フィルタクエリ
+ * @param matchMode - マッチモード
+ * @returns 正規表現文字列
+ */
+function buildRegexStr(query: string, matchMode: MatchMode): string {
+  const migemo = readState($migemo);
+  switch (matchMode) {
+    case 'regex':
+      return query;
+    case 'migemo':
+      return migemo.query(query);
+    default:
+      return query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+}
+
 export {
   getPrevDirName,
   getOtherFrame,
@@ -267,4 +291,5 @@ export {
   isCommandErrorResp,
   wsSend,
   handleWsSendError,
+  buildRegexStr,
 };

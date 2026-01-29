@@ -1,5 +1,7 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { $matchMode } from '@modules/App/state';
+import { buildRegexStr } from '@modules/DataFrame/libs';
 import { $filterQuery, $sortedEntries } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
@@ -33,7 +35,9 @@ export const $filteredEntries = atomFamily((frame: Frame) =>
     // パターン入力中は容易に不完全な正規表現になり得るため、
     // try-catch でしっかりガードする。
     try {
-      const re = new RegExp(filter, 'i');
+      const matchMode = get($matchMode(frame));
+      const pattern = buildRegexStr(filter, matchMode);
+      const re = new RegExp(pattern, 'i');
       copy = copy.filter((e) => re.test(e.name));
     } catch (_e) {
       // 握りつぶす ✊💥
