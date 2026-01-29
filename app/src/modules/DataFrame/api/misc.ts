@@ -1,7 +1,7 @@
 import { RESET } from 'jotai/utils';
 import mime from 'mime';
 import { readState, writeState } from '@libs/utils';
-import { $activeFrame, $config, $modes } from '@modules/App/state';
+import { $activeFrame, $config, $matchMode, $modes } from '@modules/App/state';
 import {
   getActiveEntryName,
   getTargetEntryNames,
@@ -33,6 +33,54 @@ function enterGalleryMode(frame = readState($activeFrame)): void {
  */
 function exitGalleryMode(frame = readState($activeFrame)): void {
   writeState($modes(frame), (prev) => prev.filter((m) => m !== 'gallery'));
+}
+
+/**
+ * マッチモードを normal にする。
+ *
+ * @param frame - 対象フレーム
+ */
+function setNormalMatchMode(frame = readState($activeFrame)): void {
+  writeState($matchMode(frame), 'normal');
+}
+
+/**
+ * マッチモードを regex にする。
+ *
+ * @param frame - 対象フレーム
+ */
+function setRegexMatchMode(frame = readState($activeFrame)): void {
+  writeState($matchMode(frame), 'regex');
+}
+
+/**
+ * マッチモードを migemo にする。
+ *
+ * @param frame - 対象フレーム
+ */
+function setMigemoMatchMode(frame = readState($activeFrame)): void {
+  writeState($matchMode(frame), 'migemo');
+}
+
+/**
+ * マッチモードを循環させる。
+ * normal → regex → migemo → normal、の順。
+ *
+ * @param frame - 対象フレーム
+ */
+function cycleMatchMode(frame = readState($activeFrame)): void {
+  const mode = readState($matchMode(frame));
+  switch (mode) {
+    case 'normal':
+      setRegexMatchMode(frame);
+      break;
+    case 'regex':
+      setMigemoMatchMode(frame);
+      break;
+    case 'migemo':
+      setNormalMatchMode(frame);
+      break;
+  }
 }
 
 /**
@@ -175,6 +223,10 @@ function copySrcDirPathToClipboard(frame = readState($activeFrame)): void {
 export {
   enterGalleryMode,
   exitGalleryMode,
+  setNormalMatchMode,
+  setRegexMatchMode,
+  setMigemoMatchMode,
+  cycleMatchMode,
   clearEntryFilter,
   openWith,
   copySrcPathsToClipboard,
