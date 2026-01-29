@@ -634,6 +634,32 @@ const commands: CommandsConfig = [
     },
   },
 
+  // マッチモード系
+  {
+    name: 'SetNormalMatchMode',
+    action(api, combo) {
+      api.setNormalMatchMode();
+    },
+  },
+  {
+    name: 'SetRegexMatchMode',
+    action(api, combo) {
+      api.setRegexMatchMode();
+    },
+  },
+  {
+    name: 'SetMigemoMatchMode',
+    action(api, combo) {
+      api.setMigemoMatchMode();
+    },
+  },
+  {
+    name: 'CycleMatchMode',
+    action(api, combo) {
+      api.cycleMatchMode();
+    },
+  },
+
   // LogFrame 操作系
   {
     name: 'ClearAllLogs',

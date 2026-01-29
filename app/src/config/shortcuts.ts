@@ -7,6 +7,11 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'FocusEntryFilter',
       },
     ],
+    'meta+/': [
+      {
+        cmd: 'CycleMatchMode',
+      },
+    ],
     'tab': [
       {
         cmd: 'FocusOtherDataFrame',
@@ -624,6 +629,11 @@ const shortcuts: ShortcutsConfig = {
     'shift+tab': [
       {
         cmd: 'None',
+      },
+    ],
+    'meta+/': [
+      {
+        cmd: 'CycleMatchMode',
       },
     ],
   },
