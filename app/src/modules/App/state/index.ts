@@ -2,6 +2,7 @@ export * from './activeFrame';
 export * from './api';
 export * from './config';
 export * from './inactiveFrame';
+export * from './matchMode';
 export * from './migemo';
 export * from './modal';
 export * from './modes';

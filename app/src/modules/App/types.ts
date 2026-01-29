@@ -415,6 +415,11 @@ export type Scope =
 export type Mode = 'filter' | 'gallery' | 'history' | 'preview' | 'virtual-dir';
 
 /**
+ * マッチモード。
+ */
+export type MatchMode = 'migemo' | 'normal' | 'regex';
+
+/**
  * タグ。
  */
 export type Tag =
