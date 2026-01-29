@@ -3,12 +3,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { debounce } from '@libs/utils';
 import {
   $activeEntryIndex,
-  $gridColumnCount,
-  $maxVisibleRowCount,
-  $firstVisibleEntryIndex,
-  $renderedRowHeight,
-  $isGalleryMode,
   $filteredEntries,
+  $firstVisibleEntryIndex,
+  $gridColumnCount,
+  $isGalleryMode,
+  $maxVisibleRowCount,
+  $renderedRowHeight,
 } from '@modules/DataFrame/state';
 
 import type { RefObject } from 'react';

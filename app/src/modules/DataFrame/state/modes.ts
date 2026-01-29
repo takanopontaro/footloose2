@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { atomFamily, atomWithReset, RESET } from 'jotai/utils';
 import { shallowEqualArray } from '@libs/utils';
 
 import type { SetStateAction } from 'jotai';

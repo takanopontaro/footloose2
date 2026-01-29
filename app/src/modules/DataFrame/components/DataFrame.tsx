@@ -18,11 +18,11 @@ import {
 } from '@modules/DataFrame/hooks';
 import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
-  $selectedEntryNames,
-  $sort,
-  $renderedEntries,
   $activeEntryName,
   $modes,
+  $renderedEntries,
+  $selectedEntryNames,
+  $sort,
 } from '@modules/DataFrame/state';
 
 import type { FC, FocusEvent } from 'react';

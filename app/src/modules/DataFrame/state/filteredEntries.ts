@@ -3,8 +3,8 @@ import { atomFamily } from 'jotai/utils';
 import { buildRegexStr } from '@modules/DataFrame/libs';
 import {
   $filterQuery,
-  $sortedEntries,
   $matchMode,
+  $sortedEntries,
 } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';

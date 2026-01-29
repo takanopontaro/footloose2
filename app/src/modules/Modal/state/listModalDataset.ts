@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { RESET, atomWithReset } from 'jotai/utils';
+import { atomWithReset, RESET } from 'jotai/utils';
 import { buildRegexStr } from '@modules/DataFrame/libs';
 import {
   $listModalFilterQuery,

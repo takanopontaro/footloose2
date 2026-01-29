@@ -2,12 +2,12 @@ import { useAtomValue } from 'jotai';
 import { useLayoutEffect, useState } from 'react';
 import {
   $activeEntryIndex,
-  $gridColumnCount,
-  $maxVisibleRowCount,
-  $firstVisibleEntryIndex,
-  $renderedRowHeight,
-  $isGalleryMode,
   $filteredEntries,
+  $firstVisibleEntryIndex,
+  $gridColumnCount,
+  $isGalleryMode,
+  $maxVisibleRowCount,
+  $renderedRowHeight,
 } from '@modules/DataFrame/state';
 
 import type { RefObject } from 'react';

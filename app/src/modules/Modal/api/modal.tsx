@@ -1,5 +1,5 @@
 import { RESET } from 'jotai/utils';
-import { cycleIndex, readState, getFocusableEl, writeState } from '@libs/utils';
+import { cycleIndex, getFocusableEl, readState, writeState } from '@libs/utils';
 import { focusDataFrame } from '@modules/App/api';
 import { $modal } from '@modules/App/state';
 import { ConfirmModal, PromptModal } from '@modules/Modal/components';

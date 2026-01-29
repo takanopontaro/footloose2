@@ -1,16 +1,16 @@
 import { atom } from 'jotai';
-import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { atomFamily, atomWithReset, RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import {
-  $modes,
+  $activeEntryIndex,
+  $activeEntryName,
   $filteredEntries,
+  $firstVisibleEntryIndex,
   $gridColumnCount,
   $maxVisibleRowCount,
-  $firstVisibleEntryIndex,
-  $selectedEntryNames,
-  $activeEntryIndex,
+  $modes,
   $renderedEntries,
-  $activeEntryName,
+  $selectedEntryNames,
 } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';

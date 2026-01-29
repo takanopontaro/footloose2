@@ -10,8 +10,8 @@ import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
 import {
   $activeEntryName,
   $currentDir,
-  $filterQuery,
   $filteredEntries,
+  $filterQuery,
   $matchMode,
   $modes,
 } from '@modules/DataFrame/state';

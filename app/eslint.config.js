@@ -46,6 +46,7 @@ const jsConfigBase = {
         ],
       },
     ],
+    'perfectionist/sort-named-imports': 'error',
 
     'sort-destructure-keys/sort-destructure-keys': 'error',
   },
@@ -121,6 +122,7 @@ export default tseslint.config(
         },
       ],
       'perfectionist/sort-intersection-types': ['error', { groups: ['named'] }],
+      'perfectionist/sort-named-imports': 'error',
       'perfectionist/sort-object-types': ['error', { groups: ['unknown'] }],
       'perfectionist/sort-union-types': ['error', { groups: ['named'] }],
 

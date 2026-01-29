@@ -3,11 +3,11 @@ import { memo, useEffect, useState } from 'react';
 import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $filteredEntries,
+  $matchMode,
+  $modes,
   $rawEntries,
   $selectedEntryNames,
   $sort,
-  $matchMode,
-  $modes,
 } from '@modules/DataFrame/state';
 
 import type { FC } from 'react';

@@ -6,8 +6,8 @@ import {
   $activeEntryName,
   $currentDir,
   $filteredEntries,
-  $selectedEntryNames,
   $modes,
+  $selectedEntryNames,
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 

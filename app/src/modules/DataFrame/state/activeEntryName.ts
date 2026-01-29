@@ -1,12 +1,12 @@
 import { atom } from 'jotai';
-import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
+import { atomFamily, atomWithReset, RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import {
   $activeEntryIndex,
+  $firstVisibleEntryIndex,
   $gridColumnCount,
   $isGalleryMode,
   $lastVisibleEntryIndex,
-  $firstVisibleEntryIndex,
 } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';

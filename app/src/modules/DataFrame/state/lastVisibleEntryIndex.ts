@@ -1,9 +1,9 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import {
+  $firstVisibleEntryIndex,
   $gridColumnCount,
   $maxVisibleRowCount,
-  $firstVisibleEntryIndex,
 } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
