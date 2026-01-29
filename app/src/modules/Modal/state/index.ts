@@ -3,6 +3,7 @@ export * from './listModalAction';
 export * from './listModalActiveEntryName';
 export * from './listModalDataset';
 export * from './listModalFilterQuery';
+export * from './listModalMatchMode';
 export * from './modalRef';
 export * from './promptModalAction';
 export * from './promptModalData';
