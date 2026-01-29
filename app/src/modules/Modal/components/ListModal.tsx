@@ -84,29 +84,31 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
       onClose={handleModalClose}
       onFocus={handleFocus}
     >
-      <div className="dialog_filter">
-        <input
-          ref={inputRef}
-          className="mousetrap dialog_input"
-          tabIndex={-1}
-          type="text"
-          value={filter}
-          onFocus={handleInputFocus}
-          onInput={handleInput}
-        />
-        <div className="dialog_matchMode">{matchMode}</div>
-      </div>
       <div className="dialog_list">
-        {dataset.map(({ label, value }) => (
-          <button
-            key={value}
-            aria-current={currentRowName === value}
-            className="dialog_listItem"
+        <div className="dialog_listFilter">
+          <input
+            ref={inputRef}
+            className="mousetrap dialog_listInput"
             tabIndex={-1}
-          >
-            {label}
-          </button>
-        ))}
+            type="text"
+            value={filter}
+            onFocus={handleInputFocus}
+            onInput={handleInput}
+          />
+          <div className="dialog_listMatchMode">{matchMode}</div>
+        </div>
+        <div className="dialog_listDataset">
+          {dataset.map(({ label, value }) => (
+            <button
+              key={value}
+              aria-current={currentRowName === value}
+              className="dialog_listData"
+              tabIndex={-1}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
     </dialog>
   );

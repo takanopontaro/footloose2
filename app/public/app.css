@@ -707,18 +707,24 @@
   }
 }
 
-.dialog_filter {
+/* 選択モーダル */
+
+.dialog_list {
+  /*  */
+}
+
+.dialog_listFilter {
   display: flex;
   align-items: center;
   gap: 10px;
   white-space: nowrap;
 }
 
-.dialog_matchMode {
+.dialog_listMatchMode {
   /*  */
 }
 
-.dialog_input {
+.dialog_listInput {
   display: block;
   width: 100%;
   padding: 1px;
@@ -735,9 +741,7 @@
   }
 }
 
-/* 選択モーダル */
-
-.dialog_list {
+.dialog_listDataset {
   margin-top: 5px;
 
   &:empty {
@@ -745,7 +749,7 @@
   }
 }
 
-.dialog_listItem {
+.dialog_listData {
   display: block;
   width: 100%;
   padding: 1px;
