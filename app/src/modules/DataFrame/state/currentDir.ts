@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
-import { $config, $modes, $prevSessionDir } from '@modules/App/state';
-import { $history } from '@modules/DataFrame/state';
+import { $config } from '@modules/App/state';
+import { $history, $modes, $prevSessionDir } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';

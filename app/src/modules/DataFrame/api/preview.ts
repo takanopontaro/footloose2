@@ -1,6 +1,6 @@
 import { readState, writeState } from '@libs/utils';
-import { $activeFrame, $config, $modes } from '@modules/App/state';
-import { $previewRef } from '@modules/DataFrame/state';
+import { $activeFrame, $config } from '@modules/App/state';
+import { $previewRef, $modes } from '@modules/DataFrame/state';
 
 import type { Direction } from '@modules/App/types';
 

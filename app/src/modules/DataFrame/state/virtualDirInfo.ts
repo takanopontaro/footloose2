@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
 import { shallowEqualObject } from '@libs/utils';
-import { $modes } from '@modules/App/state';
+import { $modes } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';
 import type { Frame } from '@modules/App/types';

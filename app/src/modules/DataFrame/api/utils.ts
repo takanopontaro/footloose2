@@ -1,5 +1,5 @@
 import { readState } from '@libs/utils';
-import { $activeFrame, $config, $modes } from '@modules/App/state';
+import { $activeFrame, $config } from '@modules/App/state';
 import { getOtherFrame } from '@modules/DataFrame/libs';
 import { EntryModel } from '@modules/DataFrame/models';
 import {
@@ -7,6 +7,7 @@ import {
   $currentDir,
   $filteredEntries,
   $selectedEntryNames,
+  $modes,
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 

@@ -2,6 +2,11 @@ import type { ReactNode, RefObject } from 'react';
 import type { EntryModel } from '@modules/DataFrame/models';
 
 /**
+ * モード。
+ */
+export type Mode = 'filter' | 'gallery' | 'history' | 'preview' | 'virtual-dir';
+
+/**
  * 各フレームのカレントディレクトリを表すオブジェクト。
  */
 export type CurrentDir = {

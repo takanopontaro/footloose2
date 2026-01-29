@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
-import { $prevSessionDir } from '@modules/App/state';
+import { $prevSessionDir } from '@modules/DataFrame/state';
 
 /**
  * 初回読込時用のカレントディレクトリを返す。

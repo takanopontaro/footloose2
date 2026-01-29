@@ -1,8 +1,11 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
-import { $matchMode } from '@modules/App/state';
 import { buildRegexStr } from '@modules/DataFrame/libs';
-import { $filterQuery, $sortedEntries } from '@modules/DataFrame/state';
+import {
+  $filterQuery,
+  $sortedEntries,
+  $matchMode,
+} from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
 

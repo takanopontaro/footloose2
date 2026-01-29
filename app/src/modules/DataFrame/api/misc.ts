@@ -1,7 +1,7 @@
 import { RESET } from 'jotai/utils';
 import mime from 'mime';
 import { readState, writeState } from '@libs/utils';
-import { $activeFrame, $config, $matchMode, $modes } from '@modules/App/state';
+import { $activeFrame, $config } from '@modules/App/state';
 import {
   getActiveEntryName,
   getTargetEntryNames,
@@ -12,6 +12,8 @@ import {
   $currentDir,
   $filterQuery,
   $filteredEntries,
+  $matchMode,
+  $modes,
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 

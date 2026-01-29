@@ -1,16 +1,17 @@
 import { atom } from 'jotai';
 import Mousetrap from 'mousetrap';
 import { readState } from '@libs/utils';
-import { $activeFrame, $api, $config, $modes, $tags } from '@modules/App/state';
+import { $activeFrame, $api, $config, $tags } from '@modules/App/state';
+import { $modes } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';
 import type {
   CommandAction,
-  Mode,
   Scope,
   ShortcutCommand,
   Tag,
 } from '@modules/App/types';
+import type { Mode } from '@modules/DataFrame/types';
 
 type ActionsConfig = Omit<ShortcutCommand, 'cmd'> & {
   action: CommandAction;

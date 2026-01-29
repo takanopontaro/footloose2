@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
-import { $modes } from '@modules/App/state';
+import { $modes } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
 

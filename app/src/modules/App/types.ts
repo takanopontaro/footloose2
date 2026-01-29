@@ -1,5 +1,5 @@
 import type { LISTENER_STATUS } from '@libs/ws';
-import type { Bookmark, DirData } from '@modules/DataFrame/types';
+import type { Bookmark, DirData, Mode } from '@modules/DataFrame/types';
 import type * as appApi from '@modules/App/api';
 import type * as dataFrameApi from '@modules/DataFrame/api';
 import type * as logApi from '@modules/LogFrame/api';
@@ -408,11 +408,6 @@ export type Scope =
   | 'ListModalEntryFilter'
   | 'LogFrame'
   | 'PromptModal';
-
-/**
- * モード。
- */
-export type Mode = 'filter' | 'gallery' | 'history' | 'preview' | 'virtual-dir';
 
 /**
  * マッチモード。

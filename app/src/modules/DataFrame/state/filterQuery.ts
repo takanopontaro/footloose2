@@ -1,8 +1,8 @@
 import { atom } from 'jotai';
 import { RESET, atomFamily, atomWithReset } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
-import { $modes } from '@modules/App/state';
 import {
+  $modes,
   $filteredEntries,
   $gridColumnCount,
   $maxVisibleRowCount,

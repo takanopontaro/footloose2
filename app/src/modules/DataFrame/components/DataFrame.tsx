@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { memo, useCallback, useRef } from 'react';
-import { $activeFrame, $modes, $scope } from '@modules/App/state';
+import { $activeFrame, $scope } from '@modules/App/state';
 import {
   DirInfo,
   EntryFilter,
@@ -22,6 +22,7 @@ import {
   $sort,
   $renderedEntries,
   $activeEntryName,
+  $modes,
 } from '@modules/DataFrame/state';
 
 import type { FC, FocusEvent } from 'react';

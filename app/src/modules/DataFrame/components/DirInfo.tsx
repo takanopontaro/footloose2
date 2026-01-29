@@ -1,12 +1,13 @@
 import { useAtomValue } from 'jotai';
 import { memo, useEffect, useState } from 'react';
-import { $matchMode, $modes } from '@modules/App/state';
 import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $filteredEntries,
   $rawEntries,
   $selectedEntryNames,
   $sort,
+  $matchMode,
+  $modes,
 } from '@modules/DataFrame/state';
 
 import type { FC } from 'react';
