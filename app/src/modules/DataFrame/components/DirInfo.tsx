@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { memo, useEffect, useState } from 'react';
-import { $modes } from '@modules/App/state';
+import { $matchMode, $modes } from '@modules/App/state';
 import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $filteredEntries,
@@ -80,6 +80,7 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
   const selectedNames = useAtomValue($selectedEntryNames(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
+  const matchMode = useAtomValue($matchMode(frame));
 
   const filteredCount = rawEntries.length - entries.length;
 
@@ -109,6 +110,7 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
         ))}
       </div>
       <div className="dirInfo_sort">{getSortDisplay(sort)}</div>
+      <div className="dirInfo_matchMode">{matchMode}</div>
     </div>
   );
 };

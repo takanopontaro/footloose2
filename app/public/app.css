@@ -590,6 +590,10 @@
   display: none;
 }
 
+.dirInfo_matchMode::before {
+  content: '/';
+}
+
 /* プレビューエリア */
 
 .preview {
