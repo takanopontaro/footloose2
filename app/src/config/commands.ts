@@ -725,6 +725,30 @@ const commands: CommandsConfig = [
       api.clearListModalFilterQuery();
     },
   },
+  {
+    name: 'SetNormalMatchModeListModal',
+    action(api, combo) {
+      api.setNormalMatchModeListModal();
+    },
+  },
+  {
+    name: 'SetRegexMatchModeListModal',
+    action(api, combo) {
+      api.setRegexMatchModeListModal();
+    },
+  },
+  {
+    name: 'SetMigemoMatchModeListModal',
+    action(api, combo) {
+      api.setMigemoMatchModeListModal();
+    },
+  },
+  {
+    name: 'CycleMatchModeListModal',
+    action(api, combo) {
+      api.cycleMatchModeListModal();
+    },
+  },
 
   // PromptModal 操作系
   {

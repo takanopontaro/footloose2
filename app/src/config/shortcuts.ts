@@ -736,6 +736,11 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'FocusListModalEntryFilter',
       },
     ],
+    'meta+/': [
+      {
+        cmd: 'CycleMatchModeListModal',
+      },
+    ],
     'tab': [
       {
         cmd: 'None',
@@ -774,6 +779,11 @@ const shortcuts: ShortcutsConfig = {
     'shift+tab': [
       {
         cmd: 'None',
+      },
+    ],
+    'meta+/': [
+      {
+        cmd: 'CycleMatchModeListModal',
       },
     ],
   },
