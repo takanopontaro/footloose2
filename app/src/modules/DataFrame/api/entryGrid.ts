@@ -140,12 +140,10 @@ function moveCursorByStartingLetter(
   const secondPart = entries.slice(curIndex + 1);
   const newEntries = secondPart.concat(firstPart);
 
-  const entry = newEntries.find((e) => {
-    // 正規表現のメタ文字をエスケープして、通常文字として扱えるようにする。
-    const k = escapeRegExp(key);
-    return new RegExp(`^${k}`, 'i').test(e.name);
-  });
+  // 正規表現の特殊文字をエスケープして通常文字として扱えるようにする。
+  const k = escapeRegExp(key);
 
+  const entry = newEntries.find((e) => new RegExp(`^${k}`, 'i').test(e.name));
   if (entry) {
     writeState($activeEntryName(frame), entry.name);
   }
