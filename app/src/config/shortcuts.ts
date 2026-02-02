@@ -596,6 +596,11 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'FocusDataFrame',
       },
     ],
+    'down': [
+      {
+        cmd: 'FocusDataFrame',
+      },
+    ],
     'esc': [
       {
         cmd: 'ClearEntryFilter',
@@ -741,6 +746,11 @@ const shortcuts: ShortcutsConfig = {
     ],
   },
   ListModalEntryFilter: {
+    'up': [
+      {
+        cmd: 'FocusListModal',
+      },
+    ],
     'down': [
       {
         cmd: 'FocusListModal',
