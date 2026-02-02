@@ -622,6 +622,12 @@ const commands: CommandsConfig = [
     },
   },
   {
+    name: 'TogglePreviewArea',
+    action(api, combo) {
+      api.togglePreviewArea();
+    },
+  },
+  {
     name: 'ScrollPreviewArea',
     action(api, combo, { step }) {
       api.scrollPreviewArea(step);

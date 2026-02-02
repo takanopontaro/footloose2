@@ -530,14 +530,7 @@ const shortcuts: ShortcutsConfig = {
     ],
     'meta+p': [
       {
-        cmd: 'ShowPreviewArea',
-        modes: ['!preview'],
-      },
-    ],
-    'shift+meta+p': [
-      {
-        cmd: 'HidePreviewArea',
-        modes: ['preview'],
+        cmd: 'TogglePreviewArea',
       },
     ],
     'meta+up': [

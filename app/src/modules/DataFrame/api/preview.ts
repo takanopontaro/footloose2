@@ -45,6 +45,19 @@ function hidePreviewArea(frame = readState($activeFrame)): void {
 }
 
 /**
+ * preview モードをトグルする。
+ *
+ * @param frame - 対象フレーム
+ */
+function togglePreviewArea(frame = readState($activeFrame)): void {
+  writeState($modes(frame), (prev) =>
+    prev.includes('preview')
+      ? prev.filter((m) => m !== 'preview')
+      : [...prev, 'preview'],
+  );
+}
+
+/**
  * プレビューエリアをスクロールする。
  * スクロール量は Config の previewScrollAmount に準拠する。
  *
@@ -116,6 +129,7 @@ function getVideoElementPreviewArea(
 export {
   showPreviewArea,
   hidePreviewArea,
+  togglePreviewArea,
   scrollPreviewArea,
   scrollByPagePreviewArea,
   scrollToEdgePreviewArea,
