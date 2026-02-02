@@ -44,12 +44,11 @@ function exitGalleryMode(frame = readState($activeFrame)): void {
  * @param frame - 対象フレーム
  */
 function toggleGalleryMode(frame = readState($activeFrame)): void {
-  const isGalleryMode = readState($isGalleryMode(frame));
-  if (isGalleryMode) {
-    exitGalleryMode(frame);
-  } else {
-    enterGalleryMode(frame);
-  }
+  writeState($modes(frame), (prev) =>
+    prev.includes('gallery')
+      ? prev.filter((m) => m !== 'gallery')
+      : [...prev, 'gallery'],
+  );
 }
 
 /**
