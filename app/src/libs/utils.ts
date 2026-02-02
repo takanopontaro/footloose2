@@ -128,16 +128,11 @@ function cycleIndex(
 }
 
 /**
- * 関数型。
- */
-type Fn = (...args: unknown[]) => unknown;
-
-/**
  * cancel 付きの、debounce された関数型。
  */
-type Debounced<T extends Fn> = ((
-  this: ThisParameterType<T>,
-  ...args: Parameters<T>
+type Debounced<Args extends unknown[]> = ((
+  this: unknown,
+  ...args: Args
 ) => void) & {
   cancel: () => void;
 };
@@ -148,9 +143,12 @@ type Debounced<T extends Fn> = ((
  * @param fn - 対象の関数
  * @param delay - 実行までの待ち時間 (ミリ秒)
  */
-function debounce<T extends Fn>(fn: T, delay: number): Debounced<T> {
+function debounce<Args extends unknown[], R>(
+  fn: (...args: Args) => R,
+  delay: number,
+): Debounced<Args> {
   let timeout: ReturnType<typeof setTimeout> | undefined;
-  const debounced: Debounced<T> = function (this, ...args) {
+  const debounced: Debounced<Args> = function (this, ...args) {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
       fn.apply(this, args);
