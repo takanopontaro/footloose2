@@ -2,7 +2,11 @@ import { RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame } from '@modules/App/state';
 import { getActiveEntryName } from '@modules/DataFrame/api';
-import { calcGridIndex, cycleGridIndex } from '@modules/DataFrame/libs';
+import {
+  calcGridIndex,
+  cycleGridIndex,
+  escapeRegExp,
+} from '@modules/DataFrame/libs';
 import {
   $activeEntryIndex,
   $activeEntryName,
@@ -138,7 +142,7 @@ function moveCursorByStartingLetter(
 
   const entry = newEntries.find((e) => {
     // 正規表現のメタ文字をエスケープして、通常文字として扱えるようにする。
-    const k = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const k = escapeRegExp(key);
     return new RegExp(`^${k}`, 'i').test(e.name);
   });
 

@@ -258,6 +258,16 @@ function handleWsSendError(
 }
 
 /**
+ * 特殊文字をエスケープした正規表現文字列を返す。
+ *
+ * @param str - 元の文字列
+ * @returns エスケープ後の正規表現文字列
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * フィルタクエリを正規表現文字列に変換する。
  * matchMode を readState せず引数にしているのは、
  * マッチモードが変わるたびに呼び出し元で re-render させたいため。
@@ -276,7 +286,7 @@ function buildRegexStr(query: string, matchMode: MatchMode): string {
     case 'migemo':
       return migemo.query(query);
     default:
-      return query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return escapeRegExp(query);
   }
 }
 
@@ -291,5 +301,6 @@ export {
   isCommandErrorResp,
   wsSend,
   handleWsSendError,
+  escapeRegExp,
   buildRegexStr,
 };
