@@ -12,6 +12,7 @@ import {
   $currentDir,
   $filteredEntries,
   $filterQuery,
+  $isGalleryMode,
   $matchMode,
   $modes,
 } from '@modules/DataFrame/state';
@@ -35,6 +36,20 @@ function enterGalleryMode(frame = readState($activeFrame)): void {
  */
 function exitGalleryMode(frame = readState($activeFrame)): void {
   writeState($modes(frame), (prev) => prev.filter((m) => m !== 'gallery'));
+}
+
+/**
+ * gallery モードをトグルする。
+ *
+ * @param frame - 対象フレーム
+ */
+function toggleGalleryMode(frame = readState($activeFrame)): void {
+  const isGalleryMode = readState($isGalleryMode(frame));
+  if (isGalleryMode) {
+    exitGalleryMode(frame);
+  } else {
+    enterGalleryMode(frame);
+  }
 }
 
 /**
@@ -225,6 +240,7 @@ function copySrcDirPathToClipboard(frame = readState($activeFrame)): void {
 export {
   enterGalleryMode,
   exitGalleryMode,
+  toggleGalleryMode,
   setNormalMatchMode,
   setRegexMatchMode,
   setMigemoMatchMode,

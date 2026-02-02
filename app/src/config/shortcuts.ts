@@ -525,12 +525,7 @@ const shortcuts: ShortcutsConfig = {
     ],
     'meta+g': [
       {
-        cmd: 'EnterGalleryMode',
-      },
-    ],
-    'shift+meta+g': [
-      {
-        cmd: 'ExitGalleryMode',
+        cmd: 'ToggleGalleryMode',
       },
     ],
     'meta+p': [

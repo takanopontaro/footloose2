@@ -601,6 +601,12 @@ const commands: CommandsConfig = [
       api.exitGalleryMode();
     },
   },
+  {
+    name: 'ToggleGalleryMode',
+    action(api, combo) {
+      api.toggleGalleryMode();
+    },
+  },
 
   // preview モード系
   {
