@@ -144,13 +144,20 @@ const commands: CommandsConfig = [
         return;
       }
       if (api.isSymlink(name)) {
-        const { target, type } = api.getSymlinkInfo(name) ?? {};
-        if (type === 'd') {
-          api.changeDir(name);
-        } else if (type === 'f') {
-          api.openWith();
-        } else if (type === 'e') {
-          api.writeLog(`${messages[7]}: ${name} -> ${target}`, 'error');
+        const info = api.getSymlinkInfo(name);
+        if (!info) {
+          return;
+        }
+        switch (info.type) {
+          case 'd':
+            api.changeDir(name);
+            break;
+          case 'f':
+            api.openWith();
+            break;
+          case 'e':
+            api.writeLog(`${messages[7]}: ${name} -> ${info.target}`, 'error');
+            break;
         }
         return;
       }
