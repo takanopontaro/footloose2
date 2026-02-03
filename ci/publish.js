@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 
 const baseManifest = JSON.parse(
-  fs.readFileSync("server/package.json", "utf-8")
+  fs.readFileSync("server/package.json", "utf-8"),
 );
 
 fs.readdirSync("dist").forEach((name) => {
