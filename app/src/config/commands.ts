@@ -250,7 +250,16 @@ const commands: CommandsConfig = [
         }
         return {
           label,
-          cmd: 'cp -rvn %s %d',
+          cmd: `
+for src in %s; do
+  dest=%d/$(basename "$src")
+  if [ -e "$dest" ]; then
+    echo "cp: cannot overwrite '$dest': Entry exists" >&2
+    exit 1
+  fi
+done
+
+cp -rv %s %d`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: destDir.path,
@@ -271,7 +280,16 @@ const commands: CommandsConfig = [
         }
         return {
           label,
-          cmd: 'mv -vn %s -t %d',
+          cmd: `
+for src in %s; do
+  dest=%d/$(basename "$src")
+  if [ -e "$dest" ]; then
+    echo "mv: cannot move '$src' to '$dest': Entry exists" >&2
+    exit 1
+  fi
+done
+
+mv -v %s -t %d`,
           total: 'node -e "console.log(process.argv.length - 1)" %s',
           src: entries.map((e) => e.name),
           dest: destDir.path,
@@ -410,7 +428,13 @@ const commands: CommandsConfig = [
       await api.runProgressTask((entries, srcDir, destDir) => {
         return {
           label,
-          cmd: 'zip -r %d %s',
+          cmd: `
+if [ -e %d ]; then
+  echo "zip: '%d' already exists" >&2
+  exit 1
+fi
+
+zip -r %d %s`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: `${destDir.path}/${input}`,
@@ -457,7 +481,13 @@ const commands: CommandsConfig = [
       await api.runProgressTask((entries, srcDir, destDir) => {
         return {
           label,
-          cmd: 'tar cvf %d %s',
+          cmd: `
+if [ -e %d ]; then
+  echo "tar: '%d' already exists" >&2
+  exit 1
+fi
+
+tar cvf %d %s`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: `${destDir.path}/${input}`,
@@ -504,7 +534,13 @@ const commands: CommandsConfig = [
       await api.runProgressTask((entries, srcDir, destDir) => {
         return {
           label,
-          cmd: 'tar cvfz %d %s',
+          cmd: `
+if [ -e %d ]; then
+  echo "tgz: '%d' already exists" >&2
+  exit 1
+fi
+
+tar cvfz %d %s`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: `${destDir.path}/${input}`,
