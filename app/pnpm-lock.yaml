@@ -11,9 +11,6 @@ importers:
       commander:
         specifier: 14.0.0
         version: 14.0.0
-      jsmigemo:
-        specifier: 0.4.8
-        version: 0.4.8
     devDependencies:
       '@eslint/js':
         specifier: 9.34.0
@@ -75,6 +72,9 @@ importers:
       jotai:
         specifier: 2.13.1
         version: 2.13.1(@types/react@19.1.12)(react@19.1.1)
+      jsmigemo:
+        specifier: 0.4.8
+        version: 0.4.8
       mime:
         specifier: 4.0.7
         version: 4.0.7

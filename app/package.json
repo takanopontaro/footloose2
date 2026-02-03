@@ -7,8 +7,7 @@
     "@footloose2/app": "./cli.js"
   },
   "dependencies": {
-    "commander": "14.0.0",
-    "jsmigemo": "0.4.8"
+    "commander": "14.0.0"
   },
   "devDependencies": {
     "@eslint/js": "9.34.0",
@@ -31,6 +30,7 @@
     "eslint-plugin-sort-destructure-keys": "2.0.0",
     "globals": "16.3.0",
     "jotai": "2.13.1",
+    "jsmigemo": "0.4.8",
     "mime": "4.0.7",
     "mousetrap": "1.6.5",
     "prettier": "3.6.2",
