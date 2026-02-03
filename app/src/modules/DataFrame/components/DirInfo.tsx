@@ -3,7 +3,6 @@ import { memo, useEffect, useState } from 'react';
 import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $filteredEntries,
-  $matchMode,
   $modes,
   $rawEntries,
   $selectedEntryNames,
@@ -81,7 +80,6 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
   const selectedNames = useAtomValue($selectedEntryNames(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
-  const matchMode = useAtomValue($matchMode(frame));
 
   const filteredCount = rawEntries.length - entries.length;
 
@@ -111,7 +109,6 @@ const DirInfoComponent: FC<Props> = ({ frame }) => {
         ))}
       </div>
       <div className="dirInfo_sort">{getSortDisplay(sort)}</div>
-      <div className="dirInfo_matchMode">{matchMode}</div>
     </div>
   );
 };

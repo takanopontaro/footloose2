@@ -498,6 +498,9 @@
 /* エントリフィルタ */
 
 .entryFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   grid-row: 3;
 }
 
@@ -516,6 +519,11 @@
     background-color: var(--input-focus-color);
     outline: none;
   }
+}
+
+.entryFilter_matchMode {
+  width: 65px;
+  white-space: nowrap;
 }
 
 /* カレントディレクトリ表示部 */
@@ -721,7 +729,8 @@
 }
 
 .dialog_listMatchMode {
-  /*  */
+  width: 65px;
+  white-space: nowrap;
 }
 
 .dialog_listInput {

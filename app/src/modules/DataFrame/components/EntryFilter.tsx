@@ -1,7 +1,7 @@
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { memo, useCallback, useEffect, useRef } from 'react';
 import { $activeFrame, $scope } from '@modules/App/state';
-import { $filterQuery } from '@modules/DataFrame/state';
+import { $filterQuery, $matchMode } from '@modules/DataFrame/state';
 
 import type { FC, FocusEvent, FormEvent } from 'react';
 import type { Frame } from '@modules/App/types';
@@ -24,6 +24,7 @@ const EntryFilterComponent: FC<Props> = ({ frame }) => {
   const [activeFrame, setActiveFrame] = useAtom($activeFrame);
   const [scope, setScope] = useAtom($scope);
   const [filter, setFilter] = useAtom($filterQuery(frame));
+  const matchMode = useAtomValue($matchMode(frame));
 
   useEffect(() => {
     if (activeFrame === frame && scope === 'EntryFilter') {
@@ -56,6 +57,7 @@ const EntryFilterComponent: FC<Props> = ({ frame }) => {
         onFocus={handleFocus}
         onInput={handleInput}
       />
+      <div className="entryFilter_matchMode">{matchMode}</div>
     </div>
   );
 };
