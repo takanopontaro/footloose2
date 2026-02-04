@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { memo, useEffect, useState } from 'react';
+import { memo, useMemo } from 'react';
 import { getSortDisplay } from '@modules/DataFrame/libs';
 import {
   $filteredEntries,
@@ -72,23 +72,18 @@ type Props = {
  * ディレクトリの詳細情報を表示するコンポーネント。
  */
 const DirInfoComponent: FC<Props> = ({ frame }) => {
-  const [dirs, setDirs] = useState(0);
-  const [files, setFiles] = useState(0);
-  const [links, setLinks] = useState(0);
   const rawEntries = useAtomValue($rawEntries(frame));
   const entries = useAtomValue($filteredEntries(frame));
   const selectedNames = useAtomValue($selectedEntryNames(frame));
   const sort = useAtomValue($sort(frame));
   const modes = useAtomValue($modes(frame));
 
-  const filteredCount = rawEntries.length - entries.length;
+  const { dirs, files, links } = useMemo(
+    () => getDirStats(rawEntries),
+    [rawEntries],
+  );
 
-  useEffect(() => {
-    const { dirs, files, links } = getDirStats(rawEntries);
-    setDirs(dirs);
-    setFiles(files);
-    setLinks(links);
-  }, [rawEntries]);
+  const filteredCount = rawEntries.length - entries.length;
 
   return (
     <div className="dirInfo">

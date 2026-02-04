@@ -12,7 +12,6 @@ import {
   $currentDir,
   $filteredEntries,
   $filterQuery,
-  $isGalleryMode,
   $matchMode,
   $modes,
 } from '@modules/DataFrame/state';

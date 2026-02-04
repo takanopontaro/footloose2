@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { $api, $config } from '@modules/App/state';
 import { $logData, $progressTaskInfo } from '@modules/LogFrame/state';
 
-import type { FC, MouseEvent, ReactNode } from 'react';
+import type { FC, MouseEvent } from 'react';
 import type {
   LogData,
   ProgressTaskLogData,
@@ -40,7 +40,6 @@ type Props = {
  * 他のログに紛れて画面外に流れて行ってしまわないよう一定間隔で最新位置に移動する。
  */
 const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
-  const [statusEl, setStatusEl] = useState<ReactNode | null>(null);
   const timerRef = useRef(0);
   const setLogData = useSetAtom($logData);
   const { settings } = useAtomValue($config);
@@ -103,24 +102,28 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
     [label, pid, setLogData],
   );
 
-  // status が progress の時は中止ボタンを表示し、
-  // それ以外になったら finishLog を実行する。
-  useEffect(() => {
-    if (info.status === 'progress') {
-      setStatusEl(
+  // status が progress の時は中止ボタンを表示する。
+  const statusEl = useMemo(
+    () =>
+      info.status === 'progress' ? (
         <button
           aria-label="abort"
           className="progressTaskLog_abort"
           type="button"
           onClick={abort}
-        />,
-      );
-    } else {
+        />
+      ) : null,
+    [abort, info.status],
+  );
+
+  // status が progress 以外になったら finishLog を実行する。
+  useEffect(() => {
+    if (info.status !== 'progress') {
       clearTimeout(timerRef.current);
       finishLog(info.status);
       $progressTaskInfo.remove(pid);
     }
-  }, [abort, finishLog, info.status, pid]);
+  }, [finishLog, info.status, pid]);
 
   if (info === null) {
     return null;

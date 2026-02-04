@@ -37,7 +37,6 @@ export const useGridViewport = (
   // activeEntryIndex を使うと deps に入るため、カーソル移動の度に再実行されてしまう。
   // それを防ぐため ref を使う。
   const activeEntryIndexRef = useRef(activeEntryIndex);
-  activeEntryIndexRef.current = activeEntryIndex;
 
   // グリッドを考慮して $maxVisibleRowCount を設定する。
   const updateMaxVisibleRowCount = useCallback(() => {
@@ -66,6 +65,12 @@ export const useGridViewport = (
       window.removeEventListener('resize', fn);
     };
   }, [updateMaxVisibleRowCount]);
+
+  // レンダー中の ref 更新を避けるため effects を使う。
+  // タイミングを合わせるため、後続と同じ useLayoutEffect を使用する。
+  useLayoutEffect(() => {
+    activeEntryIndexRef.current = activeEntryIndex;
+  }, [activeEntryIndex]);
 
   // $firstVisibleEntryIndex の更新を行う。
   // 列数が変わった時 (gallery モード切替時) や
