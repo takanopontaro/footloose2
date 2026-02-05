@@ -321,11 +321,11 @@
   align-content: start;
   grid-template-columns: 1fr;
 
-  .entryGrid-overflowing.entryGrid-visibleFirst & {
+  .entryGrid-overflowing.entryGrid-anchorTop & {
     align-content: start;
   }
 
-  .entryGrid-overflowing.entryGrid-visibleLast & {
+  .entryGrid-overflowing.entryGrid-anchorBottom & {
     align-content: end;
   }
 }

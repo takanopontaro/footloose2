@@ -14,9 +14,8 @@ import type { RefObject } from 'react';
 import type { Frame } from '@modules/App/types';
 
 type ReturnValue = {
-  isCursorOnFirstVisibleRow: boolean;
-  isCursorOnLastVisibleRow: boolean;
   isOverflowing: boolean;
+  overflowAnchor: 'bottom' | 'top';
 };
 
 /**
@@ -37,11 +36,10 @@ export const useGridState = (
   // 見えていても、見切れている場合は true。
   const [isOverflowing, setIsOverflowing] = useState(false);
 
-  // カーソルが表示領域の最終行にあるか否か。
-  // 以下のようにエントリ一覧の下部が見切れている時に、
-  // 2 の位置にカーソルを移動した場合、全体的な表示を下寄せにしたい。
-  // その手がかりとして使用する。
-  // 実際に下寄せにするのはスタイルシートで行う。
+  // コンテンツを上寄せにするか下寄せにするかの基準を表す値。
+  //
+  // 例えば以下のようにエントリ一覧の下部が見切れている時に、
+  // 2 の位置にカーソルを移動した場合、全体的な表示は下寄せにしたい。
   //
   //                                       +---------+---------+
   //                                       |         |         |
@@ -56,16 +54,8 @@ export const useGridState = (
   //    |         |         |
   //    +---------+---------+
   //
-  const [isCursorOnLastVisibleRow, setIsCursorOnLastVisibleRow] =
-    useState(false);
-
-  // カーソルが表示領域の開始行にあるか否か。
-  // 以下のようにエントリ一覧の上部が見切れている時に、
-  // 0 の位置にカーソルを移動した場合、全体的な表示を上寄せにしたい。
-  // その手がかりとして使用する。
-  // デフォルトは上寄せだが、一度 isCursorOnLastVisibleRow で下寄せ状態になった後、
-  // 元の上寄せに戻すか否かの判定に使用する。
-  // 実際に上寄せにするのはスタイルシートで行う。
+  // 一方で以下のようにエントリ一覧の上部が見切れている時に、
+  // 0 の位置にカーソルを移動した場合、全体的な表示は上寄せにしたい。
   //
   //    +---------+---------+
   //    |         |         |
@@ -80,8 +70,10 @@ export const useGridState = (
   //                                       |         |         |
   //                                       +---------+---------+
   //
-  const [isCursorOnFirstVisibleRow, setIsCursorOnFirstVisibleRow] =
-    useState(false);
+  // このような位置合わせの手がかりとして使用する。
+  // 表示制御自体はスタイルシートで行う。
+  const [overflowAnchor, setOverflowAnchor] =
+    useState<ReturnValue['overflowAnchor']>('top');
 
   const entries = useAtomValue($filteredEntries(frame));
   const isGalleryMode = useAtomValue($isGalleryMode(frame));
@@ -92,6 +84,7 @@ export const useGridState = (
   const rowHeight = useAtomValue($renderedRowHeight);
 
   // 全エントリを表示しきれていないかどうかの判定を行う。
+  // useEffect だと表示が遅れることがあるため useLayoutEffect を使用する。
   useLayoutEffect(() => {
     if (!gridRef.current) {
       return;
@@ -105,6 +98,11 @@ export const useGridState = (
     setIsOverflowing(overflowing);
   }, [entries.length, gridColumnCount, gridRef, isGalleryMode, rowHeight]);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
+  // 軽い cascading renders は許容する方針のため、このルールは無効化する。
+  //
+  // overflowAnchor の更新を行う。
+  // useEffect だと表示が遅れることがあるため useLayoutEffect を使用する。
   useLayoutEffect(() => {
     // まず開始行のチェックを行う。
 
@@ -114,8 +112,7 @@ export const useGridState = (
     // カーソルが開始行にあるか否か。
     const isOnFirstRow = activeEntryIndex < secondRowStartIndex;
     if (isOnFirstRow) {
-      setIsCursorOnFirstVisibleRow(true);
-      setIsCursorOnLastVisibleRow(false);
+      setOverflowAnchor('top');
     }
 
     // 次に最終行のチェックを行う。
@@ -127,14 +124,13 @@ export const useGridState = (
     // カーソルが最終行にあるか否か。
     const isOnLastRow = activeEntryIndex >= lastRowStartIndex;
     if (isOnLastRow) {
-      setIsCursorOnFirstVisibleRow(false);
-      setIsCursorOnLastVisibleRow(true);
+      setOverflowAnchor('bottom');
     }
   }, [activeEntryIndex, firstEntryIndex, gridColumnCount, maxRowCount]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return {
-    isCursorOnFirstVisibleRow,
-    isCursorOnLastVisibleRow,
     isOverflowing,
+    overflowAnchor,
   };
 };

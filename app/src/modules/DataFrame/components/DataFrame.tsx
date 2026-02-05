@@ -98,8 +98,8 @@ const DataFrameComponent: FC<Props> = ({
         ref={gridRef}
         className={clsx('entryGrid', {
           'entryGrid-overflowing': gridState.isOverflowing,
-          'entryGrid-visibleFirst': gridState.isCursorOnFirstVisibleRow,
-          'entryGrid-visibleLast': gridState.isCursorOnLastVisibleRow,
+          'entryGrid-anchorTop': gridState.overflowAnchor === 'top',
+          'entryGrid-anchorBottom': gridState.overflowAnchor === 'bottom',
         })}
       >
         <table className="entryGrid_table">
