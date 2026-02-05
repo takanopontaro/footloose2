@@ -71,7 +71,9 @@ export const useGridState = (
   //                                       +---------+---------+
   //
   // このような位置合わせの手がかりとして使用する。
-  // 表示制御自体はスタイルシートで行う。
+  // カーソル位置に応じて top / bottom を切り替えるが、
+  // 中間にいる間は直前の状態を保持する (ヒステリシス)。
+  // なお表示制御自体はスタイルシートで行う。
   const [overflowAnchor, setOverflowAnchor] =
     useState<ReturnValue['overflowAnchor']>('top');
 
