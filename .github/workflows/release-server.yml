@@ -109,5 +109,3 @@ jobs:
 
       - name: Generate npm packages
         run: node ci/publish.js
-        env:
-          NODE_AUTH_TOKEN: ""

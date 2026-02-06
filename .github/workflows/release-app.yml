@@ -41,5 +41,3 @@ jobs:
       - name: Publish package
         run: npm publish --access public --provenance
         working-directory: app/dist
-        env:
-          NODE_AUTH_TOKEN: ""
