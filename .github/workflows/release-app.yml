@@ -35,6 +35,16 @@ jobs:
           pnpm build
         working-directory: app
 
+      - name: Debug auth presence
+        run: |
+          echo "NODE_AUTH_TOKEN length: ${#NODE_AUTH_TOKEN}"
+          echo "NPM_TOKEN length: ${#NPM_TOKEN}"
+          npm config get userconfig
+          echo "--- ~/.npmrc ---"
+          cat ~/.npmrc || true
+          echo "--- ./.npmrc ---"
+          cat .npmrc || true
+
       - name: Publish package
         run: npm publish --access public --provenance
         working-directory: app/dist
