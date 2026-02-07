@@ -15,6 +15,13 @@ function resolvePath(path: string): string {
   return resolve(__dirname, path);
 }
 
+// tsconfig.json の paths 設定。
+const tsconfigPaths = {
+  '@config': resolvePath('src/config'),
+  '@libs': resolvePath('src/libs'),
+  '@modules': resolvePath('src/modules'),
+};
+
 // ユーザーが自前の config や css を利用できるようにしたいため、
 // main.tsx では app を初期化せず、init メソッドを export している。
 // init がユーザーデータを受け取れるようにすることで初期化の柔軟性が増す。
@@ -49,11 +56,7 @@ function assets(): PluginOption | undefined {
           platform: 'browser',
           write: false,
           absWorkingDir: process.cwd(),
-          alias: {
-            '@config': resolvePath('src/config'),
-            '@libs': resolvePath('src/libs'),
-            '@modules': resolvePath('src/modules'),
-          },
+          alias: tsconfigPaths,
         });
         const code = result.outputFiles[0].text;
         const jsStrB64 = Buffer.from(code, 'utf-8').toString('base64');
@@ -140,13 +143,7 @@ function devConfig(): UserConfig {
         '^/(config|preview)': `http://localhost:${process.env.SERVER_PORT}`,
       },
     },
-    resolve: {
-      alias: {
-        '@config': resolvePath('src/config'),
-        '@libs': resolvePath('src/libs'),
-        '@modules': resolvePath('src/modules'),
-      },
-    },
+    resolve: { alias: tsconfigPaths },
     plugins: [react(), assets(), migemoDict()],
     build: {
       target: 'esnext',
@@ -162,16 +159,8 @@ function devConfig(): UserConfig {
 // ライブラリ形式でビルドする。
 function prdConfig(): UserConfig {
   return {
-    define: {
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    },
-    resolve: {
-      alias: {
-        '@config': resolvePath('src/config'),
-        '@libs': resolvePath('src/libs'),
-        '@modules': resolvePath('src/modules'),
-      },
-    },
+    define: { 'process.env.NODE_ENV': JSON.stringify('production') },
+    resolve: { alias: tsconfigPaths },
     plugins: [react(), migemo(), indexHtml(), packageJson()],
     build: {
       target: 'esnext',
