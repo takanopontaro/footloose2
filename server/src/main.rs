@@ -382,12 +382,15 @@ async fn compile_typescript(path: PathBuf) -> Result<String> {
         .current_dir(dir)
         .args([
             "--yes",
-            "--package=esbuild@0.25.9",
+            "--package=esbuild@0.27.3",
             "esbuild",
             file.to_str().unwrap(),
             "--bundle",
             "--platform=node",
             "--format=esm",
+            "--alias:@config=./config",
+            "--alias:@libs=./types/libs",
+            "--alias:@modules=./types/modules",
         ])
         .output()
         .await?;
