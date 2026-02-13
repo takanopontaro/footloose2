@@ -444,9 +444,10 @@ async fn index_handler(
     };
 
     // 読み込んだコードを Base64 エンコードして HTML に埋め込む。
-    // HTML 内の `%js%` プレースホルダーを置換する。
+    // HTML 内の `%js%` `%port%` プレースホルダーを置換する。
     let code = general_purpose::STANDARD.encode(&code);
     contents = contents.replace("%js%", &code);
+    contents = contents.replace("%port%", &args.port.to_string());
     ok_200(contents)
 }
 

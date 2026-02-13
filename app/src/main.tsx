@@ -22,8 +22,9 @@ const migemo = await fetch('./migemo-compact-dict')
  * Config を受け取り、jotai の store に格納する。
  *
  * @param config - アプリケーションの設定
+ * @param port - WebSocket サーバーのポート番号
  */
-function init(config: Config): void {
+function init(config: Config, port: number): void {
   store.set($config, config);
   store.set($migemo, migemo);
 
@@ -32,7 +33,7 @@ function init(config: Config): void {
   createRoot(root).render(
     <StrictMode>
       <Provider store={store}>
-        <App />
+        <App port={port} />
       </Provider>
     </StrictMode>,
   );

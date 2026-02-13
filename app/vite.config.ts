@@ -15,6 +15,9 @@ function resolvePath(path: string): string {
   return resolve(__dirname, path);
 }
 
+// WebSocket サーバーのポート番号。
+const { SERVER_PORT = '3000' } = process.env;
+
 // tsconfig.json の paths 設定。
 const tsconfigPaths = {
   '@config': resolvePath('src/config'),
@@ -60,7 +63,10 @@ function assets(): PluginOption | undefined {
         });
         const code = result.outputFiles[0].text;
         const jsStrB64 = Buffer.from(code, 'utf-8').toString('base64');
-        return html.replace('%css%', cssStr).replace('%js%', jsStrB64);
+        return html
+          .replace('%css%', cssStr)
+          .replace('%js%', jsStrB64)
+          .replace('%port%', SERVER_PORT);
       },
     },
   };
@@ -140,7 +146,7 @@ function devConfig(): UserConfig {
   return {
     server: {
       proxy: {
-        '^/(config|preview)': `http://localhost:${process.env.SERVER_PORT}`,
+        '^/(config|preview)': `http://localhost:${SERVER_PORT}`,
       },
     },
     resolve: { alias: tsconfigPaths },

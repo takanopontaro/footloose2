@@ -9,11 +9,21 @@ import { LogFrame } from '@modules/LogFrame/components';
 import type { FC } from 'react';
 
 /**
+ * App コンポーネントの props。
+ */
+type Props = {
+  /**
+   * WebSocket サーバーのポート番号。
+   */
+  port: number;
+};
+
+/**
  * アプリケーションのメインコンポーネント。
  * 各種フレームとモーダルを表示する。
  */
-const AppComponent: FC = () => {
-  const wsAtom = useWebSocket(3000);
+const AppComponent: FC<Props> = ({ port }) => {
+  const wsAtom = useWebSocket(port);
   const loadable = useAtomValue(wsAtom);
   const Modal = useAtomValue($modal);
   const [dirPathA, dirPathB] = useInitialDir();

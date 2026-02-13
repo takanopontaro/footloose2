@@ -24,7 +24,7 @@ const jsBytes = base64ToUint8Array('%js%');
 const blob = new Blob([jsBytes], { type: 'application/javascript' });
 const url = URL.createObjectURL(blob);
 const { config } = await import(url);
-init(config);
+init(config, %port%);
 </script>
 -->
   </head>
