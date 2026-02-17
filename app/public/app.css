@@ -145,9 +145,8 @@
   grid-row: 3;
   line-height: 1;
 
-  &:focus-visible {
+  &:focus-within {
     border-color: var(--frame-focus-color);
-    border-radius: 0;
     outline: none;
   }
 }
@@ -293,9 +292,8 @@
     grid-column: 3;
   }
 
-  &:focus-visible {
+  &:focus-within {
     border-color: var(--frame-focus-color);
-    border-radius: 0;
     outline: none;
   }
 }
@@ -514,8 +512,7 @@
   color: var(--input-text-color);
   font-size: 1.2rem;
 
-  &:focus-visible {
-    border-radius: 0;
+  &:focus {
     background-color: var(--input-focus-color);
     outline: none;
   }
@@ -709,8 +706,7 @@
     background-color: color-mix(in srgb, var(--background-color) 30%, transparent);
   }
 
-  &:focus-visible {
-    border-radius: 0;
+  &:focus-within {
     outline: none;
   }
 }
@@ -743,8 +739,7 @@
   color: var(--input-text-color);
   font-size: 1.2rem;
 
-  &:focus-visible {
-    border-radius: 0;
+  &:focus {
     background-color: var(--input-focus-color);
     outline: none;
   }
@@ -770,10 +765,10 @@
 
   &[aria-current='true'] {
     background-color: var(--row-focus-color);
+  }
 
-    .dialog:has(.dialog_input:focus-visible) & {
-      background-color: var(--row-focus-inactive-color);
-    }
+  :where(.dialog:has(.dialog_listInput:focus)) &[aria-current='true'] {
+    background-color: var(--row-focus-inactive-color);
   }
 }
 
@@ -802,8 +797,7 @@
   color: var(--input-text-color);
   font-size: 1.2rem;
 
-  &:focus-visible {
-    border-radius: 0;
+  &:focus {
     background-color: var(--input-focus-color);
     outline: none;
   }
@@ -825,8 +819,7 @@
   color: var(--btn-text-color);
   font-size: 1.2rem;
 
-  &:focus-visible {
-    border-radius: 0;
+  &:focus {
     background-color: var(--btn-focus-color);
     outline: none;
   }
@@ -866,8 +859,7 @@
   color: var(--btn-text-color);
   font-size: 1.2rem;
 
-  &:focus-visible {
-    border-radius: 0;
+  &:focus {
     background-color: var(--btn-focus-color);
     outline: none;
   }
