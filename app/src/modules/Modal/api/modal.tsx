@@ -17,17 +17,53 @@ import {
 import type { Direction } from '@modules/App/types';
 
 /**
+ * 条件に基づいて、新しいインデックスを計算して返す。
+ *
+ * @param curIndex - 現在のインデックス
+ * @param delta - 移動量
+ * @param total - データの総数
+ * @param loop - ループするか否か
+ * @returns 新しいインデックス
+ */
+function calcNewIndex(
+  curIndex: number,
+  delta: number,
+  total: number,
+  loop: boolean,
+): number {
+  if (curIndex === -1) {
+    return 0;
+  }
+  if (loop) {
+    return cycleIndex(curIndex, delta, total);
+  }
+  const newIndex = curIndex + total;
+  if (newIndex < 0) {
+    return 0;
+  }
+  if (newIndex >= total) {
+    return total - 1;
+  }
+  return newIndex;
+}
+
+/**
  * ListModal のカーソルを移動する。
- * カーソルはループする。
  * filter-out 等でカレントエントリが無い場合は、最初の項目をカレントにする。
  *
- * @param step - カーソルの移動量
+ * @param step - 移動量
+ * @param direction - 移動方向
+ * @param loop - ループするか否か
  */
-function moveCursorListModal(step: number): void {
+function moveCursorListModal(
+  step: number,
+  direction: Direction,
+  loop = true,
+): void {
   const data = readState($listModalDataset);
   const name = readState($listModalActiveEntryName);
-  const index = data.findIndex((d) => d.value === name);
-  const newIndex = index !== -1 ? cycleIndex(index, step, data.length) : 0;
+  const curIndex = data.findIndex((d) => d.value === name);
+  const newIndex = calcNewIndex(curIndex, step * direction, data.length, loop);
   writeState($listModalActiveEntryName, data[newIndex].value);
 }
 

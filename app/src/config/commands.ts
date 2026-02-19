@@ -752,8 +752,8 @@ tar cvfz %d %s`,
   // ListModal 操作系
   {
     name: 'MoveCursorListModal',
-    action(api, combo, { step }) {
-      api.moveCursorListModal(step);
+    action(api, combo, { direction, loop, step }) {
+      api.moveCursorListModal(step, direction, loop);
     },
   },
   {

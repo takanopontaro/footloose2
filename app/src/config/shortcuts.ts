@@ -699,13 +699,13 @@ const shortcuts: ShortcutsConfig = {
     'up': [
       {
         cmd: 'MoveCursorListModal',
-        args: { step: -1 },
+        args: { step: 1, direction: -1, loop: true },
       },
     ],
     'down': [
       {
         cmd: 'MoveCursorListModal',
-        args: { step: 1 },
+        args: { step: 1, direction: 1, loop: true },
       },
     ],
     'enter': [
