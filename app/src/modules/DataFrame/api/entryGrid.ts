@@ -52,6 +52,7 @@ function calcDelta(
 /**
  * カーソルを移動する。
  * リスト、グリッド両対応。
+ * filter-out 等でカレントエントリが無い場合は、最初の項目をカレントにする。
  *
  * @param step - 移動量
  * @param direction - 移動方向
