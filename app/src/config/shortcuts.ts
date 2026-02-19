@@ -2,12 +2,12 @@ import type { ShortcutsConfig } from '@modules/App/types';
 
 const shortcuts: ShortcutsConfig = {
   DataFrame: {
-    '/': [
+    'ctrl+f': [
       {
         cmd: 'FocusEntryFilter',
       },
     ],
-    'meta+/': [
+    'ctrl+;': [
       {
         cmd: 'CycleMatchMode',
       },
@@ -120,16 +120,28 @@ const shortcuts: ShortcutsConfig = {
         args: { direction: -1 },
       },
     ],
-    'pagedown': [
+    'shift+pageup': [
       {
-        cmd: 'MoveCursorByPage',
-        args: { direction: 1 },
+        cmd: 'MoveCursorToEdge',
+        args: { direction: -1 },
       },
     ],
     'home': [
       {
         cmd: 'MoveCursorToEdge',
         args: { direction: -1 },
+      },
+    ],
+    'pagedown': [
+      {
+        cmd: 'MoveCursorByPage',
+        args: { direction: 1 },
+      },
+    ],
+    'shift+pagedown': [
+      {
+        cmd: 'MoveCursorToEdge',
+        args: { direction: 1 },
       },
     ],
     'end': [
@@ -337,18 +349,33 @@ const shortcuts: ShortcutsConfig = {
       {
         cmd: 'ToggleRowSelection',
       },
+      {
+        cmd: 'MoveCursor',
+        args: { step: 1, direction: 'down', loop: false },
+        modes: ['!gallery'],
+      },
     ],
-    'meta+a': [
+    'shift+space': [
+      {
+        cmd: 'ToggleRowSelection',
+      },
+      {
+        cmd: 'MoveCursor',
+        args: { step: 1, direction: 'up', loop: false },
+        modes: ['!gallery'],
+      },
+    ],
+    'ctrl+a': [
       {
         cmd: 'SelectAllRows',
       },
     ],
-    'esc': [
+    'shift+a': [
       {
         cmd: 'DeselectAllRows',
       },
     ],
-    'shift+meta+a': [
+    'shift+ctrl+a': [
       {
         cmd: 'InvertAllRowSelections',
       },
@@ -373,27 +400,27 @@ const shortcuts: ShortcutsConfig = {
         modes: ['virtual-dir'],
       },
     ],
-    'meta+s': [
+    'ctrl+s': [
       {
         cmd: 'SyncDestDirPathWithSrcDirPath',
       },
     ],
-    'shift+meta+s': [
+    'shift+s': [
       {
         cmd: 'SyncSrcDirPathWithDestDirPath',
       },
     ],
-    'shift+ctrl+meta+s': [
+    'shift+ctrl+s': [
       {
         cmd: 'SwapDirPaths',
       },
     ],
-    'meta+j': [
+    'ctrl+j': [
       {
         cmd: 'GoToDir',
       },
     ],
-    'meta+h': [
+    'ctrl+h': [
       {
         cmd: 'ShowFullHistory',
       },
@@ -410,28 +437,28 @@ const shortcuts: ShortcutsConfig = {
         args: { delta: 1 },
       },
     ],
-    'meta+b': [
+    'ctrl+b': [
       {
         cmd: 'ShowAllBookmarks',
       },
     ],
-    'shift+meta+b': [
+    'shift+b': [
       {
         cmd: 'BookmarkCurrentDir',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+=': [
+    'ctrl+=': [
       {
         cmd: 'CopySrcPathsToClipboard',
       },
     ],
-    'shift+meta+=': [
+    'shift+=': [
       {
         cmd: 'CopySrcDirPathToClipboard',
       },
     ],
-    'meta+c': [
+    'ctrl+c': [
       {
         cmd: 'CopyEntries',
         modes: ['!virtual-dir'],
@@ -441,94 +468,94 @@ const shortcuts: ShortcutsConfig = {
         modes: ['virtual-dir'],
       },
     ],
-    'meta+m': [
+    'ctrl+m': [
       {
         cmd: 'MoveEntries',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+d': [
+    'ctrl+d': [
       {
         cmd: 'RemoveEntries',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+r': [
+    'ctrl+r': [
       {
         cmd: 'RenameEntry',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+k': [
+    'ctrl+k': [
       {
         cmd: 'CreateDir',
         modes: ['!virtual-dir'],
       },
     ],
-    'shift+meta+k': [
+    'ctrl+t': [
       {
         cmd: 'CreateFile',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+o': [
+    'ctrl+o': [
       {
         cmd: 'OpenWith',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+z': [
+    'ctrl+z': [
       {
         cmd: 'ZipEntries',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+u': [
+    'ctrl+u': [
       {
         cmd: 'Unarchive',
         modes: ['!virtual-dir'],
       },
     ],
-    'meta+0': [
+    'ctrl+0': [
       {
         cmd: 'ClearSort',
       },
     ],
-    'meta+1': [
+    'ctrl+1': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'perm' },
       },
     ],
-    'meta+2': [
+    'ctrl+2': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'name' },
       },
     ],
-    'meta+3': [
+    'ctrl+3': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'size' },
       },
     ],
-    'meta+4': [
+    'ctrl+4': [
       {
         cmd: 'CycleSortOrder',
         args: { field: 'time' },
       },
     ],
-    'meta+`': [
+    'ctrl+`': [
       {
         cmd: 'CycleDirPosition',
       },
     ],
-    'meta+g': [
+    'ctrl+g': [
       {
         cmd: 'ToggleGalleryMode',
       },
     ],
-    'meta+p': [
+    'ctrl+p': [
       {
         cmd: 'TogglePreviewArea',
       },
@@ -568,10 +595,10 @@ const shortcuts: ShortcutsConfig = {
         modes: ['preview'],
       },
     ],
-    'meta+pagedown': [
+    'shift+meta+pageup': [
       {
-        cmd: 'ScrollByPagePreviewArea',
-        args: { direction: 1 },
+        cmd: 'ScrollToEdgePreviewArea',
+        args: { direction: -1 },
         modes: ['preview'],
       },
     ],
@@ -582,11 +609,30 @@ const shortcuts: ShortcutsConfig = {
         modes: ['preview'],
       },
     ],
+    'meta+pagedown': [
+      {
+        cmd: 'ScrollByPagePreviewArea',
+        args: { direction: 1 },
+        modes: ['preview'],
+      },
+    ],
+    'shift+meta+pagedown': [
+      {
+        cmd: 'ScrollToEdgePreviewArea',
+        args: { direction: 1 },
+        modes: ['preview'],
+      },
+    ],
     'meta+end': [
       {
         cmd: 'ScrollToEdgePreviewArea',
         args: { direction: 1 },
         modes: ['preview'],
+      },
+    ],
+    'esc': [
+      {
+        cmd: 'ClearEntryFilter',
       },
     ],
   },
@@ -624,7 +670,7 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'None',
       },
     ],
-    'meta+/': [
+    'ctrl+;': [
       {
         cmd: 'CycleMatchMode',
       },
@@ -676,16 +722,28 @@ const shortcuts: ShortcutsConfig = {
         args: { direction: -1 },
       },
     ],
-    'pagedown': [
+    'shift+pageup': [
       {
-        cmd: 'ScrollByPageLogFrame',
-        args: { direction: 1 },
+        cmd: 'ScrollToEdgeLogFrame',
+        args: { direction: -1 },
       },
     ],
     'home': [
       {
         cmd: 'ScrollToEdgeLogFrame',
         args: { direction: -1 },
+      },
+    ],
+    'pagedown': [
+      {
+        cmd: 'ScrollByPageLogFrame',
+        args: { direction: 1 },
+      },
+    ],
+    'shift+pagedown': [
+      {
+        cmd: 'ScrollToEdgeLogFrame',
+        args: { direction: 1 },
       },
     ],
     'end': [
@@ -702,10 +760,22 @@ const shortcuts: ShortcutsConfig = {
         args: { step: 1, direction: -1, loop: true },
       },
     ],
+    'shift+up': [
+      {
+        cmd: 'MoveCursorListModal',
+        args: { step: 5, direction: -1, loop: true },
+      },
+    ],
     'down': [
       {
         cmd: 'MoveCursorListModal',
         args: { step: 1, direction: 1, loop: true },
+      },
+    ],
+    'shift+down': [
+      {
+        cmd: 'MoveCursorListModal',
+        args: { step: 5, direction: 1, loop: true },
       },
     ],
     'enter': [
@@ -724,12 +794,12 @@ const shortcuts: ShortcutsConfig = {
         tags: ['ListModal:bookmark'],
       },
     ],
-    '/': [
+    'ctrl+f': [
       {
         cmd: 'FocusListModalEntryFilter',
       },
     ],
-    'meta+/': [
+    'ctrl+;': [
       {
         cmd: 'CycleMatchModeListModal',
       },
@@ -779,7 +849,7 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'None',
       },
     ],
-    'meta+/': [
+    'ctrl+;': [
       {
         cmd: 'CycleMatchModeListModal',
       },
