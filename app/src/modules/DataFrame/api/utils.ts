@@ -97,14 +97,14 @@ function getActiveEntry(
 }
 
 /**
- * 選択行の name 配列を返す (`..` を含む)。
+ * 選択行の name 配列を返す。
  * 未選択ならカレントエントリの name を返す。
  * カレントエントリが filter-out されている場合は空文字を返す。
  *
  * @param frame - 対象フレーム
  * @param allowParent - `..` を含むか否か
- *   false の時は `..` がカレントエントリであっても空文字を返す。
  *   選択行が無い場合のみ有効。
+ *   false の時は `..` がカレントエントリであっても空文字を返す。
  * @returns 選択行の name 配列または空配列
  */
 function getTargetEntryNames(
@@ -120,14 +120,14 @@ function getTargetEntryNames(
 }
 
 /**
- * 選択行のエントリ配列を返す (`..` を含む)。
+ * 選択行のエントリ配列を返す。
  * 未選択ならカレントエントリを返す。
  * カレントエントリが filter-out されている場合は空配列を返す。
  *
  * @param frame - 対象フレーム
  * @param allowParent - `..` を含むか否か
- *   false の時は `..` がカレントエントリであっても空配列を返す。
  *   選択行が無い場合のみ有効。
+ *   false の時は `..` がカレントエントリであっても空配列を返す。
  * @returns 選択行のエントリ配列または空配列
  */
 function getTargetEntries(
