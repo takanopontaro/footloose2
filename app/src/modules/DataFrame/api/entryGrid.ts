@@ -241,6 +241,40 @@ function invertAllRowSelections(frame = readState($activeFrame)): void {
   writeState($selectedEntryIndices(frame), indices);
 }
 
+/**
+ * 指定した name のエントリを選択する。
+ *
+ * @param names - 選択するエントリの name 配列
+ * @param frame - 対象フレーム
+ */
+function selectRowsByNames(
+  names: string[],
+  frame = readState($activeFrame),
+): void {
+  const entries = readState($filteredEntries(frame));
+  // 高速化のため Set に変換する。
+  const entryNames = new Set(entries.map(({ name }) => name));
+  const validNames = names.filter((name) => entryNames.has(name));
+  writeState($selectedEntryNames(frame), (prev) => [
+    ...new Set(prev.concat(validNames)),
+  ]);
+}
+
+/**
+ * 指定したインデックスのエントリを選択する。
+ *
+ * @param indices - 選択するエントリのインデックス配列
+ * @param frame - 対象フレーム
+ */
+function selectRowsByIndices(
+  indices: number[],
+  frame = readState($activeFrame),
+): void {
+  const entries = readState($filteredEntries(frame));
+  const names = indices.map((i) => entries[i]?.name).filter(Boolean);
+  selectRowsByNames(names, frame);
+}
+
 export {
   moveCursor,
   moveCursorByPage,
@@ -252,4 +286,6 @@ export {
   selectAllRows,
   deselectAllRows,
   invertAllRowSelections,
+  selectRowsByNames,
+  selectRowsByIndices,
 };
