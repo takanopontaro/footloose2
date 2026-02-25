@@ -8,6 +8,7 @@ import {
   $filteredEntries,
   $modes,
   $selectedEntryNames,
+  $sortedEntries,
 } from '@modules/DataFrame/state';
 import { writeLog } from '@modules/LogFrame/api';
 
@@ -147,6 +148,85 @@ function getTargetEntries(
 }
 
 /**
+ * 全エントリの name 配列を返す。
+ * filter-out されているものも含まれる。
+ *
+ * @param frame - 対象フレーム
+ * @returns 全エントリの name 配列
+ */
+function getAllEntryNames(frame = readState($activeFrame)): string[] {
+  const entries = readState($sortedEntries(frame));
+  return entries.map((entry) => entry.name);
+}
+
+/**
+ * 全エントリの配列を返す。
+ * filter-out されているものも含まれる。
+ *
+ * @param frame - 対象フレーム
+ * @returns 全エントリの配列
+ */
+function getAllEntries(frame = readState($activeFrame)): EntryModel[] {
+  const curDir = readState($currentDir(frame));
+  const entries = readState($sortedEntries(frame));
+  return entries.map((entry) => new EntryModel(entry, curDir));
+}
+
+/**
+ * 表示されているエントリの name 配列を返す。
+ * filter-out されているものは含まれない。
+ *
+ * @param frame - 対象フレーム
+ * @returns 表示されているエントリの name 配列
+ */
+function getFilteredEntryNames(frame = readState($activeFrame)): string[] {
+  const entries = readState($filteredEntries(frame));
+  return entries.map((entry) => entry.name);
+}
+
+/**
+ * 表示されているエントリの配列を返す。
+ * filter-out されているものは含まれない。
+ *
+ * @param frame - 対象フレーム
+ * @returns 表示されているエントリの配列
+ */
+function getFilteredEntries(frame = readState($activeFrame)): EntryModel[] {
+  const curDir = readState($currentDir(frame));
+  const entries = readState($filteredEntries(frame));
+  return entries.map((entry) => new EntryModel(entry, curDir));
+}
+
+/**
+ * 選択されているエントリの name 配列を返す。
+ *
+ * @param frame - 対象フレーム
+ * @returns 選択されているエントリの name 配列
+ */
+function getSelectedEntryNames(frame = readState($activeFrame)): string[] {
+  return readState($selectedEntryNames(frame));
+}
+
+/**
+ * 選択されているエントリの配列を返す。
+ *
+ * @param frame - 対象フレーム
+ * @returns 選択されているエントリの配列
+ */
+function getSelectedEntries(frame = readState($activeFrame)): EntryModel[] {
+  const selectedNames = readState($selectedEntryNames(frame));
+  if (selectedNames.length === 0) {
+    return [];
+  }
+  const names = new Set(selectedNames); // 高速化のため Set に変換する。
+  const curDir = readState($currentDir(frame));
+  const entries = readState($filteredEntries(frame));
+  return entries
+    .filter((e) => names.has(e.name))
+    .map((entry) => new EntryModel(entry, curDir));
+}
+
+/**
  * エントリの種類を照合する。
  */
 function is(
@@ -258,6 +338,12 @@ export {
   getActiveEntry,
   getTargetEntryNames,
   getTargetEntries,
+  getAllEntryNames,
+  getAllEntries,
+  getFilteredEntryNames,
+  getFilteredEntries,
+  getSelectedEntryNames,
+  getSelectedEntries,
   isDir,
   isFile,
   isSymlink,
