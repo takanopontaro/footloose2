@@ -365,6 +365,16 @@ const shortcuts: ShortcutsConfig = {
         modes: ['!gallery'],
       },
     ],
+    'ctrl+w': [
+      {
+        cmd: 'SelectRangeUpToNearestSelectedRow',
+      },
+    ],
+    'shift+w': [
+      {
+        cmd: 'SelectRangeDownToNearestSelectedRow',
+      },
+    ],
     'ctrl+a': [
       {
         cmd: 'SelectAllRows',

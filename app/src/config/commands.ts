@@ -125,6 +125,48 @@ const commands: CommandsConfig = [
       api.invertAllRowSelections();
     },
   },
+  {
+    name: 'SelectRangeUpToNearestSelectedRow',
+    action(api, combo) {
+      const activeName = api.getActiveEntryName(undefined, true);
+      const selectedNames = api.getSelectedEntryNames();
+      if (activeName === '' || selectedNames.length === 0) {
+        return;
+      }
+      const allNames = api.getFilteredEntryNames();
+      const activeIndex = allNames.findIndex((name) => name === activeName);
+      const firstPart = allNames.slice(0, activeIndex);
+      for (let i = firstPart.length - 1; i >= 0; i--) {
+        const name = firstPart[i];
+        if (selectedNames.includes(name)) {
+          const names = allNames.slice(i + 1, activeIndex + 1);
+          api.selectRowsByNames(names);
+          return;
+        }
+      }
+    },
+  },
+  {
+    name: 'SelectRangeDownToNearestSelectedRow',
+    action(api, combo) {
+      const activeName = api.getActiveEntryName(undefined, true);
+      const selectedNames = api.getSelectedEntryNames();
+      if (activeName === '' || selectedNames.length === 0) {
+        return;
+      }
+      const allNames = api.getFilteredEntryNames();
+      const activeIndex = allNames.findIndex((name) => name === activeName);
+      const secondPart = allNames.slice(activeIndex + 1);
+      for (let i = 0; i < secondPart.length; i++) {
+        const name = secondPart[i];
+        if (selectedNames.includes(name)) {
+          const names = allNames.slice(activeIndex, i + (activeIndex + 1));
+          api.selectRowsByNames(names);
+          return;
+        }
+      }
+    },
+  },
 
   // ディレクトリ操作系
   {
