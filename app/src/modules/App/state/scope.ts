@@ -78,6 +78,48 @@ function makeGetAvailableActions(
   };
 }
 
+/**
+ * カンマ区切りのショートカット文字列を配列に分割する。
+ * `\,` は `,`、`\\` は `\` のリテラル値として扱う。
+ * 不要な空白や無効な値 (連続カンマ等) は除去される。
+ *
+ * 'ctrl+z, ctrl+u, g z, g u' -> ['ctrl+z', 'ctrl+u', 'g z', 'g u']
+ * 'ctrl+z, \\,' -> ['ctrl+z', ',']
+ *
+ * @param input - カンマ区切りのショートカット文字列
+ * @returns 分割後のショートカットキー配列
+ */
+function splitShortcutList(input: string): string[] {
+  const out: string[] = [];
+  let buf = '';
+  let escaped = false;
+  for (const ch of input) {
+    if (escaped) {
+      buf += ch; // `\,` や `\\` を1文字として取り込む
+      escaped = false;
+      continue;
+    }
+    if (ch === '\\') {
+      escaped = true;
+      continue;
+    }
+    if (ch === ',') {
+      const s = buf.trim();
+      if (s) {
+        out.push(s);
+      }
+      buf = '';
+      continue;
+    }
+    buf += ch;
+  }
+  const last = buf.trim();
+  if (last) {
+    out.push(last);
+  }
+  return out;
+}
+
 const scopeAtom = atom<Scope>('');
 
 /**
@@ -104,9 +146,10 @@ export const $scope = atom(
     const { shortcuts } = get($config);
     const bindings = shortcuts[newVal] ?? {};
 
-    for (const [key, shortcutCommandList] of Object.entries(bindings)) {
+    for (const [keys, shortcutCommandList] of Object.entries(bindings)) {
+      const keysList = splitShortcutList(keys);
       const getAvailableActions = makeGetAvailableActions(shortcutCommandList);
-      Mousetrap.bind(key, (_e, combo) => {
+      Mousetrap.bind(keysList, (_e, combo) => {
         const actions = getAvailableActions();
         (async () => {
           for (const { action, args } of actions) {
