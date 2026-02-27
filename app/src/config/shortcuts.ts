@@ -120,13 +120,7 @@ const shortcuts: ShortcutsConfig = {
         args: { direction: -1 },
       },
     ],
-    'shift+pageup': [
-      {
-        cmd: 'MoveCursorToEdge',
-        args: { direction: -1 },
-      },
-    ],
-    'home': [
+    'shift+pageup, home': [
       {
         cmd: 'MoveCursorToEdge',
         args: { direction: -1 },
@@ -138,213 +132,18 @@ const shortcuts: ShortcutsConfig = {
         args: { direction: 1 },
       },
     ],
-    'shift+pagedown': [
+    'shift+pagedown, end': [
       {
         cmd: 'MoveCursorToEdge',
         args: { direction: 1 },
       },
     ],
-    'end': [
-      {
-        cmd: 'MoveCursorToEdge',
-        args: { direction: 1 },
-      },
-    ],
-    '0': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '1': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '2': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '3': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '4': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '5': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '6': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '7': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '8': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '9': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'a': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'b': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'c': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'd': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'e': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'f': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'g': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'h': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'i': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'j': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'k': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'l': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'm': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'n': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'o': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'p': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'q': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'r': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    's': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    't': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'u': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'v': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'w': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'x': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'y': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    'z': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '_': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '-': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
-    '.': [
-      {
-        cmd: 'MoveCursorByStartingLetter',
-      },
-    ],
+    '0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, ., ~, `, !, @, #, $, %, ^, &, *, (, ), _, -, +, =, {, [, }, ], |, \\\\, :, ;, ", \', <, \\,, >, ., ?, /':
+      [
+        {
+          cmd: 'MoveCursorByStartingLetter',
+        },
+      ],
     'space': [
       {
         cmd: 'ToggleRowSelection',
@@ -605,14 +404,7 @@ const shortcuts: ShortcutsConfig = {
         modes: ['preview'],
       },
     ],
-    'shift+meta+pageup': [
-      {
-        cmd: 'ScrollToEdgePreviewArea',
-        args: { direction: -1 },
-        modes: ['preview'],
-      },
-    ],
-    'meta+home': [
+    'shift+meta+pageup, meta+home': [
       {
         cmd: 'ScrollToEdgePreviewArea',
         args: { direction: -1 },
@@ -626,14 +418,7 @@ const shortcuts: ShortcutsConfig = {
         modes: ['preview'],
       },
     ],
-    'shift+meta+pagedown': [
-      {
-        cmd: 'ScrollToEdgePreviewArea',
-        args: { direction: 1 },
-        modes: ['preview'],
-      },
-    ],
-    'meta+end': [
+    'shift+meta+pagedown, meta+end': [
       {
         cmd: 'ScrollToEdgePreviewArea',
         args: { direction: 1 },
@@ -647,12 +432,7 @@ const shortcuts: ShortcutsConfig = {
     ],
   },
   EntryFilter: {
-    'up': [
-      {
-        cmd: 'FocusDataFrame',
-      },
-    ],
-    'down': [
+    'up, down, enter': [
       {
         cmd: 'FocusDataFrame',
       },
@@ -665,17 +445,7 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'FocusDataFrame',
       },
     ],
-    'enter': [
-      {
-        cmd: 'FocusDataFrame',
-      },
-    ],
-    'tab': [
-      {
-        cmd: 'None',
-      },
-    ],
-    'shift+tab': [
+    'tab, shift+tab': [
       {
         cmd: 'None',
       },
@@ -732,13 +502,7 @@ const shortcuts: ShortcutsConfig = {
         args: { direction: -1 },
       },
     ],
-    'shift+pageup': [
-      {
-        cmd: 'ScrollToEdgeLogFrame',
-        args: { direction: -1 },
-      },
-    ],
-    'home': [
+    'shift+pageup, home': [
       {
         cmd: 'ScrollToEdgeLogFrame',
         args: { direction: -1 },
@@ -750,13 +514,7 @@ const shortcuts: ShortcutsConfig = {
         args: { direction: 1 },
       },
     ],
-    'shift+pagedown': [
-      {
-        cmd: 'ScrollToEdgeLogFrame',
-        args: { direction: 1 },
-      },
-    ],
-    'end': [
+    'shift+pagedown, end': [
       {
         cmd: 'ScrollToEdgeLogFrame',
         args: { direction: 1 },
@@ -814,24 +572,14 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'CycleMatchModeListModal',
       },
     ],
-    'tab': [
-      {
-        cmd: 'None',
-      },
-    ],
-    'shift+tab': [
+    'tab, shift+tab': [
       {
         cmd: 'None',
       },
     ],
   },
   ListModalEntryFilter: {
-    'up': [
-      {
-        cmd: 'FocusListModal',
-      },
-    ],
-    'down': [
+    'up, down, enter': [
       {
         cmd: 'FocusListModal',
       },
@@ -844,17 +592,7 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'FocusListModal',
       },
     ],
-    'enter': [
-      {
-        cmd: 'FocusListModal',
-      },
-    ],
-    'tab': [
-      {
-        cmd: 'None',
-      },
-    ],
-    'shift+tab': [
+    'tab, shift+tab': [
       {
         cmd: 'None',
       },
