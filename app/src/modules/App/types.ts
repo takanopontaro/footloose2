@@ -538,7 +538,18 @@ export type ShortcutCommand = {
 };
 
 /**
- *ショートカットの設定。
+ * ショートカットの設定。
+ * カンマ区切りで複数のショートカットも設定できる。
+ *
+ * @example
+ * ```ts
+ * {
+ *   'DataFrame': {
+ *     'enter': [...],
+ *     'ctrl+z, ctrl+u': [...],
+ *   }
+ * }
+ * ```
  */
 export type ShortcutsConfig = Partial<
   Record<Scope, Record<string, ShortcutCommand[]>>
