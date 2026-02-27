@@ -1,7 +1,7 @@
 {
   "name": "@footloose2/app",
   "description": "Here 🕺 We 💃 Go 👟",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "takanopontaro",
   "bin": {
     "@footloose2/app": "./cli.js"
