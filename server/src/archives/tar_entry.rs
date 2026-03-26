@@ -35,7 +35,7 @@ impl TarEntry {
             size: 0,
             time: String::new(),
         };
-        ins.perm = ins.default_perm();
+        ins.perm = ins.default_perm('-');
         ins.size = ins.default_size();
         ins.time = ins.default_time();
         ins
@@ -73,7 +73,7 @@ impl TarEntry {
             '-'
         };
         let Ok(mode) = header.mode() else {
-            return self.default_perm();
+            return self.default_perm(first);
         };
         let perm = perm_string(mode);
         format!("{}{}", first, perm)

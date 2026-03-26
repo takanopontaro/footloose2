@@ -9,8 +9,8 @@ pub trait ArchiveEntry {
     ///
     /// # Returns
     /// デフォルトのパーミッション文字列
-    fn default_perm(&self) -> String {
-        "----------".to_owned()
+    fn default_perm(&self, prefix: char) -> String {
+        format!("{prefix}---------")
     }
 
     /// デフォルトのファイルサイズを返す。
