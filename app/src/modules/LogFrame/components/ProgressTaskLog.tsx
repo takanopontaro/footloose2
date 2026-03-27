@@ -62,19 +62,21 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
     });
   }, [pid, setLogData]);
 
-  // 一定時間後に moveLogToEnd を実行する。
-  // その際、自身がアンマウントされる。
+  // 定期的に moveLogToEnd を実行する。
+  // logData が更新され親が re-render される。
+  // moveLogToEnd で自身の位置が変わった場合は unmount が発生するが、
+  // 変わらない場合は発生しない。
   // 開発時は useEffect が二度実行されるため、念のためクリーンアップしておく。
   useEffect(() => {
     if (info.status !== 'progress') {
       return;
     }
-    timerRef.current = window.setTimeout(
+    timerRef.current = window.setInterval(
       moveLogToEnd,
       settings.progressTaskLogInterval,
     );
     return () => {
-      clearTimeout(timerRef.current);
+      window.clearInterval(timerRef.current);
     };
   }, [settings.progressTaskLogInterval, info.status, moveLogToEnd, pid]);
 
@@ -119,7 +121,7 @@ const ProgressTaskLogComponent: FC<Props> = ({ label, pid }) => {
   // status が progress 以外になったら finishLog を実行する。
   useEffect(() => {
     if (info.status !== 'progress') {
-      clearTimeout(timerRef.current);
+      window.clearInterval(timerRef.current);
       finishLog(info.status);
       $progressTaskInfo.remove(pid);
     }
