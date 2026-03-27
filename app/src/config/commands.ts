@@ -504,7 +504,7 @@ zip -r %d %s`,
         }
         return {
           label,
-          cmd: 'unzip -n %s -d %d',
+          cmd: 'ditto -x -k %s %d',
           total: 'zipinfo -1 %s | LC_ALL=C grep -v "/$" | wc -l',
           src: [entries[0].name],
           dest: destDir.path,
