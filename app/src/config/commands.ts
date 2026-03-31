@@ -284,6 +284,13 @@ const commands: CommandsConfig = [
       api.openWith();
     },
   },
+  {
+    name: 'OpenCurrentDir',
+    action(api, combo) {
+      const curDir = api.getSrcDir();
+      api.openWith(curDir.path);
+    },
+  },
 
   // ファイル操作系
   {

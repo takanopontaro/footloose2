@@ -313,6 +313,12 @@ const shortcuts: ShortcutsConfig = {
         modes: ['!virtual-dir'],
       },
     ],
+    'shift+o': [
+      {
+        cmd: 'OpenCurrentDir',
+        modes: ['!virtual-dir'],
+      },
+    ],
     'ctrl+z': [
       {
         cmd: 'ZipEntries',
