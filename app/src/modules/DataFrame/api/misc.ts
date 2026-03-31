@@ -140,6 +140,7 @@ function getApp(path: string): null | string {
 
 /**
  * 指定したアプリでエントリを開く。
+ * ファイルだけでなくディレクトリも指定可能 (Finder で開く等)。
  *
  * @param path - エントリのパス
  * @param app - アプリ名
@@ -152,7 +153,8 @@ function openWith(
   app?: string,
   frame = readState($activeFrame),
 ): void {
-  path = path ?? getActiveEntryName(frame);
+  // ディレクトリも対象のため `..` を含める。
+  path = path ?? getActiveEntryName(frame, true);
   if (path === '') {
     const { messages } = readState($config);
     writeLog(messages[0], 'info');
