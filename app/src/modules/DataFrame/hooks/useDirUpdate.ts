@@ -80,7 +80,7 @@ export const useDirUpdate = (frame: Frame): void => {
 
         const activeEntryName = get($activeEntryName(frame));
 
-        // 更新前のエントリ一覧を取得する。
+        // 更新前のエントリ一覧を取得しておく。
         const oldSortedEntries = get($sortedEntries(frame));
 
         // エントリ一覧を更新する。
@@ -90,15 +90,6 @@ export const useDirUpdate = (frame: Frame): void => {
         // コールバック引数の set, get は即時反映なため、
         // $sortedEntries にはすでに newRawEntries が反映されている。
         const newSortedEntries = get($sortedEntries(frame));
-
-        // カレントだったエントリが削除されたか否か。
-        const isDeleted =
-          oldSortedEntries.some((e) => e.name === activeEntryName) &&
-          !newSortedEntries.some((e) => e.name === activeEntryName);
-
-        if (!isDeleted) {
-          return;
-        }
 
         // コールバック引数の set, get は即時反映なため、
         // $filteredEntries にはすでに newRawEntries が反映されている。
@@ -113,6 +104,16 @@ export const useDirUpdate = (frame: Frame): void => {
         );
 
         set($selectedEntryNames(frame), entryNames);
+
+        // カレントだったエントリが削除されたか否か。
+        const isDeleted =
+          oldSortedEntries.some((e) => e.name === activeEntryName) &&
+          !newSortedEntries.some((e) => e.name === activeEntryName);
+
+        // 削除されていないなら、カレントはそのままでよい。
+        if (!isDeleted) {
+          return;
+        }
 
         // カレントだったエントリが削除された場合の、新しいカレントエントリ。
         const entryName = getFallbackActiveEntryName(
