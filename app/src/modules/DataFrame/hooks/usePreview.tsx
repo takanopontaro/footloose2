@@ -62,7 +62,12 @@ export const usePreview = (
         ref={iframeRef}
         className={className}
         src={src}
+        style={{ visibility: 'hidden' }}
         title="preview"
+        onLoad={(e) => {
+          // state を使わず品がないが、実用性を優先した。
+          e.currentTarget.style.visibility = 'visible';
+        }}
       />
     );
     return { node, ref: iframeRef };
