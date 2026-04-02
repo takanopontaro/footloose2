@@ -281,12 +281,15 @@ fn ok_200(html: String) -> Response<Body> {
     (StatusCode::OK, Html(html)).into_response()
 }
 
-/// `204 No Content` ステータスでレスポンスを返す。
+/// 仮想的に `204 No Content` ステータスでレスポンスを返す。
+/// 204 では response body を指定できないため、実際には 200 で空の HTML を返す。
+/// 204 の時に表示されるブラウザデフォルトの HTML はスタイルをいじれず、
+/// 見た目の調整に困るため、このようにしている。
 ///
 /// # Returns
-/// `204 No Content` ステータスを持つレスポンス
+/// `200 OK` ステータスを持つ HTML レスポンス (`204 No Content` のつもり)
 fn error_204() -> Response<Body> {
-    empty_body_html(StatusCode::NO_CONTENT)
+    empty_body_html(StatusCode::OK)
 }
 
 /// `404 Not Found` ステータスでレスポンスを返す。
