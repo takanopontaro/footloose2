@@ -275,6 +275,36 @@ function selectRowsByIndices(
   selectRowsByNames(names, frame);
 }
 
+/**
+ * 指定した name のエントリをカレントにする。
+ *
+ * @param name - カレントにするエントリの name
+ * @param frame - 対象フレーム
+ */
+function activateRowByName(
+  name: string,
+  frame = readState($activeFrame),
+): void {
+  const entries = readState($filteredEntries(frame));
+  const exists = entries.some((e) => e.name === name);
+  if (exists) {
+    writeState($activeEntryName(frame), name);
+  }
+}
+
+/**
+ * 指定したインデックスのエントリをカレントにする。
+ *
+ * @param index - カレントにするエントリのインデックス
+ * @param frame - 対象フレーム
+ */
+function activateRowByIndex(
+  index: number,
+  frame = readState($activeFrame),
+): void {
+  writeState($activeEntryIndex(frame), index);
+}
+
 export {
   moveCursor,
   moveCursorByPage,
@@ -288,4 +318,6 @@ export {
   invertAllRowSelections,
   selectRowsByNames,
   selectRowsByIndices,
+  activateRowByName,
+  activateRowByIndex,
 };
