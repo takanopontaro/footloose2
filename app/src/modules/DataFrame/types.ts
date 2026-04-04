@@ -1,4 +1,9 @@
 import type { ReactNode, RefObject } from 'react';
+import type { WsSendCallback } from '@libs/ws';
+import type {
+  WsDataResponse,
+  WsProgressTaskResponse,
+} from '@modules/App/types';
 import type { EntryModel } from '@modules/DataFrame/models';
 
 /**
@@ -146,6 +151,13 @@ export type SymlinkInfo = {
  */
 export type ProgressTaskArgs = {
   /**
+   * 処理完了時のコールバック。
+   * 成功でも失敗でも実行されるため、必要なら引数の resp を見て処理を分けること。
+   */
+  callback?: (
+    resp: Parameters<WsSendCallback<WsProgressTaskResponse>>[0],
+  ) => void;
+  /**
    * シェルコマンド。
    */
   cmd: string;
@@ -191,6 +203,11 @@ export type ProgressTaskArgsGenerator = (
  * ShTask の引数を表す構造体。
  */
 export type ShTaskArgs = {
+  /**
+   * 処理完了時のコールバック。
+   * 成功でも失敗でも実行されるため、必要なら引数の resp を見て処理を分けること。
+   */
+  callback?: (resp: Parameters<WsSendCallback<WsDataResponse>>[0]) => void;
   /**
    * シェルコマンド。
    */

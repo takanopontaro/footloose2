@@ -49,10 +49,12 @@ async function runProgressTask(
     },
     (resp) => {
       if (handleWsSendError(resp, frame)) {
+        args.callback?.(resp);
         return;
       }
       const log = <ProgressTaskLog label={args.label} pid={resp.data.pid} />;
       writeLog(log, 'progress');
+      args.callback?.(resp);
     },
     frame,
   );
@@ -108,9 +110,11 @@ async function runShTask(
     },
     (resp) => {
       if (handleWsSendError(resp, frame)) {
+        args.callback?.(resp);
         return;
       }
       writeLog(args.log, 'info');
+      args.callback?.(resp);
     },
     frame,
   );
