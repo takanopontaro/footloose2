@@ -30,7 +30,6 @@ use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
 use misc::{Command, FrameSet, Sender};
 use models::TaskArg;
-use regex::Regex;
 use std::{
     fs::{self, create_dir_all},
     path::{Path, PathBuf},
@@ -504,9 +503,12 @@ async fn preview_handler(
     if let Ok(Some(kind)) = infer::get_from_path(&path) {
         let mime = kind.mime_type();
         // image/jpeg, image/png, video/mp4, video/webm などパターンが多いため、
-        // 正規表現で判定する。pdf は普通に判定する。
-        let re = Regex::new(r"^(?:image|video|audio)/").unwrap();
-        if re.is_match(mime) || mime == "application/pdf" {
+        // 前半の文字列で判定する。pdf は普通に判定する。
+        if mime.starts_with("image/")
+            || mime.starts_with("video/")
+            || mime.starts_with("audio/")
+            || mime == "application/pdf"
+        {
             return process_file(&path).await.unwrap_or_else(|_| error_204());
         }
     };
