@@ -505,7 +505,7 @@ async fn preview_handler(
         let mime = kind.mime_type();
         // image/jpeg, image/png, video/mp4, video/webm などパターンが多いため、
         // 正規表現で判定する。pdf は普通に判定する。
-        let re = Regex::new(r"^(:?image|video|audio)/").unwrap();
+        let re = Regex::new(r"^(?:image|video|audio)/").unwrap();
         if re.is_match(mime) || mime == "application/pdf" {
             return process_file(&path).await.unwrap_or_else(|_| error_204());
         }
