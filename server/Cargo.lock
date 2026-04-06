@@ -653,6 +653,7 @@ dependencies = [
  "html-escape",
  "infer",
  "jsonschema",
+ "mime_guess",
  "mockall",
  "open",
  "regex",

@@ -28,6 +28,7 @@ use futures::stream::StreamExt as _;
 use helpers::logo_standard;
 use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
+use mime_guess::mime;
 use misc::{Command, FrameSet, Sender};
 use models::TaskArg;
 use std::{
@@ -512,6 +513,16 @@ async fn preview_handler(
             return process_file(&path).await.unwrap_or_else(|_| error_204());
         }
     };
+    // infer で判定できない場合は mime_guess で拡張子から判定する。
+    // infer が PDF を判定できないケースは考えにくいが、念のため。
+    let mime = mime_guess::from_path(&path).first_or_octet_stream();
+    if mime.type_() == mime::IMAGE
+        || mime.type_() == mime::VIDEO
+        || mime.type_() == mime::AUDIO
+        || mime == mime::APPLICATION_PDF
+    {
+        return process_file(&path).await.unwrap_or_else(|_| error_204());
+    }
     let Ok(is_txt) = is_text_file(&path).await else {
         return error_204();
     };
