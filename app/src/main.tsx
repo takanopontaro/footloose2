@@ -18,7 +18,7 @@ const migemo = await fetch('./migemo-compact-dict')
   });
 
 /**
- * ルートコンポーネント。
+ * エントリポイント。
  * Config を受け取り、jotai の store に格納する。
  *
  * @param config - アプリケーションの設定
