@@ -26,9 +26,9 @@ use futures::stream::StreamExt as _;
 use helpers::{decode_string, logo_standard};
 use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
-use mime_guess::mime;
 use misc::{Command, FrameSet, Sender};
 use models::{ClientConfig, MimeType, TaskArg};
+use regex::Regex;
 use std::{
     fs::{self, create_dir_all},
     path::{Path, PathBuf},
@@ -110,7 +110,7 @@ impl AppState {
     }
 
     /// MIME タイプの設定を取得する。
-    fn _mime_types(&self) -> Arc<Vec<MimeType>> {
+    fn mime_types(&self) -> Arc<Vec<MimeType>> {
         self.mime_types
             .get()
             .cloned()
@@ -361,6 +361,26 @@ async fn is_text_file(path: &Path) -> Result<bool> {
     Ok(true)
 }
 
+/// テキストファイルをプレビュー用 HTML テンプレートに埋め込んで返す。
+///
+/// テキストでない場合は None を返す。
+///
+/// # Arguments
+/// * `path` - 読み込むテキストファイルのパス
+///
+/// # Returns
+/// テキスト内容を埋め込んだ HTML レスポンスまたは None
+async fn process_text(path: &Path) -> Option<Response<Body>> {
+    if is_text_file(path).await.is_err() {
+        return None;
+    };
+    let bytes = tokio::fs::read(path).await.ok()?;
+    let text = decode_string(&bytes);
+    let text = encode_quoted_attribute(&text);
+    let html = HTML_TEMPLATE.replace("<!---->", &text);
+    Some(ok_200(html))
+}
+
 /// ファイルを静的ファイルとして配信する。
 ///
 /// # Arguments
@@ -375,19 +395,30 @@ async fn process_file(path: &Path) -> Result<Response<Body>> {
     Ok(res.into_response())
 }
 
-/// テキストファイルをプレビュー用 HTML テンプレートに埋め込んで返す。
+/// MIME タイプがメディアファイルならその HTTP レスポンスを返し、
+/// そうでなければ None を返す。
+///
+/// 以下をメディアとする。
+/// - 画像 (image/*)
+/// - 動画 (video/*)
+/// - 音声 (audio/*)
+/// - PDF (application/pdf)
 ///
 /// # Arguments
-/// * `path` - 読み込むテキストファイルのパス
+/// * `mime` - 判定対象の MIME タイプ文字列
+/// * `path` - 配信するファイルのパス
 ///
 /// # Returns
-/// テキスト内容を埋め込んだ HTML レスポンス
-async fn process_text(path: &Path) -> Result<Response<Body>> {
-    let bytes = tokio::fs::read(path).await?;
-    let text = decode_string(&bytes);
-    let text = encode_quoted_attribute(&text);
-    let html = HTML_TEMPLATE.replace("<!---->", &text);
-    Ok(ok_200(html))
+/// HTTP レスポンスまたは None
+async fn process_media(mime: &str, path: &Path) -> Option<Response<Body>> {
+    if mime.starts_with("image/")
+        || mime.starts_with("video/")
+        || mime.starts_with("audio/")
+        || mime == "application/pdf"
+    {
+        return Some(process_file(path).await.unwrap_or_else(|_| error_204()));
+    }
+    None
 }
 
 /// TypeScript ファイルをコンパイルして結果を返す。
@@ -524,44 +555,50 @@ async fn config_handler(
 ///
 /// # Arguments
 /// * `path` - プレビューするファイルのパス
+/// * `state` - アプリケーション共有データ
 ///
 /// # Returns
 /// ファイルの内容を適切な形式で返す HTTP レスポンス
 async fn preview_handler(
     AxumPath(path): AxumPath<String>,
+    State(state): State<Arc<AppState>>,
 ) -> impl IntoResponse {
     let p = format!("/{path}");
     let path = PathBuf::from(p);
     if tokio::fs::metadata(&path).await.is_err() {
         return error_204();
     }
+    let mime = state.mime_types().iter().find_map(|m| {
+        let re = Regex::new(&m.pattern).ok()?;
+        if re.is_match(path.to_str()?) {
+            Some(m.mime.clone())
+        } else {
+            None
+        }
+    });
+    if let Some(mime) = mime {
+        if let Some(res) = process_media(&mime, &path).await {
+            return res;
+        }
+        if let Some(res) = process_text(&path).await {
+            return res;
+        }
+    }
     if let Ok(Some(kind)) = infer::get_from_path(&path) {
         let mime = kind.mime_type();
-        // image/jpeg, image/png, video/mp4, video/webm などパターンが多いため、
-        // 前半の文字列で判定する。pdf は普通に判定する。
-        if mime.starts_with("image/")
-            || mime.starts_with("video/")
-            || mime.starts_with("audio/")
-            || mime == "application/pdf"
-        {
-            return process_file(&path).await.unwrap_or_else(|_| error_204());
+        if let Some(res) = process_media(mime, &path).await {
+            return res;
         }
     };
     // infer で判定できない場合は mime_guess で拡張子から判定する。
     // infer が PDF を判定できないケースは考えにくいが、念のため。
-    let mime = mime_guess::from_path(&path).first_or_octet_stream();
-    if mime.type_() == mime::IMAGE
-        || mime.type_() == mime::VIDEO
-        || mime.type_() == mime::AUDIO
-        || mime == mime::APPLICATION_PDF
-    {
-        return process_file(&path).await.unwrap_or_else(|_| error_204());
+    let guess = mime_guess::from_path(&path).first_or_octet_stream();
+    let mime = guess.essence_str();
+    if let Some(res) = process_media(mime, &path).await {
+        return res;
     }
-    let Ok(is_txt) = is_text_file(&path).await else {
-        return error_204();
-    };
-    if is_txt {
-        return process_text(&path).await.unwrap_or_else(|_| error_204());
+    if let Some(res) = process_text(&path).await {
+        return res;
     }
     error_204()
 }
