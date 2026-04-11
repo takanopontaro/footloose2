@@ -146,7 +146,7 @@ function devConfig(): UserConfig {
   return {
     server: {
       proxy: {
-        '^/(config|preview)': `http://localhost:${SERVER_PORT}`,
+        '^/(init|config|preview)': `http://127.0.0.1:${SERVER_PORT}`,
       },
     },
     resolve: { alias: tsconfigPaths },

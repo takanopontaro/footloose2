@@ -19,8 +19,8 @@ use axum::{
     },
     http::{HeaderMap, HeaderValue, Request, Response, StatusCode},
     response::{Html, IntoResponse},
-    routing::get,
-    Router,
+    routing::{get, put},
+    Json, Router,
 };
 use base64::{engine::general_purpose, Engine as _};
 use clap::Parser;
@@ -30,7 +30,7 @@ use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
 use mime_guess::mime;
 use misc::{Command, FrameSet, Sender};
-use models::TaskArg;
+use models::{ClientConfig, MimeType, TaskArg};
 use std::{
     fs::{self, create_dir_all},
     path::{Path, PathBuf},
@@ -40,7 +40,7 @@ use tasks::{
     AbortProgressTask, BookmarkTask, ChangeDirTask, ChangeVirtualDirTask,
     ExtractEntriesTask, OpenTask, ProgressTask, RemoveClientTask, ShTask,
 };
-use tokio::io::AsyncReadExt as _;
+use tokio::{io::AsyncReadExt as _, sync::OnceCell};
 use tower_http::services::{ServeDir, ServeFile};
 
 /// プレビューで使用する HTML のテンプレート。
@@ -95,9 +95,29 @@ struct Args {
 /// # Fields
 /// * `args` - コマンドライン引数
 /// * `task_manager` - TaskManager インスタンス
+/// * `mime_types` - クライアントの MIME タイプ設定
 struct AppState {
     args: Arc<Args>,
     task_manager: Arc<TaskManager>,
+    mime_types: OnceCell<Arc<Vec<MimeType>>>,
+}
+
+impl AppState {
+    /// MIME タイプの設定をセットする。
+    ///
+    /// # Arguments
+    /// * `data` - MIME タイプの設定
+    fn set_mime_types(&self, data: Vec<MimeType>) {
+        let _ = self.mime_types.set(Arc::new(data));
+    }
+
+    /// MIME タイプの設定を取得する。
+    fn _mime_types(&self) -> Arc<Vec<MimeType>> {
+        self.mime_types
+            .get()
+            .cloned()
+            .unwrap_or_else(|| Arc::new(vec![]))
+    }
 }
 
 /// アプリケーションの CSS ファイルのパスを取得する。
@@ -223,6 +243,7 @@ fn create_task_manager(args: &Args) -> Arc<TaskManager> {
 /// 以下のルートを設定する。
 /// - `/`, `/index.html`: メインページ
 /// - `/ws`: WebSocket エンドポイント
+/// - `/init`: クライアント設定の初期化
 /// - `/config/{name}`: 設定ファイルの取得
 /// - `/preview/{*path}`: プレビュー機能
 /// - fallback: 静的ファイル配信
@@ -236,11 +257,13 @@ async fn main() -> Result<()> {
     let state = Arc::new(AppState {
         args: Arc::new(args.clone()),
         task_manager: create_task_manager(&args),
+        mime_types: OnceCell::new(),
     });
     let app = Router::new()
         .route("/", get(index_handler))
         .route("/index.html", get(index_handler))
         .route("/ws", get(ws_handler))
+        .route("/init", put(init_handler))
         .route("/config/{name}", get(config_handler))
         .route("/preview/{*path}", get(preview_handler))
         .fallback_service(ServeDir::new(args.root))
@@ -452,6 +475,19 @@ async fn index_handler(
     contents = contents.replace("%js%", &code);
     contents = contents.replace("%port%", &args.port.to_string());
     ok_200(contents)
+}
+
+/// クライアント設定のハンドラー。
+///
+/// # Arguments
+/// * `state` - アプリケーション共有データ
+/// * `payload` - クライアントの設定
+async fn init_handler(
+    State(state): State<Arc<AppState>>,
+    Json(payload): Json<ClientConfig>,
+) -> StatusCode {
+    state.set_mime_types(payload.mime_types);
+    StatusCode::NO_CONTENT
 }
 
 /// 設定ファイルのハンドラー。

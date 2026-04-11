@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useInitialDir, useWebSocket } from '@modules/App/hooks';
-import { $modal } from '@modules/App/state';
+import { $config, $modal } from '@modules/App/state';
 import { DataFrame } from '@modules/DataFrame/components';
 import { LogFrame } from '@modules/LogFrame/components';
 
@@ -25,8 +25,18 @@ type Props = {
 const AppComponent: FC<Props> = ({ port }) => {
   const wsAtom = useWebSocket(port);
   const loadable = useAtomValue(wsAtom);
+  const { mimeTypes } = useAtomValue($config);
   const Modal = useAtomValue($modal);
   const [dirPathA, dirPathB] = useInitialDir();
+
+  // サーバーにアプリの設定情報を送信する。
+  useEffect(() => {
+    fetch('/init', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mimeTypes }),
+    }).catch(console.error);
+  }, [mimeTypes]);
 
   switch (loadable.state) {
     case 'hasError':
