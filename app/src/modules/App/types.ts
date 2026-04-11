@@ -472,6 +472,35 @@ export type CommandsConfig = {
 export type MessagesConfig = string[];
 
 /**
+ * MIME タイプと拡張子のカスタムマッピング。
+ * 例えば `ts` という拡張子の MIME は `video/mp2t` であるが、
+ * フロントエンド開発者にとっては `ts` は TypeScript ファイルである。
+ * preview モードでは MIME を元にプレビュー表示されるため、
+ * ts ファイルは動画としてプレビューされる。この振る舞いを変更できる。
+ * なおプレビューできるのは以下のみ。
+ * - 画像 (image/*)
+ * - 動画 (video/*)
+ * - 音声 (audio/*)
+ * - PDF (application/pdf)
+ * - テキストファイル
+ *
+ * @example
+ * ```ts
+ * // `ts` をテキストファイルとしてプレビューさせたい場合。
+ * [{ mime: 'text/plain', pattern: '\\.tsx?$' }]
+ */
+export type MimeTypesConfig = {
+  /**
+   * MIME タイプ。
+   */
+  mime: string;
+  /**
+   * 拡張子の正規表現パターン。
+   */
+  pattern: string;
+}[];
+
+/**
  * アプリケーションの設定。
  */
 export type SettingsConfig = {
@@ -624,6 +653,7 @@ export type Config = {
   associations: AssociationsConfig;
   commands: CommandsConfig;
   messages: MessagesConfig;
+  mimeTypes: MimeTypesConfig;
   settings: SettingsConfig;
   shortcuts: ShortcutsConfig;
 };

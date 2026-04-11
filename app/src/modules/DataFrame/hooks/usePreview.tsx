@@ -1,10 +1,31 @@
 import { useAtomValue } from 'jotai';
 import mime from 'mime';
 import { useMemo, useRef } from 'react';
+import { readState } from '@libs/utils';
+import { $config } from '@modules/App/state';
 import { $currentDir } from '@modules/DataFrame/state';
 
 import type { Frame } from '@modules/App/types';
 import type { Entry, PreviewInfo } from '@modules/DataFrame/types';
+
+/**
+ * ファイルパスに対応する MIME タイプを返す。
+ * Config の `mimeTypes` に一致するパターンがあればそれを優先し、
+ * なければ `mime` モジュールでの推定結果を返す。
+ *
+ * @param path - ファイルパス
+ * @returns 対応する MIME タイプ文字列または null
+ */
+function getMimeType(path: string): null | string {
+  const { mimeTypes } = readState($config);
+  for (const { mime: type, pattern } of mimeTypes) {
+    const re = new RegExp(pattern);
+    if (re.test(path)) {
+      return type;
+    }
+  }
+  return mime.getType(path);
+}
 
 /**
  * エントリの種類に応じて、プレビュー用の情報を返す。
@@ -33,7 +54,7 @@ export const usePreview = (
     // ファイルシステム上のリソースをロードできる。
     // 例えば /preview/foo/bar/baz.jpg だと /foo/bar/baz.jpg をロードする。
     const src = `/preview${curDir}/${entry.name}`;
-    const type = mime.getType(src);
+    const type = getMimeType(src);
 
     if (type === null) {
       const node = <div className="preview_unavailable" />;
