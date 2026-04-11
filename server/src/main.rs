@@ -8,8 +8,6 @@ mod tasks;
 mod test_helpers;
 mod traits;
 
-use crate::helpers::decode_string;
-
 use anyhow::{ensure, Result};
 use axum::{
     body::Body,
@@ -25,7 +23,7 @@ use axum::{
 use base64::{engine::general_purpose, Engine as _};
 use clap::Parser;
 use futures::stream::StreamExt as _;
-use helpers::logo_standard;
+use helpers::{decode_string, logo_standard};
 use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
 use mime_guess::mime;
