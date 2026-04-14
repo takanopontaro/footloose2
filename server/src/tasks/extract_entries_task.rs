@@ -6,13 +6,13 @@ use crate::{
     traits::TaskBase,
 };
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use async_trait::async_trait;
 use flate2::read::GzDecoder;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{
-    fs::{create_dir_all, File},
-    io::{copy, BufReader, Read},
+    fs::{File, create_dir_all},
+    io::{BufReader, Read, copy},
     os::unix::ffi::OsStringExt as _,
     path::Path,
     sync::Arc,
@@ -206,10 +206,10 @@ impl ExtractEntriesTask {
             let str_p = String::from_utf8_lossy(&raw);
             // USTAR ではファイル名が 100 バイトに制限されている。
             // 途中で切れていそうなら path() にフォールバックする。
-            if raw.len() >= 100 || str_p.contains('\0') {
-                if let Ok(path) = entry.path() {
-                    raw = path.into_owned().into_os_string().into_vec();
-                }
+            if (raw.len() >= 100 || str_p.contains('\0'))
+                && let Ok(path) = entry.path()
+            {
+                raw = path.into_owned().into_os_string().into_vec();
             }
             if !self.is_match(&raw, srcs) {
                 continue;

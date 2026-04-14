@@ -1,7 +1,7 @@
 use crate::{helpers::perm_string, traits::ArchiveEntry};
 
 use chrono::{Local, NaiveDate, NaiveDateTime, TimeZone as _};
-use zip::{read::ZipFile, ExtraField::ExtendedTimestamp};
+use zip::{ExtraField::ExtendedTimestamp, read::ZipFile};
 
 /// Zip のエントリを表す構造体。
 ///

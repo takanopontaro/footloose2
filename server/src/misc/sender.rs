@@ -9,10 +9,10 @@ use crate::{
 use anyhow::{Error, Result};
 use async_trait::async_trait;
 use axum::extract::ws::{Message, WebSocket};
-use futures::{stream::SplitSink, SinkExt as _};
+use futures::{SinkExt as _, stream::SplitSink};
 #[cfg(test)]
 use mockall::automock;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use tokio::sync::Mutex;
 use uuid::Uuid;
 

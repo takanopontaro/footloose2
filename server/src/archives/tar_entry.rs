@@ -91,11 +91,11 @@ impl TarEntry {
         let str_p = String::from_utf8_lossy(&raw);
         // USTAR ではファイル名が 100 バイトに制限されている。
         // 途中で切れていそうなら path() にフォールバックする。
-        if raw.len() >= 100 || str_p.contains('\0') {
-            if let Ok(path) = file.path() {
-                let vec = path.into_owned().into_os_string().into_vec();
-                raw = Cow::Owned(vec);
-            }
+        if (raw.len() >= 100 || str_p.contains('\0'))
+            && let Ok(path) = file.path()
+        {
+            let vec = path.into_owned().into_os_string().into_vec();
+            raw = Cow::Owned(vec);
         }
         self.decode_path(&raw)
     }

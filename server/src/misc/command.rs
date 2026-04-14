@@ -3,9 +3,9 @@ use crate::{
     helpers::{absolutize_path, normalize_path},
 };
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{collections::HashMap, path::Path};
 
 /// コマンド引数の型エイリアス。
@@ -155,7 +155,7 @@ impl Command {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_helpers::{create_command, Fixture};
+    use crate::test_helpers::{Fixture, create_command};
 
     use tokio::fs;
 

@@ -1,7 +1,7 @@
 use crate::{misc::Ls, models::Entry};
 
 use anyhow::Result;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::Arc;
 
 /// ディレクトリの監視情報を扱う構造体。
@@ -58,7 +58,7 @@ impl Watch {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_helpers::{setup_resources, teardown_resources, DirInfo};
+    use crate::test_helpers::{DirInfo, setup_resources, teardown_resources};
 
     use tokio::fs;
 

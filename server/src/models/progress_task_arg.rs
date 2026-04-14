@@ -4,7 +4,7 @@ use std::sync::Arc;
 use tokio::{
     io::BufReader,
     process::{Child, ChildStderr, ChildStdout},
-    sync::{mpsc, Mutex},
+    sync::{Mutex, mpsc},
 };
 
 /// ProgressTask の情報を扱う構造体。

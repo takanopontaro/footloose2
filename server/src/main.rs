@@ -8,25 +8,25 @@ mod tasks;
 mod test_helpers;
 mod traits;
 
-use anyhow::{ensure, Result};
+use anyhow::{Result, ensure};
 use axum::{
+    Json, Router,
     body::Body,
     extract::{
-        ws::{Message, WebSocket, WebSocketUpgrade},
         Path as AxumPath, State,
+        ws::{Message, WebSocket, WebSocketUpgrade},
     },
     http::{HeaderMap, HeaderValue, Request, Response, StatusCode},
     response::{Html, IntoResponse},
     routing::{get, put},
-    Json, Router,
 };
-use base64::{engine::general_purpose, Engine as _};
+use base64::{Engine as _, engine::general_purpose};
 use clap::Parser;
 use futures::stream::StreamExt as _;
 use helpers::{decode_string, logo_standard};
 use html_escape::encode_quoted_attribute;
 use managers::{BookmarkManager, TaskManager, WatchManager};
-use misc::{Command, FrameSet, Sender};
+use misc::{Command, FrameSet, Sender, SenderTrait};
 use models::{ClientConfig, MimeType, TaskArg};
 use regex::Regex;
 use std::{
@@ -631,8 +631,10 @@ async fn ws_handler(
 async fn handle_socket(stream: WebSocket, state: Arc<AppState>) {
     let (sender, mut receiver) = stream.split();
     let task_manager = state.task_manager.clone();
-    let task_arg =
-        Arc::new(TaskArg::new(FrameSet::new(), Arc::new(Sender::new(sender))));
+    let task_arg = Arc::new(TaskArg::new(
+        FrameSet::new(),
+        Arc::new(Sender::new(sender)) as Arc<dyn SenderTrait>,
+    ));
     let task_manager_ = task_manager.clone();
     let task_arg_ = task_arg.clone();
     // クライアントからのメッセージを受信して処理するループ。

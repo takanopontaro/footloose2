@@ -225,11 +225,7 @@ pub fn relativize_path(path: &str, cwd: &str) -> String {
         return path.to_owned();
     }
     let s = p.strip_prefix(c).unwrap_or(p).to_string_lossy().to_string();
-    if s.is_empty() {
-        ".".to_owned()
-    } else {
-        s
-    }
+    if s.is_empty() { ".".to_owned() } else { s }
 }
 
 /// 複数のパスを相対パスに変換する。

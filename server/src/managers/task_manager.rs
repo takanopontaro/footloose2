@@ -5,9 +5,9 @@ use crate::{
     traits::{InternalTaskBase, TaskBase},
 };
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use std::{collections::HashMap, sync::Arc};
-use tokio::sync::{mpsc, Mutex};
+use tokio::sync::{Mutex, mpsc};
 
 /// タスクの登録と実行を管理する構造体。
 ///

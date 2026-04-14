@@ -1,6 +1,6 @@
 use crate::{errors::BookmarkError, models::Bookmark};
 
-use anyhow::{bail, Error, Result};
+use anyhow::{Error, Result, bail};
 use serde_json::Value;
 use std::sync::Arc;
 use tokio::fs;

@@ -10,7 +10,7 @@ use async_trait::async_trait;
 use mockall::automock;
 use serde_json::Value;
 use std::{collections::HashMap, sync::Arc};
-use tokio::sync::{mpsc, Mutex};
+use tokio::sync::{Mutex, mpsc};
 
 /// WatchManager の振る舞いを定義するトレイト。
 ///
@@ -177,8 +177,8 @@ impl WatchManager {
 #[cfg(test)]
 mod tests {
     use crate::test_helpers::{
-        setup_resources, setup_sender, setup_task_arg, sleep,
-        teardown_resources, DirInfo,
+        DirInfo, setup_resources, setup_sender, setup_task_arg, sleep,
+        teardown_resources,
     };
 
     use super::*;

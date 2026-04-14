@@ -15,7 +15,7 @@ use serde_json::Value;
 use std::{
     fs as StdFs,
     mem::discriminant,
-    os::unix::fs::{symlink, PermissionsExt as _},
+    os::unix::fs::{PermissionsExt as _, symlink},
     process::Command as StdCommand,
     sync::Arc,
     time::Duration,

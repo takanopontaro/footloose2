@@ -8,7 +8,7 @@ use anyhow::Result;
 use serde_json::Value;
 use std::{sync::Arc, time::Duration};
 use tokio::{
-    sync::{mpsc, Mutex},
+    sync::{Mutex, mpsc},
     task::JoinHandle,
     time::sleep,
 };
@@ -145,16 +145,16 @@ impl WatchInfo {
 #[cfg(test)]
 mod tests {
     use crate::test_helpers::{
-        assert_err, setup_resources, setup_sender, sleep, teardown_resources,
-        DirInfo,
+        DirInfo, assert_err, setup_resources, setup_sender, sleep,
+        teardown_resources,
     };
 
     use tokio::fs;
 
     use super::*;
 
-    async fn setup(
-    ) -> Result<(String, mpsc::Receiver<WatchControl>, Arc<Mutex<WatchInfo>>)>
+    async fn setup()
+    -> Result<(String, mpsc::Receiver<WatchControl>, Arc<Mutex<WatchInfo>>)>
     {
         let path = setup_resources("").await?;
         let (tx, rx) = mpsc::channel::<WatchControl>(10);

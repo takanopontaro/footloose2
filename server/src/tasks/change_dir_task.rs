@@ -7,9 +7,9 @@ use crate::{
 
 use anyhow::Result;
 use async_trait::async_trait;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::Arc;
-use tokio::sync::{mpsc, Mutex};
+use tokio::sync::{Mutex, mpsc};
 
 /// ディレクトリを変更するタスク。
 ///
@@ -68,8 +68,8 @@ mod tests {
     use crate::{
         managers::{MockWatchManagerTrait, WatchManager},
         test_helpers::{
-            assert_by_schema, create_command, setup_resources, setup_sender,
-            setup_task_arg, teardown_resources, DirInfo,
+            DirInfo, assert_by_schema, create_command, setup_resources,
+            setup_sender, setup_task_arg, teardown_resources,
         },
     };
 

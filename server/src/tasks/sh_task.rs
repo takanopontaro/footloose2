@@ -5,9 +5,9 @@ use crate::{
     traits::TaskBase,
 };
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use async_trait::async_trait;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{process::Command as StdCommand, sync::Arc};
 use tokio::sync::mpsc;
 
@@ -145,8 +145,8 @@ mod tests {
 
     use super::*;
 
-    async fn setup(
-    ) -> Result<(String, Arc<TaskArg>, ShTask, mpsc::Sender<TaskControl>)> {
+    async fn setup()
+    -> Result<(String, Arc<TaskArg>, ShTask, mpsc::Sender<TaskControl>)> {
         let path = setup_resources("").await?;
         let sender = setup_sender();
         let task_arg = setup_task_arg(sender);
