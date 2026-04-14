@@ -339,26 +339,19 @@ fn error_500() -> Response<Body> {
 async fn is_text_file(path: &Path) -> Result<bool> {
     let mut file = tokio::fs::File::open(path).await?;
     // 先頭 4096 バイトを判定に使う。
-    let mut chunk = [0; 4096];
-    let len = file.read(&mut chunk).await?;
-    let bytes = &chunk[..len];
-    // NULL バイトがあるならバイナリ。
-    if bytes.contains(&0) {
+    let mut buf = [0u8; 4096];
+    let len = file.read(&mut buf).await?;
+    // 空ファイルはテキストとして扱う。
+    if len == 0 {
+        return Ok(true);
+    }
+    let bytes = &buf[..len];
+    if let Some(kind) = infer::get(bytes)
+        && !kind.mime_type().starts_with("text/")
+    {
         return Ok(false);
     }
-    let mut suspicious = 0;
-    for &b in bytes {
-        // 制御文字 (タブ、LF、CR 以外) は怪しい。
-        if b < 0x09 || (b > 0x0D && b < 0x20) {
-            suspicious += 1;
-        }
-    }
-    // 制御文字の割合が 5% 以上ならバイナリとみなす。
-    let ratio = suspicious as f32 / bytes.len() as f32;
-    if ratio > 0.05 {
-        return Ok(false);
-    };
-    Ok(true)
+    Ok(content_inspector::inspect(bytes).is_text())
 }
 
 /// テキストファイルをプレビュー用 HTML テンプレートに埋め込んで返す。
@@ -371,9 +364,10 @@ async fn is_text_file(path: &Path) -> Result<bool> {
 /// # Returns
 /// テキスト内容を埋め込んだ HTML レスポンスまたは None
 async fn process_text(path: &Path) -> Option<Response<Body>> {
-    if is_text_file(path).await.is_err() {
-        return None;
-    };
+    match is_text_file(path).await {
+        Ok(true) => (),
+        _ => return None,
+    }
     let bytes = tokio::fs::read(path).await.ok()?;
     let text = decode_string(&bytes);
     let text = encode_quoted_attribute(&text);
