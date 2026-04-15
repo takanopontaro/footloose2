@@ -30,6 +30,7 @@
     "eslint-plugin-sort-destructure-keys": "2.0.0",
     "globals": "17.3.0",
     "jotai": "2.17.1",
+    "jotai-family": "1.0.1",
     "jsmigemo": "0.4.8",
     "mime": "4.1.0",
     "mousetrap": "1.6.5",

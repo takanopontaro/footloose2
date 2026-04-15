@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atomFamily } from 'jotai-family';
 import { $config } from '@modules/App/state';
 import { $history, $modes, $prevSessionDir } from '@modules/DataFrame/state';
 

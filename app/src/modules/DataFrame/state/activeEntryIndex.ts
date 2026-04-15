@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
-import { atomFamily, RESET } from 'jotai/utils';
+import { atomFamily } from 'jotai-family';
+import { RESET } from 'jotai/utils';
 import { $activeEntryName, $filteredEntries } from '@modules/DataFrame/state';
 
 import type { SetStateAction } from 'jotai';

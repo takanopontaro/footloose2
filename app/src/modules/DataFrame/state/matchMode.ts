@@ -1,4 +1,5 @@
-import { atomFamily, atomWithReset } from 'jotai/utils';
+import { atomFamily } from 'jotai-family';
+import { atomWithReset } from 'jotai/utils';
 
 import type { Frame, MatchMode } from '@modules/App/types';
 

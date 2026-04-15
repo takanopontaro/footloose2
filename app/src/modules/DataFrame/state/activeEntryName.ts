@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
-import { atomFamily, atomWithReset, RESET } from 'jotai/utils';
+import { atomFamily } from 'jotai-family';
+import { atomWithReset, RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import {
   $activeEntryIndex,
