@@ -580,6 +580,7 @@ async fn preview_handler(
         if let Some(res) = process_text(&path).await {
             return res;
         }
+        return error_204();
     }
 
     // infer で MIME タイプを判定し、メディアかどうかを判別する。
