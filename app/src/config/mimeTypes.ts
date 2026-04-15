@@ -1,7 +1,5 @@
 import type { MimeTypesConfig } from '@modules/App/types';
 
-const mimeTypes: MimeTypesConfig = [
-  { mime: 'text/plain', pattern: '\\.tsx?$' },
-];
+const mimeTypes: MimeTypesConfig = [];
 
 export { mimeTypes };
