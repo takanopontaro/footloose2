@@ -562,12 +562,15 @@ async fn preview_handler(
     if tokio::fs::metadata(&path).await.is_err() {
         return error_204();
     }
+
+    // ユーザーのカスタム MIME タイプ設定にマッチするものがあれば、
+    // その MIME を基準にメディアかテキストかを判別して配信する。
+    // いずれでもない場合は 204 を返す。
     let mime = state.mime_types().iter().find_map(|m| {
         let re = Regex::new(&m.pattern).ok()?;
-        if re.is_match(path.to_str()?) {
-            Some(m.mime.clone())
-        } else {
-            None
+        match re.is_match(path.to_str()?) {
+            true => Some(m.mime.clone()),
+            false => None,
         }
     });
     if let Some(mime) = mime {
@@ -578,22 +581,28 @@ async fn preview_handler(
             return res;
         }
     }
+
+    // infer で MIME タイプを判定し、メディアかどうかを判別する。
     if let Ok(Some(kind)) = infer::get_from_path(&path) {
         let mime = kind.mime_type();
         if let Some(res) = process_media(mime, &path).await {
             return res;
         }
-    };
+    }
+
     // infer で判定できない場合は mime_guess で拡張子から判定する。
-    // infer が PDF を判定できないケースは考えにくいが、念のため。
     let guess = mime_guess::from_path(&path).first_or_octet_stream();
     let mime = guess.essence_str();
     if let Some(res) = process_media(mime, &path).await {
         return res;
     }
+
+    // 最後にテキストファイルかどうかを判別する。
     if let Some(res) = process_text(&path).await {
         return res;
     }
+
+    // いずれでもない場合は 204 を返す。
     error_204()
 }
 
