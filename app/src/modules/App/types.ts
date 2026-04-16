@@ -505,7 +505,7 @@ export type MimeTypesConfig = {
  */
 export type SettingsConfig = {
   /**
-   * ディレクトリ変更時に EntryFilter をクリアするかどうか。
+   * ディレクトリ変更時に EntryFilter をクリアするか否か。
    */
   clearEntryFilterOnDirChange: boolean;
   /**
@@ -531,9 +531,14 @@ export type SettingsConfig = {
    */
   progressTaskLogInterval: number;
   /**
-   * 仮想ディレクトリ表示に含めないエントリの正規表現パターン。
-   * Mac のリソースフォークや AppleDouble 形式のメタデータなど、
+   * 仮想ディレクトリの表示に含めたくないエントリの正規表現パターン。
    * ノイズになるエントリを除外するために使用する。
+   *
+   * @example
+   * ```ts
+   * // Mac のリソースフォークや AppleDouble 形式のメタデータを除外する場合。
+   * { virtualDirExcludePattern: '^(?:__MACOSX/|\\._.+)' }
+   * ```
    */
   virtualDirExcludePattern: string;
 };
