@@ -116,23 +116,23 @@ importers:
         version: 9.0.4
     optionalDependencies:
       '@footloose2/server-darwin-arm64':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       '@footloose2/server-darwin-x64':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       '@footloose2/server-linux-arm64':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       '@footloose2/server-linux-arm64-musl':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       '@footloose2/server-linux-x64':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       '@footloose2/server-linux-x64-musl':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
 
 packages:
 
@@ -453,41 +453,41 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@footloose2/server-darwin-arm64@0.0.6':
-    resolution: {integrity: sha512-ovfxncEzlwBnrUByP9sphgwLDtsFdKXqCjSNLWLdQf0pTK5Xu1EN1sNieCivwlhm8jCXSyrw9k7b+o2hEIRCCA==}
+  '@footloose2/server-darwin-arm64@0.0.7':
+    resolution: {integrity: sha512-fVLXKIrBNP0DKDdpOVQdp3xPnxabDegJmyUOANIaPyak6ftzR774Pk1mIvwHRZdBk/1WJT/07ekS6hcC4GriRw==}
     cpu: [arm64]
     os: [darwin]
     hasBin: true
 
-  '@footloose2/server-darwin-x64@0.0.6':
-    resolution: {integrity: sha512-xZ9j26RkdAC2y4BjF6OkKoTFG91l9sHVH9qrzfXZz386AxCZeay9YPBaS3RYYSJpc3kv1Tu05sJIIdQiTMouCw==}
+  '@footloose2/server-darwin-x64@0.0.7':
+    resolution: {integrity: sha512-vUUNPunkxZB70Usx3uDyMuh5hK9LQCUoxnDsCzzUIS7R6GOVk2CgIzAfsd32hqtNzETqrcStWtp2uzBcBfajAQ==}
     cpu: [x64]
     os: [darwin]
     hasBin: true
 
-  '@footloose2/server-linux-arm64-musl@0.0.6':
-    resolution: {integrity: sha512-vm6X5vXHRZub0aT7a+ZqsTSGYXpPS1shPmWYIn6R922C8h7h36p0XtA8+kk3sH+kdQUw+l5jZbk2coo/wDdt0w==}
+  '@footloose2/server-linux-arm64-musl@0.0.7':
+    resolution: {integrity: sha512-mlB8Dv/rSkWYmxzez0SECEos+HCDqYGHjquE7jR8M32Yt8x43Za8cOreQY/LtLNVMfZLcIycOs6n4kstGqayIQ==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
     hasBin: true
 
-  '@footloose2/server-linux-arm64@0.0.6':
-    resolution: {integrity: sha512-ATQP78pW8cWyWI/7boPbIl5Mn81eD+dI1QDSFzubq1SAdpdr264jrXAF61SQIoC1UpmtNgd3s5i0a1tuaoHaxQ==}
+  '@footloose2/server-linux-arm64@0.0.7':
+    resolution: {integrity: sha512-j0n5x+q5HreCz/UvGPGQuj4ie/QhGTZ9gfVzqfH2v4/jEBuqppNVTbTrNDt/cxZmkoKGyUrAXJonOhOR7MR7Ew==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
     hasBin: true
 
-  '@footloose2/server-linux-x64-musl@0.0.6':
-    resolution: {integrity: sha512-buXSwUS+n0bKupAbvjyZe2y5YqJc1M75jtEaH1y9h7vhjMKZaDziBu33UxG1uzBISWfNnGecuA8pBzmLeaFdzg==}
+  '@footloose2/server-linux-x64-musl@0.0.7':
+    resolution: {integrity: sha512-MkpMxrLV0mjquqWovUHboWbSBGu1BheJykvBLz/upaMJHBiaIGKd8vdLwS6KHIQYo669we6dkLYw3qqkv7hpgg==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
     hasBin: true
 
-  '@footloose2/server-linux-x64@0.0.6':
-    resolution: {integrity: sha512-OWjyMMAgi5yqYRSZaHm3DlG/O8AGIbRu90xG+aW4poEIdf4oeSl2FoSEkV9MY2zF2r4gDb9oQYRiD0Bo16nl7w==}
+  '@footloose2/server-linux-x64@0.0.7':
+    resolution: {integrity: sha512-wBxBhmbkWW6IBm/ibqqgVTyPvUn/XKLTraBN4149QzVAyy/sCtqr64MvCFXJsLPUZqx5kXCzHClENCkJkd46Jw==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
@@ -2675,22 +2675,22 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@footloose2/server-darwin-arm64@0.0.6':
+  '@footloose2/server-darwin-arm64@0.0.7':
     optional: true
 
-  '@footloose2/server-darwin-x64@0.0.6':
+  '@footloose2/server-darwin-x64@0.0.7':
     optional: true
 
-  '@footloose2/server-linux-arm64-musl@0.0.6':
+  '@footloose2/server-linux-arm64-musl@0.0.7':
     optional: true
 
-  '@footloose2/server-linux-arm64@0.0.6':
+  '@footloose2/server-linux-arm64@0.0.7':
     optional: true
 
-  '@footloose2/server-linux-x64-musl@0.0.6':
+  '@footloose2/server-linux-x64-musl@0.0.7':
     optional: true
 
-  '@footloose2/server-linux-x64@0.0.6':
+  '@footloose2/server-linux-x64@0.0.7':
     optional: true
 
   '@hapi/address@5.1.1':
