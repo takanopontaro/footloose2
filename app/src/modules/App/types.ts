@@ -505,6 +505,10 @@ export type MimeTypesConfig = {
  */
 export type SettingsConfig = {
   /**
+   * ディレクトリ変更時に EntryFilter をクリアするかどうか。
+   */
+  clearEntryFilterOnDirChange: boolean;
+  /**
    * ログフレームのスクロール量 (px)。
    */
   logScrollAmount: number;

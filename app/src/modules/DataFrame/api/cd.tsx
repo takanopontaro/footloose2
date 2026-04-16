@@ -1,7 +1,11 @@
 import { RESET } from 'jotai/utils';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $modal } from '@modules/App/state';
-import { changeVirtualDir, getActiveEntryName } from '@modules/DataFrame/api';
+import {
+  changeVirtualDir,
+  clearEntryFilter,
+  getActiveEntryName,
+} from '@modules/DataFrame/api';
 import {
   getOtherFrame,
   getPrevDirName,
@@ -76,6 +80,10 @@ function changeDir(
       if (!opts.historyMode) {
         writeState($historyCopy(frame), RESET);
         writeState($historyIndex(frame), RESET);
+      }
+      const { settings } = readState($config);
+      if (settings.clearEntryFilterOnDirChange) {
+        clearEntryFilter(frame);
       }
     },
     frame,

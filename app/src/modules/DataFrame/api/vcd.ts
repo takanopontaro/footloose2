@@ -3,6 +3,7 @@ import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config, $inactiveFrame } from '@modules/App/state';
 import {
   changeDir,
+  clearEntryFilter,
   getActiveEntryName,
   getTargetEntryNames,
 } from '@modules/DataFrame/api';
@@ -140,6 +141,10 @@ function changeVirtualDir(
         prevDirName === null ? RESET : prevDirName,
       );
       writeState($selectedEntryNames(frame), RESET);
+      const { settings } = readState($config);
+      if (settings.clearEntryFilterOnDirChange) {
+        clearEntryFilter(frame);
+      }
     },
     frame,
   );

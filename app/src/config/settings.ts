@@ -1,6 +1,7 @@
 import type { SettingsConfig } from '@modules/App/types';
 
 const settings: SettingsConfig = {
+  clearEntryFilterOnDirChange: true,
   logScrollAmount: 40,
   maxHistoryCount: 100,
   maxLogCount: 1000,
