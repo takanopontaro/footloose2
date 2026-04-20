@@ -594,7 +594,7 @@ export type ShortcutsConfig = Partial<
 >;
 
 /**
- * MIME とパスに基に、そのエントリを開くアプリケーションを決める。
+ * MIME とパスを基に、そのエントリを開くアプリケーションを決める。
  *
  * @param mime - MIME
  *   取れない場合は null。
