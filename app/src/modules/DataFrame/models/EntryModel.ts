@@ -7,6 +7,7 @@ import type { Entry } from '@modules/DataFrame/types';
 export class EntryModel {
   /**
    * @param entry - 元となるエントリ
+   * @param dirname - そのエントリのあるディレクトリのパス
    */
   constructor(
     public readonly entry: Entry,
