@@ -15,6 +15,13 @@ export class EntryModel {
   ) {}
 
   /**
+   * エントリのフルパス。
+   */
+  get path(): string {
+    return this.dirname + '/' + this.entry.name;
+  }
+
+  /**
    * 仮想ディレクトリ内のエントリか否か。
    */
   get isVirtual(): Entry['isVirtual'] {
@@ -23,6 +30,7 @@ export class EntryModel {
 
   /**
    * シンボリックリンクの実体パス。
+   * リンクでない場合は空文字。
    */
   get link(): Entry['link'] {
     return this.entry.link;
@@ -78,21 +86,21 @@ export class EntryModel {
   }
 
   /**
-   * 仮想ディレクトリか否かを判定する。
+   * 仮想ディレクトリ内のディレクトリか否かを判定する。
    */
   isVirtualDir(): boolean {
     return this.isVirtual && this.isDir();
   }
 
   /**
-   * 仮想ファイルか否かを判定する。
+   * 仮想ディレクトリ内のファイルか否かを判定する。
    */
   isVirtualFile(): boolean {
     return this.isVirtual && this.isFile();
   }
 
   /**
-   * 仮想シンボリックリンクか否かを判定する。
+   * 仮想ディレクトリ内のシンボリックリンクか否かを判定する。
    */
   isVirtualSymlink(): boolean {
     return this.isVirtual && this.isSymlink();
