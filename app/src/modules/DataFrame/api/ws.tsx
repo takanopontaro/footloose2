@@ -113,7 +113,9 @@ async function runShTask(
         args.callback?.(resp);
         return;
       }
-      writeLog(args.log, 'info');
+      if (args.log !== undefined && args.log !== '') {
+        writeLog(args.log, 'info');
+      }
       args.callback?.(resp);
     },
     frame,

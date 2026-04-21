@@ -217,9 +217,9 @@ export type ShTaskArgs = {
    */
   dest?: string;
   /**
-   * ログに表示するラベル。
+   * 表示するログ。
    */
-  log: string;
+  log?: string;
   /**
    * 対象エントリ名の一覧。
    * 空配列は不可。
