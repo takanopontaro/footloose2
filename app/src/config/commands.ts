@@ -182,7 +182,7 @@ const commands: CommandsConfig = [
         return;
       }
       if (api.isFile(name)) {
-        api.openWith();
+        api.open();
         return;
       }
       if (api.isSymlink(name)) {
@@ -195,7 +195,7 @@ const commands: CommandsConfig = [
             api.changeDir(name);
             break;
           case 'f':
-            api.openWith();
+            api.open();
             break;
           case 'e':
             api.writeLog(`${messages[7]}: ${name} -> ${info.target}`, 'error');
@@ -281,14 +281,14 @@ const commands: CommandsConfig = [
   {
     name: 'OpenWith',
     action(api, combo) {
-      api.openWith();
+      api.open();
     },
   },
   {
     name: 'OpenCurrentDir',
     action(api, combo) {
       const curDir = api.getSrcDir();
-      api.openWith(curDir.path);
+      api.openPath(curDir.path);
     },
   },
 
