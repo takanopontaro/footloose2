@@ -137,6 +137,27 @@ function getApp(entry: EntryModel): string | undefined {
 }
 
 /**
+ * 指定したパスをアプリで開く。
+ *
+ * @param path - エントリのパス
+ * @param app - アプリの名前
+ *   省略した場合は規定のアプリが使われる。
+ * @param frame - 対象フレーム
+ */
+function openPath(
+  path: string,
+  app?: string,
+  frame = readState($activeFrame),
+): void {
+  wsSend<WsSuccessResponse>(
+    'open',
+    { path, app }, // app が undefined の場合、規定のアプリが使われる。
+    (resp) => handleWsSendError(resp, frame),
+    frame,
+  );
+}
+
+/**
  * カレントエントリをアプリで開く。
  * アプリは Config の associations に基づいて決定される。
  * 候補がない場合は規定のアプリが使われる。
@@ -151,15 +172,7 @@ function open(frame = readState($activeFrame)): void {
     writeLog(messages[0], 'info');
     return;
   }
-  wsSend<WsSuccessResponse>(
-    'open',
-    {
-      path: entry.path,
-      app: getApp(entry), // undefined の場合、規定のアプリが使われる。
-    },
-    (resp) => handleWsSendError(resp, frame),
-    frame,
-  );
+  openPath(entry.path, getApp(entry), frame);
 }
 
 /**
@@ -238,6 +251,7 @@ export {
   setMigemoMatchMode,
   cycleMatchMode,
   clearEntryFilter,
+  openPath,
   open,
   copySrcPathsToClipboard,
   copySrcDirPathToClipboard,
