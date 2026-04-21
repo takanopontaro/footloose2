@@ -1,4 +1,5 @@
 import type { LISTENER_STATUS } from '@libs/ws';
+import type { EntryModel } from '@modules/DataFrame/models';
 import type { Bookmark, DirData, Mode } from '@modules/DataFrame/types';
 import type * as appApi from '@modules/App/api';
 import type * as dataFrameApi from '@modules/DataFrame/api';
@@ -594,16 +595,16 @@ export type ShortcutsConfig = Partial<
 >;
 
 /**
- * MIME とパスを基に、そのエントリを開くアプリケーションを決める。
+ * MIME とエントリ情報を基に、そのエントリを開くアプリケーションを決める。
  *
  * @param mime - MIME
  *   取れない場合は null。
- * @param path - エントリのパス
+ * @param entry - エントリ情報
  * @returns アプリ名または null
  *
  * @example
  * ```ts
- * (mime, path) => {
+ * (mime, entry) => {
  *   if (mime === 'application/toml') {
  *     return 'Visual Studio Code';
  *   }
@@ -611,7 +612,7 @@ export type ShortcutsConfig = Partial<
  * }
  * ```
  */
-type AssociationFn = (mime: null | string, path: string) => null | string;
+type AssociationFn = (mime: null | string, entry: EntryModel) => null | string;
 
 /**
  * MIME またはエントリのパスにパターンマッチングを行い、

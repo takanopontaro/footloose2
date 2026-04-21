@@ -2,10 +2,7 @@ import { RESET } from 'jotai/utils';
 import mime from 'mime';
 import { readState, writeState } from '@libs/utils';
 import { $activeFrame, $config } from '@modules/App/state';
-import {
-  getActiveEntryName,
-  getTargetEntryNames,
-} from '@modules/DataFrame/api';
+import { getActiveEntry, getTargetEntryNames } from '@modules/DataFrame/api';
 import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
 import {
   $activeEntryName,
@@ -18,6 +15,7 @@ import {
 import { writeLog } from '@modules/LogFrame/api';
 
 import type { WsSuccessResponse } from '@modules/App/types';
+import type { EntryModel } from '../models';
 
 /**
  * gallery モードに入る。
@@ -111,16 +109,16 @@ function clearEntryFilter(frame = readState($activeFrame)): void {
  * Config の associations を参照して、
  * そのエントリを開くのに適切なアプリ名を返す。
  *
- * @param path - エントリのパス
- * @returns アプリ名または null
+ * @param entry - エントリ情報
+ * @returns アプリ名または undefined
  */
-function getApp(path: string): null | string {
-  const type = mime.getType(path);
+function getApp(entry: EntryModel): string | undefined {
+  const type = mime.getType(entry.path);
   const { associations } = readState($config);
   for (const assoc of associations) {
     // 関数なら実行して、アプリ名の取得を試みる。
     if (typeof assoc === 'function') {
-      const app = assoc(type, path);
+      const app = assoc(type, entry);
       if (app !== null) {
         return app;
       }
@@ -130,41 +128,35 @@ function getApp(path: string): null | string {
     const { app, kind, pattern } = assoc;
     if (
       (kind === 'mime' && type !== null && pattern.test(type)) ||
-      (kind === 'path' && pattern.test(path))
+      (kind === 'path' && pattern.test(entry.path))
     ) {
       return app;
     }
   }
-  return null;
+  return undefined;
 }
 
 /**
- * 指定したアプリでエントリを開く。
- * ファイルだけでなくディレクトリも指定可能 (Finder で開く等)。
+ * カレントエントリをアプリで開く。
+ * アプリは Config の associations に基づいて決定される。
+ * 候補がない場合は規定のアプリが使われる。
  *
- * @param path - エントリのパス
- * @param app - アプリ名
- *   省略すると Config の associations に基づいてアプリが選ばれる。
- *   候補がない場合は規定のアプリが使われる。
  * @param frame - 対象フレーム
  */
-function openWith(
-  path?: string,
-  app?: string,
-  frame = readState($activeFrame),
-): void {
+function open(frame = readState($activeFrame)): void {
   // ディレクトリも対象のため `..` を含める。
-  path = path ?? getActiveEntryName(frame, true);
-  if (path === '') {
+  const entry = getActiveEntry(frame, true);
+  if (entry === null) {
     const { messages } = readState($config);
     writeLog(messages[0], 'info');
     return;
   }
-  // app が undefined の場合、規定のアプリが使われる。
-  app = app ?? getApp(path) ?? undefined;
   wsSend<WsSuccessResponse>(
     'open',
-    { path, app },
+    {
+      path: entry.path,
+      app: getApp(entry), // undefined の場合、規定のアプリが使われる。
+    },
     (resp) => handleWsSendError(resp, frame),
     frame,
   );
@@ -246,7 +238,7 @@ export {
   setMigemoMatchMode,
   cycleMatchMode,
   clearEntryFilter,
-  openWith,
+  open,
   copySrcPathsToClipboard,
   copySrcDirPathToClipboard,
 };
