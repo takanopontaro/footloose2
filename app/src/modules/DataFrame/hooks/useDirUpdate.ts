@@ -1,10 +1,14 @@
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback, useEffect } from 'react';
+import { readState, writeState } from '@libs/utils';
 import { $ws } from '@modules/App/state';
+import { unsubscribeDirUpdate } from '@modules/DataFrame/api';
+import { getOtherFrame } from '@modules/DataFrame/libs';
 import {
   $activeEntryName,
   $currentDir,
+  $dirUpdateSubscriptionRecords,
   $filteredEntries,
   $rawEntries,
   $selectedEntryNames,
@@ -56,6 +60,37 @@ function getFallbackSelectedEntryNames(
   selectedEntryNames: string[],
 ): string[] {
   return selectedEntryNames.filter((name) => filteredEntryNames.has(name));
+}
+
+/**
+ * ディレクトリ更新時のコールバックを呼び出す。
+ *
+ * @param path - 更新されたディレクトリのパス
+ * @param frame - 対象フレーム
+ */
+function invokeDirUpdateCallbacks(path: string, frame: Frame): void {
+  const raw = readState($dirUpdateSubscriptionRecords);
+  const records = raw.filter((r) => r.subscription.path === path);
+  for (const { called, subscription } of records) {
+    subscription.callback(path, frame);
+    if (!subscription.once) {
+      continue;
+    }
+    const otherFrame = getOtherFrame(frame);
+    const otherPath = readState($currentDir(otherFrame));
+    // 他フレームも同じディレクトリを見ている且つコールバック未実行なら、
+    // これから実行されるということだから、まだ登録解除してはいけない。
+    // called に自フレームを追加したうえでキープ (形としては再登録) する。
+    if (otherPath === path && !called.includes(otherFrame)) {
+      writeState($dirUpdateSubscriptionRecords, (prev) => {
+        const records = prev.filter((r) => r.subscription !== subscription);
+        return [...records, { subscription, called: [frame] }];
+      });
+      continue;
+    }
+    // 登録解除する。
+    unsubscribeDirUpdate(subscription);
+  }
 }
 
 /**
@@ -112,6 +147,7 @@ export const useDirUpdate = (frame: Frame): void => {
 
         // 削除されていないなら、カレントはそのままでよい。
         if (!isDeleted) {
+          invokeDirUpdateCallbacks(path, frame);
           return;
         }
 
@@ -123,6 +159,7 @@ export const useDirUpdate = (frame: Frame): void => {
         );
 
         set($activeEntryName(frame), entryName);
+        invokeDirUpdateCallbacks(path, frame);
       },
       [frame],
     ),
