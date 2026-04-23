@@ -24,7 +24,7 @@ import type { CurrentDir, SymlinkInfo } from '@modules/DataFrame/types';
 function getCurrentDir(frame: Frame): CurrentDir {
   const curDir = readState($currentDir(frame));
   const modes = readState($modes(frame));
-  return { isVirtual: modes.includes('virtual-dir'), path: curDir };
+  return { frame, isVirtual: modes.includes('virtual-dir'), path: curDir };
 }
 
 /**

@@ -1,6 +1,7 @@
 import type { ReactNode, RefObject } from 'react';
 import type { WsSendCallback } from '@libs/ws';
 import type {
+  Frame,
   WsDataResponse,
   WsProgressTaskResponse,
 } from '@modules/App/types';
@@ -15,6 +16,10 @@ export type Mode = 'filter' | 'gallery' | 'history' | 'preview' | 'virtual-dir';
  * 各フレームのカレントディレクトリを表すオブジェクト。
  */
 export type CurrentDir = {
+  /**
+   * 自身のフレーム。
+   */
+  frame: Frame;
   /**
    * 自身が仮想ディレクトリか否か。
    */
