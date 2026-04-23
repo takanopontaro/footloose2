@@ -286,3 +286,39 @@ export type ChangeDirOptions = {
    */
   historyMode?: boolean;
 };
+
+/**
+ * ディレクトリが更新された時に実行されるコールバックの設定。
+ */
+export type DirUpdateSubscription = {
+  /**
+   * コールバック。
+   * エントリ情報が欲しい場合は getFilteredEntries などを自前で呼ぶこと。
+   *
+   * @param path - 更新されたディレクトリのパス
+   * @param frame - 更新されたフレーム
+   */
+  callback: (path: string, frame: Frame) => void;
+  /**
+   * 一度だけの実行か否か。
+   */
+  once: boolean;
+  /**
+   * 対象ディレクトリのパス。
+   */
+  path: string;
+};
+
+/**
+ * コールバック設定とその呼び出し状態を保持するオブジェクト。
+ */
+export type DirUpdateSubscriptionRecord = {
+  /**
+   * すでにコールバックが実行されたフレームの一覧。
+   */
+  called: Frame[];
+  /**
+   * コールバック設定。
+   */
+  subscription: DirUpdateSubscription;
+};

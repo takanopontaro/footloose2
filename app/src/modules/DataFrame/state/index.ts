@@ -1,6 +1,7 @@
 export * from './activeEntryIndex';
 export * from './activeEntryName';
 export * from './currentDir';
+export * from './dirUpdateSubscriptionRecords';
 export * from './filteredEntries';
 export * from './filterQuery';
 export * from './firstVisibleEntryIndex';
