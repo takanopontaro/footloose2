@@ -398,6 +398,17 @@ mv -v %s -t %d`,
           cmd: 'mv -n %s %d',
           src: [name],
           dest: `${srcDir.path}/${input}`,
+          callback(resp) {
+            if (resp.status !== 'SUCCESS') {
+              return;
+            }
+            api.subscribeDirUpdate({
+              // 新しい名前で選択し直す。
+              callback: (path, frame) => api.activateRowByName(input, frame),
+              once: true,
+              path: srcDir.path,
+            });
+          },
         };
       });
     },
