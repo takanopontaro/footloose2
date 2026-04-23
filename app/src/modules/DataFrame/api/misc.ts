@@ -16,8 +16,8 @@ import {
 import { writeLog } from '@modules/LogFrame/api';
 
 import type { WsSuccessResponse } from '@modules/App/types';
+import type { EntryModel } from '@modules/DataFrame/models';
 import type { DirUpdateSubscription } from '@modules/DataFrame/types';
-import type { EntryModel } from '../models';
 
 /**
  * gallery モードに入る。
