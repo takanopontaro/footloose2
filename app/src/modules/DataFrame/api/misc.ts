@@ -7,6 +7,7 @@ import { handleWsSendError, wsSend } from '@modules/DataFrame/libs';
 import {
   $activeEntryName,
   $currentDir,
+  $dirUpdateSubscriptionRecords,
   $filteredEntries,
   $filterQuery,
   $matchMode,
@@ -15,6 +16,7 @@ import {
 import { writeLog } from '@modules/LogFrame/api';
 
 import type { WsSuccessResponse } from '@modules/App/types';
+import type { DirUpdateSubscription } from '@modules/DataFrame/types';
 import type { EntryModel } from '../models';
 
 /**
@@ -242,6 +244,30 @@ function copySrcDirPathToClipboard(frame = readState($activeFrame)): void {
   copyTextToClipboard(curDir, messages[10], messages[11]);
 }
 
+/**
+ * ディレクトリが更新された時に実行するコールバック設定を登録する。
+ *
+ * @param subscription - 登録するコールバック設定
+ */
+function subscribeDirUpdate(subscription: DirUpdateSubscription): void {
+  writeState($dirUpdateSubscriptionRecords, (prev) => [
+    ...prev,
+    { subscription, called: [] },
+  ]);
+}
+
+/**
+ * ディレクトリが更新された時に実行するコールバック設定を削除する。
+ *
+ * @param subscription - 削除するコールバック設定
+ *   登録したものと同じオブジェクトであること。
+ */
+function unsubscribeDirUpdate(subscription: DirUpdateSubscription): void {
+  writeState($dirUpdateSubscriptionRecords, (prev) =>
+    prev.filter((r) => r.subscription !== subscription),
+  );
+}
+
 export {
   enterGalleryMode,
   exitGalleryMode,
@@ -255,4 +281,6 @@ export {
   open,
   copySrcPathsToClipboard,
   copySrcDirPathToClipboard,
+  subscribeDirUpdate,
+  unsubscribeDirUpdate,
 };
