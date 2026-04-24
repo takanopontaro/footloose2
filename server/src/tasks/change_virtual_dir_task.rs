@@ -64,26 +64,26 @@ impl ChangeVirtualDirTask {
     /// # Arguments
     /// * `path` - 検証するパス
     /// * `cwd` - 基準となるディレクトリ
-    /// * `filter` - フィルタ用の正規表現
+    /// * `filters` - フィルタ用正規表現の配列
     ///   Mac のリソースフォークなど、除外したいパスがある場合に指定する。
     fn validate_path(
         &self,
         path: &str,
         cwd: &str,
-        filter: &Option<Regex>,
+        filters: &Option<Vec<Regex>>,
     ) -> bool {
         // カレントディレクトリ外のパスは無効とする。
         if !path.starts_with(cwd) {
             return false;
         }
         // フィルタが指定されていない場合は無条件で有効とする。
-        if filter.is_none() {
+        if filters.is_none() {
             return true;
         }
-        let re = filter.as_ref().unwrap();
+        let regexes = filters.as_ref().unwrap();
         let path = path.strip_prefix(cwd).unwrap();
         // フィルタにマッチ「しない」場合に有効とする。
-        !re.is_match(path)
+        !regexes.iter().any(|r| r.is_match(path))
     }
 
     /// 空のディレクトリエントリを生成する。
@@ -107,14 +107,14 @@ impl ChangeVirtualDirTask {
     /// * `kind` - アーカイブの種類
     /// * `archive` - アーカイブファイルのパス
     /// * `cwd` - 基準となるディレクトリ
-    /// * `filter` - フィルタ用の正規表現
+    /// * `filters` - フィルタ用正規表現の配列
     ///   Mac のリソースフォークなど、除外したいパスがある場合に指定する。
     fn get_entries(
         &self,
         kind: &ArchiveKind,
         archive: &str,
         cwd: &str,
-        filter: &Option<Regex>,
+        filters: &Option<Vec<Regex>>,
     ) -> Result<Vec<Entry>> {
         let mut parent_ent = parent_entry(archive, &self.time_style, true)?;
         let mut cwd = cwd.to_owned();
@@ -192,7 +192,7 @@ impl ChangeVirtualDirTask {
         for entry in archive.entries()? {
             let entry = entry?;
             let path = entry.path();
-            if !self.validate_path(&path, &cwd, filter) {
+            if !self.validate_path(&path, &cwd, filters) {
                 continue;
             }
             if path == parent_p {
@@ -269,7 +269,10 @@ impl TaskBase for ChangeVirtualDirTask {
                 },
                 "archive": { "type": "string", "minLength": 1 },
                 "path": { "type": "string", "minLength": 1 },
-                "filter": { "type": "string", "minLength": 1 },
+                "filters": {
+                    "type": "array",
+                    "items": { "type": "string", "minLength": 1 },
+                },
             },
             "required": ["kind", "archive", "path"],
             "additionalProperties": false,
@@ -286,7 +289,15 @@ impl TaskBase for ChangeVirtualDirTask {
         let kind = ArchiveKind::from_str(kind)?;
         let archive = cmd.arg_as_path("archive", &cmd.cwd).unwrap();
         let path = cmd.arg_as_path("path", &cmd.cwd).unwrap();
-        let filter = cmd.arg_as_str("filter").and_then(|s| Regex::new(s).ok());
+        let filters = cmd.arg_as_str_array("filters").and_then(|arr| {
+            let regexes: Vec<_> =
+                arr.into_iter().filter_map(|s| Regex::new(s).ok()).collect();
+            if regexes.is_empty() {
+                None
+            } else {
+                Some(regexes)
+            }
+        });
 
         // `path` には
         // アーカイブのファイルシステムパス＋仮想ディレクトリのパス
@@ -303,7 +314,7 @@ impl TaskBase for ChangeVirtualDirTask {
             return Ok(TaskResult::error(err.into()));
         };
 
-        let res = match self.get_entries(&kind, &archive, cwd, &filter) {
+        let res = match self.get_entries(&kind, &archive, cwd, &filters) {
             Ok(data) => {
                 let manager = self.watch_manager.lock().await;
                 // 無事仮想ディレクトリ内に入れたため、現在の監視パスは解除しておく。
@@ -371,7 +382,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_run_filter() -> Result<()> {
+    async fn test_run_filters() -> Result<()> {
         let name = "dir-entries.tar";
         let a = format!("./tests/archives/{name}");
         let (path, task_arg, task, tx) = setup(&a).await?;
@@ -393,7 +404,7 @@ mod tests {
             "kind": "tar",
             "archive": format!("{path}/{name}"),
             "path": name,
-            "filter": "^(__MACOSX/|\\._.+)"
+            "filters": ["^(__MACOSX/|\\._.+)"]
         });
         let cmd = create_command(&path, "_", args)?;
         let TaskResult::Data(res) = task.run(&cmd, &task_arg, tx.clone()).await
@@ -427,7 +438,7 @@ mod tests {
                 "kind": kind,
                 "archive": &archive,
                 "path": name,
-                "filter": "^(__MACOSX/|\\._.+)"
+                "filters": ["^(__MACOSX/|\\._.+)"]
             });
             let cmd = create_command(&path, "_", args)?;
             let TaskResult::Data(res) =
@@ -454,7 +465,7 @@ mod tests {
                 "kind": kind,
                 "archive": &archive,
                 "path": nfc("1 オープンワールド"),
-                "filter": "^(__MACOSX/|\\._.+)"
+                "filters": ["^(__MACOSX/|\\._.+)"]
             });
             let cmd = create_command(&cwd, "_", args)?;
             let TaskResult::Data(res) =
@@ -484,7 +495,7 @@ mod tests {
             "kind": "zip",
             "archive": &archive,
             "path": "..",
-            "filter": "^(__MACOSX/|\\._.+)"
+            "filters": ["^(__MACOSX/|\\._.+)"]
         });
         let cmd = create_command(&archive, "_", args)?;
         let TaskResult::Error(res) = task.run(&cmd, &task_arg, tx).await else {

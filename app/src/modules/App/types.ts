@@ -532,16 +532,16 @@ export type SettingsConfig = {
    */
   progressTaskLogInterval: number;
   /**
-   * 仮想ディレクトリの表示に含めたくないエントリの正規表現パターン。
+   * 仮想ディレクトリの表示に含めたくないエントリの正規表現パターン一覧。
    * ノイズになるエントリを除外するために使用する。
    *
    * @example
    * ```ts
    * // Mac のリソースフォークや AppleDouble 形式のメタデータを除外する場合。
-   * { virtualDirExcludePattern: '^(?:__MACOSX/|\\._.+)' }
+   * { virtualDirExcludePatterns: ['^(?:__MACOSX/|\\._.+)'] }
    * ```
    */
-  virtualDirExcludePattern: string;
+  virtualDirExcludePatterns: string[];
 };
 
 /**

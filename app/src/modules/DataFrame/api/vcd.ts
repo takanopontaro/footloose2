@@ -114,7 +114,7 @@ function changeVirtualDir(
       kind: vdInfo.kind,
       archive: vdInfo.archive,
       path,
-      filter: settings.virtualDirExcludePattern,
+      filters: settings.virtualDirExcludePatterns,
     },
     (resp) => {
       // path が仮想ディレクトリ外なら、通常の changeDir を呼び出す。

@@ -4,7 +4,7 @@
       "kind": "zip",
       "archive": "👟/test.zip",
       "path": "test1",
-      "filter": "^(__MACOSX/|\\._.+)"
+      "filters": ["^(__MACOSX/|\\._.+)"]
     },
     {
       "kind": "zip",
@@ -54,7 +54,13 @@
       "kind": "zip",
       "archive": "test.zip",
       "path": "👟/test1",
-      "filter": ""
+      "filters": [""]
+    },
+    {
+      "kind": "zip",
+      "archive": "test.zip",
+      "path": "👟/test1",
+      "filters": "^(__MACOSX/|\\._.+)"
     }
   ]
 }

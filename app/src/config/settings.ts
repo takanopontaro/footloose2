@@ -8,7 +8,7 @@ const settings: SettingsConfig = {
   previewScrollAmount: 40,
   progressTaskLogInterval: 3000,
   // Mac のリソースフォークと AppleDouble 形式のメタデータを除外する。
-  virtualDirExcludePattern: '^(?:__MACOSX/|\\._.+)',
+  virtualDirExcludePatterns: ['^(?:__MACOSX/|\\._.+)'],
 };
 
 export { settings };
