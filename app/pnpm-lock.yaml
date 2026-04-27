@@ -114,6 +114,25 @@ importers:
       wait-on:
         specifier: 9.0.4
         version: 9.0.4
+    optionalDependencies:
+      '@footloose2/server-darwin-arm64':
+        specifier: 0.0.8
+        version: 0.0.8
+      '@footloose2/server-darwin-x64':
+        specifier: 0.0.8
+        version: 0.0.8
+      '@footloose2/server-linux-arm64':
+        specifier: 0.0.8
+        version: 0.0.8
+      '@footloose2/server-linux-arm64-musl':
+        specifier: 0.0.8
+        version: 0.0.8
+      '@footloose2/server-linux-x64':
+        specifier: 0.0.8
+        version: 0.0.8
+      '@footloose2/server-linux-x64-musl':
+        specifier: 0.0.8
+        version: 0.0.8
 
 packages:
 
@@ -433,6 +452,46 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@footloose2/server-darwin-arm64@0.0.8':
+    resolution: {integrity: sha512-E0k+TUUZQNA+PN0MpHm8XBmGLpdBC1yQAF77CPzorGZRJk96nCMsSEz5O28kaTACLpMe7wJeNDrygdov2nY86w==}
+    cpu: [arm64]
+    os: [darwin]
+    hasBin: true
+
+  '@footloose2/server-darwin-x64@0.0.8':
+    resolution: {integrity: sha512-Hh9zhdIpXx5jv5kw/NN1Q/fL1dLVyJSL+oR8XecH3qPp8TykeIR+3DFTB5T9boqJ3SUbU9AsMv6NYQHSmDbCXw==}
+    cpu: [x64]
+    os: [darwin]
+    hasBin: true
+
+  '@footloose2/server-linux-arm64-musl@0.0.8':
+    resolution: {integrity: sha512-IKS15s8eZhWBtc2EeHS28uPK4wLQI+ibXLoEmpAoVfw7FArdxknE8vYWeF2VUn+kPiej1c9aknjJ6pTZEoLymg==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+    hasBin: true
+
+  '@footloose2/server-linux-arm64@0.0.8':
+    resolution: {integrity: sha512-8Iu7LxQA4dDBW2d58+Y+zB6wXs1n0w77m14epg0M2I/svTiX3v9y5I8VvyQ4Q1eyzWpjv6YTINV2B7IhEgx5QA==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+    hasBin: true
+
+  '@footloose2/server-linux-x64-musl@0.0.8':
+    resolution: {integrity: sha512-ioX5Wm9nT3hnusgYRUB3+NgFw7IWZn1i54FmkhkSPTJcxqeOPxToiBmWK7CdsDtnRlQA/A80+y9HFLNx6LrrBg==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+    hasBin: true
+
+  '@footloose2/server-linux-x64@0.0.8':
+    resolution: {integrity: sha512-drK1On91W44p6SKlKEIATAX7EjW+Dst6JPCgZvTNU1BKLF48ProHnIQoRuVlCyAZrvGnLhr2WkyPPpYTBPyAyQ==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+    hasBin: true
 
   '@hapi/address@5.1.1':
     resolution: {integrity: sha512-A+po2d/dVoY7cYajycYI43ZbYMXukuopIsqCjh5QzsBCipDtdofHntljDlpccMjIfTy6UOkg+5KPriwYch2bXA==}
@@ -2615,6 +2674,24 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@footloose2/server-darwin-arm64@0.0.8':
+    optional: true
+
+  '@footloose2/server-darwin-x64@0.0.8':
+    optional: true
+
+  '@footloose2/server-linux-arm64-musl@0.0.8':
+    optional: true
+
+  '@footloose2/server-linux-arm64@0.0.8':
+    optional: true
+
+  '@footloose2/server-linux-x64-musl@0.0.8':
+    optional: true
+
+  '@footloose2/server-linux-x64@0.0.8':
+    optional: true
 
   '@hapi/address@5.1.1':
     dependencies:
