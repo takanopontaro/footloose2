@@ -395,7 +395,13 @@ mv -v %s -t %d`,
       await api.runShTask((entries, srcDir, destDir) => {
         return {
           log: `rename: ${name} -> ${input}`,
-          cmd: 'mv -n %s %d',
+          cmd: `
+if [ -e %d ]; then
+  echo "mv: cannot rename '${name}' to '${input}': File exists" >&2
+  exit 1
+fi
+
+mv %s %d`,
           src: [name],
           dest: `${srcDir.path}/${input}`,
           callback(resp) {
