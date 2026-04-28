@@ -419,6 +419,10 @@
       content: '📄';
     }
 
+    &:has(img)::before {
+      display: none;
+    }
+
     &::after {
       position: absolute;
       top: 0;
