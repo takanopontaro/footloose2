@@ -529,7 +529,7 @@ export type SettingsConfig = {
   /**
    * ProgressTask のログ更新間隔 (ミリ秒)。
    * このログにはプログレスバーや中止ボタンが付いているため、
-   * 画面外に流れて行ってしまわないよう一定間隔で最新位置に移動する。
+   * ログフレームの画面外に流れて行ってしまわないよう一定間隔で最後尾に移動する。
    */
   progressTaskLogInterval: number;
   /**
