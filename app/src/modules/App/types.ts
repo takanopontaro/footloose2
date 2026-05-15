@@ -489,6 +489,7 @@ export type MessagesConfig = string[];
  * ```ts
  * // `ts` をテキストファイルとしてプレビューさせたい場合。
  * [{ mime: 'text/plain', pattern: '\\.tsx?$' }]
+ * ```
  */
 export type MimeTypesConfig = {
   /**
