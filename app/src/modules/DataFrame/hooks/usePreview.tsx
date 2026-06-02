@@ -53,13 +53,15 @@ export const usePreview = (
     // /preview/* はサーバーが提供する特別なルーティングで、
     // ファイルシステム上のリソースをロードできる。
     // 例えば /preview/foo/bar/baz.jpg だと /foo/bar/baz.jpg をロードする。
-    const src = `/preview${curDir}/${entry.name}`;
-    const type = getMimeType(src);
+    const path = `/preview${curDir}/${entry.name}`;
+    const type = getMimeType(path);
 
     if (type === null) {
       const node = <div className="preview_unavailable" />;
       return { node, ref: null };
     }
+
+    const src = `${path}?${encodeURIComponent(entry.time)}`;
 
     if (type.startsWith('image/')) {
       const node = <img alt="" className={className} src={src} />;
