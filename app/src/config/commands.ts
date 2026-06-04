@@ -308,14 +308,14 @@ const commands: CommandsConfig = [
           label,
           cmd: `
 for src in %s; do
-  dest=%d/$(basename "$src")
+  dest=%d/$(basename -- "$src")
   if [ -e "$dest" ]; then
     echo "cp: cannot overwrite '$dest': Entry exists" >&2
     exit 1
   fi
 done
 
-cp -rv %s %d`,
+cp -rv -- %s %d`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: destDir.path,
@@ -338,14 +338,14 @@ cp -rv %s %d`,
           label,
           cmd: `
 for src in %s; do
-  dest=%d/$(basename "$src")
+  dest=%d/$(basename -- "$src")
   if [ -e "$dest" ]; then
     echo "mv: cannot move '$src' to '$dest': Entry exists" >&2
     exit 1
   fi
 done
 
-mv -v %s -t %d`,
+mv -v -- %s %d`,
           total: 'node -e "console.log(process.argv.length - 1)" %s',
           src: entries.map((e) => e.name),
           dest: destDir.path,
@@ -371,7 +371,7 @@ mv -v %s -t %d`,
       await api.runProgressTask((entries, srcDir, destDir) => {
         return {
           label,
-          cmd: 'rm -vr %s',
+          cmd: 'rm -vr -- %s',
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
         };
@@ -401,7 +401,7 @@ if [ -e %d ]; then
   exit 1
 fi
 
-mv %s %d`,
+mv -- %s %d`,
           src: [name],
           dest: `${srcDir.path}/${input}`,
           callback(resp) {
@@ -432,7 +432,7 @@ mv %s %d`,
       await api.runShTask((entries, srcDir, destDir) => {
         return {
           log: `mkdir: ${input}`,
-          cmd: 'mkdir %d',
+          cmd: 'mkdir -- %d',
           dest: `${srcDir.path}/${input}`,
         };
       });
@@ -451,7 +451,7 @@ mv %s %d`,
       await api.runShTask((entries, srcDir, destDir) => {
         return {
           log: `touch: ${input}`,
-          cmd: 'touch %d',
+          cmd: 'touch -- %d',
           dest: `${srcDir.path}/${input}`,
         };
       });
@@ -507,7 +507,7 @@ if [ -e %d ]; then
   exit 1
 fi
 
-zip -r %d %s`,
+zip -r %d -- %s`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: `${destDir.path}/${input}`,
@@ -528,7 +528,7 @@ zip -r %d %s`,
         }
         return {
           label,
-          cmd: 'ditto -x -k %s %d',
+          cmd: 'ditto -x -k -- %s %d',
           total: 'zipinfo -1 %s | LC_ALL=C grep -v "/$" | wc -l',
           src: [entries[0].name],
           dest: destDir.path,
@@ -560,7 +560,7 @@ if [ -e %d ]; then
   exit 1
 fi
 
-tar cvf %d %s`,
+tar cvf %d -- %s`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: `${destDir.path}/${input}`,
@@ -613,7 +613,7 @@ if [ -e %d ]; then
   exit 1
 fi
 
-tar cvfz %d %s`,
+tar cvfz %d -- %s`,
           total: 'find %s | wc -l',
           src: entries.map((e) => e.name),
           dest: `${destDir.path}/${input}`,
