@@ -8,9 +8,9 @@ use crate::{
     traits::TaskBase,
 };
 
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{Context, Result, anyhow, bail};
 use async_trait::async_trait;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{
     future::Future,
     pin::Pin,
@@ -21,8 +21,8 @@ use std::{
 use tokio::{
     io::{AsyncBufReadExt as _, AsyncReadExt as _, BufReader},
     process::{Child, ChildStderr, ChildStdout, Command as TokioCommand},
-    sync::{mpsc, Mutex},
-    time::{interval, Duration},
+    sync::{Mutex, mpsc},
+    time::{Duration, interval},
 };
 use uuid::Uuid;
 
