@@ -124,6 +124,9 @@ impl TaskBase for ShTask {
         let dest = cmd.arg_as_path("destination", &cmd.cwd);
         let config = self.config(cmd);
         // `cwd` を基準とした相対パスに変換しておく。
+        // 理由は ProgressTask を参照のこと。
+        // ShTask を使ってアーカイブを作ることはないかもしれないが、
+        // ProgressTask と挙動を合わせた方がよいと判断した。
         let srcs = srcs.map(|s| relativize_paths(&s, &cmd.cwd));
         let dest = dest.map(|d| relativize_path(&d, &cmd.cwd));
         let res = match self.exec_shcmd(&config.cmd, srcs, dest, &cmd.cwd) {

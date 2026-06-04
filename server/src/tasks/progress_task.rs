@@ -303,6 +303,12 @@ impl TaskBase for ProgressTask {
             .exec_count_shcmd(&config.total, &srcs, &dest, &cmd.cwd)
             .unwrap_or(usize::MAX);
         // `cwd` を基準とした相対パスに変換しておく。
+        // 例えば tar や zip でアーカイブを作成する際、絶対パスを渡すと
+        // アーカイブ内のパス構造が深くなってしまう。
+        // 相対パスにすることで `cwd` 直下のエントリ名だけが埋め込まれ、
+        // アーカイブ内の構造が自然になる。
+        // クライアントがどんなコマンドが送って来るか分からないため、
+        // 相対パスに統一しておいた方がよいと判断した。
         let srcs = srcs.map(|s| relativize_paths(&s, &cmd.cwd));
         let dest = dest.map(|d| relativize_path(&d, &cmd.cwd));
         let (child, stdout, stderr) =
