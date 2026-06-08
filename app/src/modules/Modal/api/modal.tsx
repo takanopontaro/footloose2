@@ -15,6 +15,7 @@ import {
 } from '@modules/Modal/state';
 
 import type { Direction } from '@modules/App/types';
+import type { PromptTextSelection } from '@modules/Modal/types';
 
 /**
  * 条件に基づいて、新しいインデックスを計算して返す。
@@ -121,11 +122,13 @@ function clearListModalFilterQuery(): void {
  *
  * @param message - モーダルに表示する文章
  * @param defaultValue - テキストフィールドの初期値
+ * @param selection - テキストフィールドの初期選択状態
  * @returns ユーザー入力値 (キャンセル時は空文字) の Promise
  */
 function showPromptModal(
   message: string,
   defaultValue: string,
+  selection?: PromptTextSelection,
 ): Promise<string> {
   return new Promise((resolve) => {
     writeState($promptModalData, defaultValue);
@@ -133,7 +136,7 @@ function showPromptModal(
       primary: (data) => resolve(data),
       cancel: () => resolve(''),
     });
-    writeState($modal, <PromptModal message={message} />);
+    writeState($modal, <PromptModal message={message} selection={selection} />);
   });
 }
 

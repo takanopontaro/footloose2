@@ -65,6 +65,11 @@ export type PromptModalAction = {
 };
 
 /**
+ * PromptModal テキストの初期選択状態。
+ */
+export type PromptTextSelection = 'all' | 'name' | 'none';
+
+/**
  * ConfirmModal で確定時に実行される関数。
  */
 export type ConfirmModalFn = () => void;

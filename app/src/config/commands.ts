@@ -388,7 +388,7 @@ mv -v -- %s %d`,
       if (name === '') {
         return;
       }
-      const input = await api.showPromptModal('', name);
+      const input = await api.showPromptModal('', name, 'name');
       if (input === '' || input === name) {
         return;
       }
@@ -425,7 +425,7 @@ mv -- %s %d`,
       if (!api.ensureNotVirtualDir('src', 'create directory')) {
         return;
       }
-      const input = await api.showPromptModal('', 'untitled folder');
+      const input = await api.showPromptModal('', 'untitled folder', 'all');
       if (input === '') {
         return;
       }
@@ -444,7 +444,7 @@ mv -- %s %d`,
       if (!api.ensureNotVirtualDir('src', 'create file')) {
         return;
       }
-      const input = await api.showPromptModal('', 'untitled');
+      const input = await api.showPromptModal('', 'untitled', 'all');
       if (input === '') {
         return;
       }
@@ -494,7 +494,7 @@ mv -- %s %d`,
       if (names.length === 0) {
         return;
       }
-      const input = await api.showPromptModal('', `${names[0]}.zip`);
+      const input = await api.showPromptModal('', `${names[0]}.zip`, 'name');
       if (input === '') {
         return;
       }
@@ -547,7 +547,7 @@ zip -r %d -- %s`,
       if (names.length === 0) {
         return;
       }
-      const input = await api.showPromptModal('', `${names[0]}.tar`);
+      const input = await api.showPromptModal('', `${names[0]}.tar`, 'name');
       if (input === '') {
         return;
       }
@@ -600,7 +600,7 @@ tar cvf %d -- %s`,
       if (names.length === 0) {
         return;
       }
-      const input = await api.showPromptModal('', `${names[0]}.tgz`);
+      const input = await api.showPromptModal('', `${names[0]}.tgz`, 'name');
       if (input === '') {
         return;
       }
