@@ -1,7 +1,7 @@
 {
   "name": "@footloose2/app",
   "description": "Here 🕺 We 💃 Go 👟",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "author": "takanopontaro",
   "bin": {
     "@footloose2/app": "./cli.js"
@@ -47,12 +47,12 @@
   },
   "license": "MIT",
   "optionalDependencies": {
-    "@footloose2/server-darwin-arm64": "0.0.8",
-    "@footloose2/server-darwin-x64": "0.0.8",
-    "@footloose2/server-linux-arm64": "0.0.8",
-    "@footloose2/server-linux-arm64-musl": "0.0.8",
-    "@footloose2/server-linux-x64": "0.0.8",
-    "@footloose2/server-linux-x64-musl": "0.0.8"
+    "@footloose2/server-darwin-arm64": "0.1.0",
+    "@footloose2/server-darwin-x64": "0.1.0",
+    "@footloose2/server-linux-arm64": "0.1.0",
+    "@footloose2/server-linux-arm64-musl": "0.1.0",
+    "@footloose2/server-linux-x64": "0.1.0",
+    "@footloose2/server-linux-x64-musl": "0.1.0"
   },
   "private": true,
   "repository": {
