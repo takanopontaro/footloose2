@@ -28,6 +28,7 @@ type Props = {
 const ListModalComponent: FC<Props> = ({ tag }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const [scope, setScope] = useAtom($scope);
   const [filter, setFilter] = useAtom($listModalFilterQuery);
   const currentRowName = useAtomValue($listModalActiveEntryName);
@@ -50,6 +51,10 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
         break;
     }
   }, [scope]);
+
+  useEffect(() => {
+    btnRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [currentRowName]);
 
   useEffect(() => {
     return () => setFilter(RESET);
@@ -98,16 +103,20 @@ const ListModalComponent: FC<Props> = ({ tag }) => {
           <div className="dialog_listMatchMode">{matchMode}</div>
         </div>
         <div className="dialog_listDataset">
-          {dataset.map(({ label, value }) => (
-            <button
-              key={value}
-              aria-current={currentRowName === value}
-              className="dialog_listData"
-              tabIndex={-1}
-            >
-              {label}
-            </button>
-          ))}
+          {dataset.map(({ label, value }) => {
+            const isActive = currentRowName === value;
+            return (
+              <button
+                key={value}
+                ref={isActive ? btnRef : null}
+                aria-current={isActive}
+                className="dialog_listData"
+                tabIndex={-1}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
     </dialog>

@@ -688,8 +688,11 @@
 /* モーダルダイアログ */
 
 .dialog {
+  display: flex;
+  overflow: hidden;
   max-width: 95%;
   max-height: 95%;
+  flex-direction: column;
   padding: 10px;
   border: 1px solid var(--text-color);
   background-color: var(--background-color);
@@ -718,11 +721,15 @@
 /* 選択モーダル */
 
 .dialog_list {
-  /*  */
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .dialog_listFilter {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 10px;
   white-space: nowrap;
@@ -750,7 +757,9 @@
 }
 
 .dialog_listDataset {
-  margin-top: 5px;
+  overflow: hidden;
+  min-height: 0;
+  flex: 1;
 
   &:empty {
     margin-top: 0;
@@ -765,6 +774,7 @@
   appearance: none;
   background: none;
   color: var(--text-color);
+  overflow-wrap: anywhere;
   text-align: left;
 
   &[aria-current='true'] {
