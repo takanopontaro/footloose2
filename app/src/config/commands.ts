@@ -434,6 +434,16 @@ mv -- %s %d`,
           log: `mkdir: ${input}`,
           cmd: 'mkdir -- %d',
           dest: `${srcDir.path}/${input}`,
+          callback(resp) {
+            if (resp.status !== 'SUCCESS') {
+              return;
+            }
+            api.subscribeDirUpdate({
+              callback: (path, frame) => api.activateRowByName(input, frame),
+              once: true,
+              path: srcDir.path,
+            });
+          },
         };
       });
     },
@@ -453,6 +463,16 @@ mv -- %s %d`,
           log: `touch: ${input}`,
           cmd: 'touch -- %d',
           dest: `${srcDir.path}/${input}`,
+          callback(resp) {
+            if (resp.status !== 'SUCCESS') {
+              return;
+            }
+            api.subscribeDirUpdate({
+              callback: (path, frame) => api.activateRowByName(input, frame),
+              once: true,
+              path: srcDir.path,
+            });
+          },
         };
       });
     },
