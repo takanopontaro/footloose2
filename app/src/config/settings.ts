@@ -1,3 +1,5 @@
+/* version: 0.3.1 */
+
 import type { SettingsConfig } from '@modules/App/types';
 
 const settings: SettingsConfig = {

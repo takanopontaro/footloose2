@@ -1,3 +1,5 @@
+/* version: 0.3.1 */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { messages } from './messages';

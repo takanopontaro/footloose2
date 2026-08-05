@@ -1,3 +1,5 @@
+/* version: 0.3.1 */
+
 import { associations } from '@config/associations';
 import { commands } from '@config/commands';
 import { messages } from '@config/messages';

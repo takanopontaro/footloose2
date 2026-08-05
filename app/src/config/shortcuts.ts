@@ -1,3 +1,5 @@
+/* version: 0.3.1 */
+
 import type { ShortcutsConfig } from '@modules/App/types';
 
 const shortcuts: ShortcutsConfig = {

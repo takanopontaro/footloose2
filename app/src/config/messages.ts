@@ -1,3 +1,5 @@
+/* version: 0.3.1 */
+
 import type { MessagesConfig } from '@modules/App/types';
 
 const messages: MessagesConfig = [
