@@ -43,19 +43,29 @@ const RowComponent: FC<Props> = ({ current, entry, frame, selected }) => {
       data-symlink={link ? link : undefined}
     >
       <td className="entryGrid_td" data-column="thumbnail">
-        <div className="entryGrid_tdInner">{thumbnail}</div>
+        <div className="entryGrid_tdInner">
+          <span className="entryGrid_data">{thumbnail}</span>
+        </div>
       </td>
       <td className="entryGrid_td" data-column="perm">
-        <div className="entryGrid_tdInner">{perm}</div>
+        <div className="entryGrid_tdInner">
+          <span className="entryGrid_data">{perm}</span>
+        </div>
       </td>
       <td className="entryGrid_td" data-column="name">
-        <div className="entryGrid_tdInner">{name}</div>
+        <div className="entryGrid_tdInner">
+          <span className="entryGrid_data">{name}</span>
+        </div>
       </td>
       <td className="entryGrid_td" data-column="size">
-        <div className="entryGrid_tdInner">{size}</div>
+        <div className="entryGrid_tdInner">
+          <span className="entryGrid_data">{size}</span>
+        </div>
       </td>
       <td className="entryGrid_td" data-column="time">
-        <div className="entryGrid_tdInner">{time}</div>
+        <div className="entryGrid_tdInner">
+          <span className="entryGrid_data">{time}</span>
+        </div>
       </td>
     </tr>
   );

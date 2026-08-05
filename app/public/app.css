@@ -384,6 +384,18 @@
   text-overflow: ellipsis;
 }
 
+.dataFrame[data-ellipsis='start'] .entryGrid_td[data-column='name'] {
+  .entryGrid_tdInner {
+    direction: rtl;
+    text-align: left;
+  }
+
+  .entryGrid_data {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+}
+
 /* gallery モード */
 
 .dataFrame[data-mode~='gallery'] {

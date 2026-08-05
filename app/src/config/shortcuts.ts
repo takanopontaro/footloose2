@@ -436,6 +436,11 @@ const shortcuts: ShortcutsConfig = {
         cmd: 'ClearEntryFilter',
       },
     ],
+    'ctrl+/': [
+      {
+        cmd: 'ToggleEllipsisPosition',
+      },
+    ],
   },
   EntryFilter: {
     'up, down, enter': [

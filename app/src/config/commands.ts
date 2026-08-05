@@ -291,6 +291,24 @@ const commands: CommandsConfig = [
       api.openPath(curDir.path);
     },
   },
+  {
+    name: 'ToggleEllipsisPosition',
+    action(api, combo) {
+      // 生 DOM を直接操作することでハック的に機能を追加することもできる。
+      // ただし、あくまでエスケープハッチ的な手段であり、
+      // 基本的には api を通じて操作することが望ましい。
+      const el = document.querySelector<HTMLElement>('.dataFrame-active');
+      if (!el) {
+        return;
+      }
+      const curPos = el.dataset.ellipsis;
+      if (curPos === undefined) {
+        el.dataset.ellipsis = 'start';
+      } else {
+        delete el.dataset.ellipsis;
+      }
+    },
+  },
 
   // ファイル操作系
   {
