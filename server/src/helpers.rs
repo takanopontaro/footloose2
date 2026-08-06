@@ -253,8 +253,14 @@ pub fn relativize_paths(paths: &[String], cwd: &str) -> Vec<String> {
 pub fn quote_paths(paths: &[String]) -> String {
     paths
         .iter()
-        // クォートと特殊文字のエスケープを同時に行う。
-        .map(|s| serde_json::to_string(s).unwrap())
+        .map(|s| {
+            let str = s
+                .replace('\\', "\\\\")
+                .replace('"', "\\\"")
+                .replace('$', "\\$")
+                .replace('`', "\\`");
+            format!("\"{str}\"")
+        })
         .collect::<Vec<String>>()
         .join(" ")
 }
