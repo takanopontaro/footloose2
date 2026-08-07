@@ -75,21 +75,27 @@ impl Ls {
     /// リンクの実体パス
     /// 解決できなかった場合は空文字を返す。
     fn resolve_symlink(&self, path: &Path) -> String {
-        let Ok(path) = fs::read_link(path) else {
+        // リンクに記録された参照先を取得する。
+        // リンク切れでも参照先を取得できれば返す。
+        // リンクではない場合はエラーになる。
+        let Ok(target) = fs::read_link(path) else {
             return "".to_owned();
         };
-        let p = self.to_nfc_string(&path);
-        let Ok(meta) = fs::metadata(&p) else {
+        let p = self.to_nfc_string(&target);
+        // 最終的なリンク先を解決する。
+        // リンク切れの場合はエラーになる。
+        let Ok(abs_p) = fs::canonicalize(path) else {
             return format!("e:{p}");
         };
+        let Ok(meta) = fs::metadata(&abs_p) else {
+            return format!("e:{p}");
+        };
+        let p = self.to_nfc_string(&abs_p);
         if meta.is_dir() {
             return format!("d:{p}");
         }
         if meta.is_file() {
             return format!("f:{p}");
-        }
-        if meta.is_symlink() {
-            return self.resolve_symlink(Path::new(&p));
         }
         "".to_owned()
     }
