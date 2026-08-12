@@ -1,25 +1,18 @@
 # Footloose2
 
-This project is public but currently in internal dogfooding and not an official release yet.
+Footloose2 is a browser-based dual-pane file manager built with Rust, React, and CSS.
 
-```sh
-# Quick start (default settings)
-mkdir dogfooding && cd $_
-npx @footloose2/app start -p 3000 -b ./bookmark.json
-# http://localhost:3000/
-```
+It offers powerful customization features, including highly flexible shell commands, fully customizable key bindings, and flexible CSS-based theming.
 
-```sh
-# Custom configuration
-mkdir dogfooding && cd $_
-npx @footloose2/app eject
-npx @footloose2/app start -p 3000 -b ./bookmark.json -c ./config.ts -s ./app.css -t "%y/%m/%d %H:%M:%S"
-# http://localhost:3000/
-```
+<br />
 
-```sh
-# Show help
-npx @footloose2/app -h
-npx @footloose2/app start -h
-npx @footloose2/app eject -h
-```
+<img width="640" alt="" src="https://github.com/user-attachments/assets/0293f001-58e1-49e5-b71e-d7b27c78e8d4" />
+   
+<br />
+<br />
+<br />
+
+Learn more:
+
+- [English](https://zenn.dev/takanopontaro/articles/e96b2db32eb35d?locale=en)
+- [日本語](https://zenn.dev/takanopontaro/articles/e96b2db32eb35d)
